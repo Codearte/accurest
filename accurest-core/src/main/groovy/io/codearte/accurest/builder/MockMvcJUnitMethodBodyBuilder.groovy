@@ -1,27 +1,23 @@
 package io.codearte.accurest.builder
 
-import groovy.transform.PackageScope
-import groovy.transform.TypeChecked
-import groovy.transform.TypeCheckingMode
 import io.codearte.accurest.dsl.GroovyDsl
 import io.codearte.accurest.dsl.internal.Header
-import io.codearte.accurest.dsl.internal.QueryParameter
-import io.codearte.accurest.dsl.internal.Request
-import io.codearte.accurest.dsl.internal.UrlPath
 
 import java.util.regex.Pattern
 
-@PackageScope
-@TypeChecked
-class MockMvcSpockMethodBodyBuilder extends SpockMethodBodyBuilder {
+/**
+ * @author Olga Maciaszek-Sharma
+ * @since 2015-08-07
+ */
+class MockMvcJUnitMethodBodyBuilder extends JUnitMethodBodyBuilder {
 
-	MockMvcSpockMethodBodyBuilder(GroovyDsl stubDefinition) {
+	MockMvcJUnitMethodBodyBuilder(GroovyDsl stubDefinition) {
 		super(stubDefinition)
 	}
 
 	@Override
 	protected void given(BlockBuilder bb) {
-		bb.addLine('def request = given()')
+		bb.addLine('MockMvcRequestSpecification request = given()')
 		bb.indent()
 		request.headers?.collect { Header header ->
 			bb.addLine(".header('${header.name}', '${header.serverValue}')")
@@ -34,7 +30,7 @@ class MockMvcSpockMethodBodyBuilder extends SpockMethodBodyBuilder {
 
 	@Override
 	protected void when(BlockBuilder bb) {
-		bb.addLine('def response = given().spec(request)')
+		bb.addLine('ResponseOptions response = given().spec(request)')
 		bb.indent()
 
 		String url = buildUrl(request)
@@ -44,29 +40,30 @@ class MockMvcSpockMethodBodyBuilder extends SpockMethodBodyBuilder {
 		bb.unindent()
 	}
 
+
 	@Override
 	protected void validateResponseCodeBlock(BlockBuilder bb) {
-		bb.addLine("response.statusCode == $response.status.serverValue")
+		bb.addLine("assertTrue(response.statusCode.equals($response.status.serverValue))")
 	}
 
 	@Override
 	protected void validateResponseHeadersBlock(BlockBuilder bb) {
 		response.headers?.collect { Header header ->
-			bb.addLine("response.header('$header.name') ${convertHeaderComparison(header.serverValue)}")
+			bb.addLine(createHeader(header.name, header.serverValue))
 		}
 	}
 
-	private String convertHeaderComparison(Object headerValue) {
-		return " == '$headerValue'"
+	private String createHeader(String headerName, Object headerValue) {
+		return "assertTrue(response.header(\"$headerName\").equals(\"$headerValue\"))"
 	}
 
-	private String convertHeaderComparison(Pattern headerValue) {
-		return "==~ java.util.regex.Pattern.compile('$headerValue')"
+	private String createHeader(String headerName, Pattern headerValue) {
+		return "assertTrue(java.util.regex.Pattern.matches(java.util.regex.Pattern.compile(\"$headerValue\"), response.header(\"$headerName\"))"
 	}
 
 	@Override
 	protected String getResponseAsString() {
-		return 'response.body.asString()'
+		return 'response.getBody().asString()'
 	}
 
 }

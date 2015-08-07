@@ -40,11 +40,20 @@ class MethodBuilder {
 		blockBuilder.addLine('}')
 	}
 
-	private SpockMethodBodyBuilder getMethodBodyBuilder() {
-		if (configProperties.testMode == TestMode.JAXRSCLIENT) {
-			return new JaxRsClientSpockMethodBodyBuilder(stubContent)
+	private MethodBodyBuilder getMethodBodyBuilder() {
+		if (configProperties.targetFramework == TestFramework.SPOCK) {
+			if (configProperties.testMode == TestMode.JAXRSCLIENT) {
+				return new JaxRsClientSpockMethodBodyBuilder(stubContent)
+			}
+			return new MockMvcSpockMethodBodyBuilder(stubContent)
+		} else {
+//			if (configProperties.testMode == TestMode.JAXRSCLIENT) {        //TODO
+//				return new JaxRsClientJUnitMethodBodyBuilder(stubContent)
+//			}
+			return new MockMvcJUnitMethodBodyBuilder(stubContent)
 		}
-		return new MockMvcSpockMethodBodyBuilder(stubContent)
+
+
 	}
 
 }

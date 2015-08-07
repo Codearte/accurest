@@ -23,26 +23,13 @@ import static io.codearte.accurest.util.ContentUtils.recognizeContentTypeFromHea
  */
 @PackageScope
 @TypeChecked
-abstract class SpockMethodBodyBuilder {
-
-	protected final Request request
-	protected final Response response
+abstract class SpockMethodBodyBuilder extends MethodBodyBuilder{
 
 	SpockMethodBodyBuilder(GroovyDsl stubDefinition) {
-		this.request = stubDefinition.request
-		this.response = stubDefinition.response
+		super(stubDefinition)
 	}
 
-	void appendTo(BlockBuilder blockBuilder) {
-		blockBuilder.startBlock()
-
-		givenBlock(blockBuilder)
-		whenBlock(blockBuilder)
-		thenBlock(blockBuilder)
-
-		blockBuilder.endBlock()
-	}
-
+	@Override
 	protected void thenBlock(BlockBuilder bb) {
 		bb.addLine('then:')
 		bb.startBlock()
@@ -50,6 +37,7 @@ abstract class SpockMethodBodyBuilder {
 		bb.endBlock()
 	}
 
+	@Override
 	protected void whenBlock(BlockBuilder bb) {
 		bb.addLine('when:')
 		bb.startBlock()
@@ -57,22 +45,13 @@ abstract class SpockMethodBodyBuilder {
 		bb.endBlock().addEmptyLine()
 	}
 
+	@Override
 	protected void givenBlock(BlockBuilder bb) {
 		bb.addLine('given:')
 		bb.startBlock()
 		given(bb)
 		bb.endBlock().addEmptyLine()
 	}
-
-	protected void given(BlockBuilder bb) {}
-
-	protected abstract void when(BlockBuilder bb)
-
-	protected abstract void validateResponseCodeBlock(BlockBuilder bb)
-
-	protected abstract void validateResponseHeadersBlock(BlockBuilder bb)
-
-	protected abstract String getResponseAsString()
 
 	protected void then(BlockBuilder bb) {
 		validateResponseCodeBlock(bb)
@@ -104,51 +83,22 @@ abstract class SpockMethodBodyBuilder {
 		}
 	}
 
-	protected String getBodyAsString() {
-		Object bodyValue = extractServerValueFromBody(request.body.serverValue)
-		return trimRepeatedQuotes(new JsonOutput().toJson(bodyValue))
+	@Override
+	protected void processBodyElement(BlockBuilder blockBuilder, String property, Map.Entry entry) {
+		processBodyElement(blockBuilder, property + "." + entry.key, entry.value)
 	}
 
-	protected String trimRepeatedQuotes(String toTrim) {
-		return toTrim.startsWith('"') ? toTrim.replaceAll('"', '') : toTrim
+
+	@Override
+	protected void processBodyElement(BlockBuilder blockBuilder, String property, Pattern pattern) {
+		blockBuilder.addLine("responseBody$property ==~ java.util.regex.Pattern.compile('${pattern.pattern()}')")
 	}
 
-	protected Object extractServerValueFromBody(bodyValue) {
-		if (bodyValue instanceof GString) {
-			bodyValue = extractValue(bodyValue, { DslProperty dslProperty -> dslProperty.serverValue })
-		} else {
-			bodyValue = JsonConverter.transformValues(bodyValue, { it instanceof DslProperty ? it.serverValue : it })
-		}
-		return bodyValue
-	}
-
-	protected boolean allowedQueryParameter(QueryParameter param) {
-		return allowedQueryParameter(param.serverValue)
-	}
-
-	protected boolean allowedQueryParameter(MatchingStrategy matchingStrategy) {
-		return matchingStrategy.type != MatchingStrategy.Type.ABSENT
-	}
-
-	protected boolean allowedQueryParameter(Object o) {
-		return true
-	}
-
-	protected String resolveParamValue(QueryParameter param) {
-		return resolveParamValue(param.serverValue)
-	}
-
-	protected String resolveParamValue(Object value) {
-		return value.toString()
-	}
-
-	protected String resolveParamValue(MatchingStrategy matchingStrategy) {
-		return matchingStrategy.serverValue.toString()
-	}
 
 	protected void processBodyElement(BlockBuilder blockBuilder, String property, Object value) {
 		blockBuilder.addLine("responseBody$property == ${value}")
 	}
+
 
 	protected void processBodyElement(BlockBuilder blockBuilder, String property, String value) {
 		if (value.startsWith('$')) {
@@ -159,20 +109,12 @@ abstract class SpockMethodBodyBuilder {
 		}
 	}
 
-	protected void processBodyElement(BlockBuilder blockBuilder, String property, Pattern pattern) {
-		blockBuilder.addLine("responseBody$property ==~ java.util.regex.Pattern.compile('${pattern.pattern()}')")
-	}
-
 	protected void processBodyElement(BlockBuilder blockBuilder, String property, DslProperty dslProperty) {
 		processBodyElement(blockBuilder, property, dslProperty.serverValue)
 	}
 
 	protected void processBodyElement(BlockBuilder blockBuilder, String property, ExecutionProperty exec) {
 		blockBuilder.addLine("${exec.insertValue("responseBody$property")}")
-	}
-
-	protected void processBodyElement(BlockBuilder blockBuilder, String property, Map.Entry entry) {
-		processBodyElement(blockBuilder, property + "." + entry.key, entry.value)
 	}
 
 	protected void processBodyElement(BlockBuilder blockBuilder, String property, Map map) {
@@ -188,20 +130,7 @@ abstract class SpockMethodBodyBuilder {
 		}
 	}
 
-	protected ContentType getRequestContentType() {
-		ContentType contentType = recognizeContentTypeFromHeader(request.headers)
-		if (contentType == ContentType.UNKNOWN) {
-			contentType = recognizeContentTypeFromContent(request.body.serverValue)
-		}
-		return contentType
-	}
 
-	protected ContentType getResponseContentType() {
-		ContentType contentType = recognizeContentTypeFromHeader(response.headers)
-		if (contentType == ContentType.UNKNOWN) {
-			contentType = recognizeContentTypeFromContent(response.body.serverValue)
-		}
-		return contentType
-	}
+
 
 }

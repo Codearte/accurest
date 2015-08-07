@@ -45,6 +45,7 @@ class SingleTestGenerator {
 
 		if (configProperties.targetFramework == TestFramework.JUNIT) {
 			clazz.addImport('org.junit.Test')
+			clazz.addStaticImport('org.junit.Assert.assertTrue')
 		} else {
 			clazz.addImport('groovy.json.JsonSlurper')
 		}
