@@ -83,13 +83,12 @@ abstract class SpockMethodBodyBuilder extends MethodBodyBuilder{
 		}
 	}
 
-	@Override
+
 	protected void processBodyElement(BlockBuilder blockBuilder, String property, Map.Entry entry) {
 		processBodyElement(blockBuilder, property + "." + entry.key, entry.value)
 	}
 
 
-	@Override
 	protected void processBodyElement(BlockBuilder blockBuilder, String property, Pattern pattern) {
 		blockBuilder.addLine("responseBody$property ==~ java.util.regex.Pattern.compile('${pattern.pattern()}')")
 	}

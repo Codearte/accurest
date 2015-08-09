@@ -43,6 +43,11 @@ class BlockBuilder {
 		return this
 	}
 
+	BlockBuilder addLines(List<GString> lines) {
+		lines.each {line -> addLine(line)}
+		return this
+	}
+
 	BlockBuilder addEmptyLine() {
 		builder << '\n'
 		return this

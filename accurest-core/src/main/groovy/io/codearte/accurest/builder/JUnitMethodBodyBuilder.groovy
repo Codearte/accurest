@@ -20,6 +20,10 @@ import static io.codearte.accurest.util.ContentUtils.extractValue
 abstract class JUnitMethodBodyBuilder extends MethodBodyBuilder {
 
 
+	private BodyTypeBuilder bodyTypeBuilder = new BodyTypeBuilder()
+
+	private List<GString> assertions = new ArrayList<>()
+
 	JUnitMethodBodyBuilder(GroovyDsl stubDefinition) {
 		super(stubDefinition)
 	}
@@ -67,59 +71,63 @@ abstract class JUnitMethodBodyBuilder extends MethodBodyBuilder {
 			responseBody = extractValue(responseBody, contentType, { DslProperty dslProperty -> dslProperty.serverValue })
 		}
 		if (contentType == ContentType.JSON) {
-			bb.addLine("Map responseBody = (Map) new JsonSlurper().parseText($responseAsString)")
-			processBodyElement(bb, "", responseBody)
+			processBodyElement(assertions, "", responseBody)
+			bb.addLine("${bodyTypeBuilder.build()} responseBody = (${bodyTypeBuilder.build()}) new JsonSlurper().parseText($responseAsString);")
+			bb.addLines(assertions)
 		} else if (contentType == ContentType.XML) {
-			bb.addLine("Map responseBody = (Map) new XmlSlurper().parseText($responseAsString)")
+			bb.addLine("${bodyTypeBuilder.build()}responseBody = (${bodyTypeBuilder.build()}) new XmlSlurper().parseText($responseAsString);")
 			// TODO xml validation
 		} else {
-			bb.addLine("String responseBody = ($responseAsString)")
-			processBodyElement(bb, "", responseBody)
+			bb.addLine("String responseBody = ($responseAsString);")
+			processBodyElement(assertions, "", responseBody)
 		}
 	}
 
-	@Override
-	protected void processBodyElement(BlockBuilder blockBuilder, String property, Map.Entry entry) {
-		processBodyElement(blockBuilder, property + """.get("$entry.key")""", entry.value)
-	}
 
-	@Override
-	protected void processBodyElement(BlockBuilder blockBuilder, String property, Pattern pattern) {
-		blockBuilder.addLine("""assertTrue(java.util.regex.Pattern.matches(java.util.regex.Pattern.compile("${pattern.pattern()}"), responseBody$property)""")
-	}
-
-	protected void processBodyElement(BlockBuilder blockBuilder, String property, Object value) {
-		blockBuilder.addLine("assertTrue(responseBody${property}.equals(\"${value}\"))")
+	protected void processBodyElement(List<GString> assertions, String property, Map.Entry entry) {
+		processBodyElement(assertions, property + """.get("$entry.key")""", entry.value)
 	}
 
 
-	protected void processBodyElement(BlockBuilder blockBuilder, String property, String value) {
+	protected void processBodyElement(List<GString> assertions, String property, Pattern pattern) {
+		assertions.add("""assertTrue(java.util.regex.Pattern.matches(java.util.regex.Pattern.compile("${
+			pattern.pattern()
+		}"), responseBody$property);""")
+	}
+
+	protected void processBodyElement(List<GString> assertions, String property, Object value) {
+		assertions.add("assertTrue(responseBody${property}.equals(\"${value}\"));")
+	}
+
+
+	protected void processBodyElement(List<GString> assertions, String property, String value) {
 		if (value.startsWith('$')) {
 			value = value.substring(1).replaceAll('\\$value', "responseBody$property")
-			blockBuilder.addLine(value)
+			assertions.add(value as GString)
 		} else {
-			blockBuilder.addLine("assertTrue(responseBody${property}.equals(\"${value}\"))")
+			assertions.add("assertTrue(responseBody${property}.equals(\"${value}\"));")
 		}
 	}
 
-	protected void processBodyElement(BlockBuilder blockBuilder, String property, DslProperty dslProperty) {
-		processBodyElement(blockBuilder, property, dslProperty.serverValue)
+	protected void processBodyElement(List<GString> assertions, String property, DslProperty dslProperty) {
+		processBodyElement(assertions, property, dslProperty.serverValue)
 	}
 
-	protected void processBodyElement(BlockBuilder blockBuilder, String property, ExecutionProperty exec) {
-		blockBuilder.addLine("${exec.insertValue("responseBody$property")}")
+	protected void processBodyElement(List<GString> assertions, String property, ExecutionProperty exec) {
+		assertions.add("${exec.insertValue("responseBody$property")}")
 	}
 
-	protected void processBodyElement(BlockBuilder blockBuilder, String property, Map map) {
+	protected void processBodyElement(List<GString> assertions, String property, Map map) {
 		map.each {
-			processBodyElement(blockBuilder, property, it)
-		}
-	}
+			processBodyElement(assertions, property, it)
+					}
+			}
 
-	protected void processBodyElement(BlockBuilder blockBuilder, String property, List list) {
+
+	protected void processBodyElement(List<GString> assertions, String property, List list) {
 		list.eachWithIndex { listElement, listIndex ->
 			String prop = "$property[$listIndex]" ?: ''
-			processBodyElement(blockBuilder, prop, listElement)
+			processBodyElement(assertions, prop, listElement)
 		}
 	}
 

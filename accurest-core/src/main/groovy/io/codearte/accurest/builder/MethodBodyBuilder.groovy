@@ -53,10 +53,6 @@ abstract class MethodBodyBuilder {
 
 	protected abstract void thenBlock(BlockBuilder bb)
 
-	protected abstract void processBodyElement(BlockBuilder blockBuilder, String property, Map.Entry entry)
-
-	protected abstract void processBodyElement(BlockBuilder blockBuilder, String property, Pattern pattern)
-
 	void appendTo(BlockBuilder blockBuilder) {
 		blockBuilder.startBlock()
 
