@@ -17,7 +17,7 @@ class MockMvcJUnitMethodBodyBuilder extends JUnitMethodBodyBuilder {
 
 	@Override
 	protected void given(BlockBuilder bb) {
-		bb.addLine('MockMvcRequestSpecification request = given();')
+		bb.addLine('MockMvcRequestSpecification request = given()')
 		bb.indent()
 		request.headers?.collect { Header header ->
 			bb.addLine(".header('${header.name}', '${header.serverValue}')")
@@ -25,6 +25,7 @@ class MockMvcJUnitMethodBodyBuilder extends JUnitMethodBodyBuilder {
 		if (request.body) {
 			bb.addLine(".body('$bodyAsString')")
 		}
+		bb.addAtTheEnd(';')
 		bb.unindent()
 	}
 

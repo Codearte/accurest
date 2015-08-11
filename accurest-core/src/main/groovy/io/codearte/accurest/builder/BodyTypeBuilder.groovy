@@ -22,7 +22,7 @@ class BodyTypeBuilder {
 			int index = bodyType.lastIndexOf(DEFAULT_TYPE_PLACEHOLDER)
 			bodyType.replace(index, index + MAP.length() - 2, MAP)
 		}
-		bodyType.append(MAP)
+		bodyType << MAP
 	}
 
 	void addListType() {
@@ -30,7 +30,7 @@ class BodyTypeBuilder {
 			int index = bodyType.lastIndexOf(DEFAULT_TYPE_PLACEHOLDER)
 			bodyType.replace(index, index + LIST.length() - 2, LIST)
 		} else {
-			bodyType.append(LIST)
+			bodyType << LIST
 		}
 	}
 
