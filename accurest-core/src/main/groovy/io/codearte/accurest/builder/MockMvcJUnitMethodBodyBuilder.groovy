@@ -17,7 +17,7 @@ class MockMvcJUnitMethodBodyBuilder extends JUnitMethodBodyBuilder {
 
 	@Override
 	protected void given(BlockBuilder bb) {
-		bb.addLine('MockMvcRequestSpecification request = given()')
+		bb.addLine('MockMvcRequestSpecification request = given();')
 		bb.indent()
 		request.headers?.collect { Header header ->
 			bb.addLine(".header('${header.name}', '${header.serverValue}')")
@@ -36,14 +36,14 @@ class MockMvcJUnitMethodBodyBuilder extends JUnitMethodBodyBuilder {
 		String url = buildUrl(request)
 		String method = request.method.serverValue.toString().toLowerCase()
 
-		bb.addLine(/.${method}("$url")/)
+		bb.addLine(/.${method}("$url");/)
 		bb.unindent()
 	}
 
 
 	@Override
 	protected void validateResponseCodeBlock(BlockBuilder bb) {
-		bb.addLine("assertTrue(response.statusCode.equals($response.status.serverValue))")
+		bb.addLine("assertTrue(response.statusCode.equals($response.status.serverValue));")
 	}
 
 	@Override
