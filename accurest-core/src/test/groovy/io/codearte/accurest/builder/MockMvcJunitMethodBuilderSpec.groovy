@@ -30,8 +30,8 @@ class MockMvcJunitMethodBuilderSpec extends Specification {
 		when:
 			builder.appendTo(blockBuilder)
 		then:
-			blockBuilder.toString().contains('assertThat(responseBody.get("property1")).isEqualTo("a");')
-			blockBuilder.toString().contains('assertThat(responseBody.get("property2")).isEqualTo("b");')
+			blockBuilder.toString().contains('assertThat(((Map<String, Object>) responseBody).get("property1")).isEqualTo("a");')
+			blockBuilder.toString().contains('assertThat(((Map<String, Object>) responseBody).get("property2")).isEqualTo("b");')
 	}
 
 	@Issue("#79")
@@ -58,10 +58,9 @@ class MockMvcJunitMethodBuilderSpec extends Specification {
 		when:
 			builder.appendTo(blockBuilder)
 		then:
-			false                 // FIXME: assertion generation for nested elements
-//			blockBuilder.toString().contains('responseBody.get("property1") == "a"')
-//			blockBuilder.toString().contains('responseBody.get(property2[0].get("a") == "sth"')
-//			blockBuilder.toString().contains('responseBody.get("property2")[1].get("b") == "sthElse"')
+			blockBuilder.toString().contains('((Map<String, Object>) responseBody).get("property1")).isEqualTo("a");')
+			blockBuilder.toString().contains('((Map<String, List<Map<String, Object>>>) responseBody).get("property2").get(0).get("a")).isEqualTo("sth");')
+			blockBuilder.toString().contains('((Map<String, List<Map<String, Object>>>) responseBody).get("property2").get(1).get("b")).isEqualTo("sthElse");')
 	}
 
 	@Issue("#82")
@@ -133,9 +132,8 @@ class MockMvcJunitMethodBuilderSpec extends Specification {
 		when:
 			builder.appendTo(blockBuilder)
 		then:
-			false  // FIXME: assertion generation for nested elements
-//			blockBuilder.toString().contains('responseBody[0].get("property1") == "a"')
-//			blockBuilder.toString().contains('responseBody[1].get("property2") == "b"')
+			blockBuilder.toString().contains('((List<Map<String, Object>>) responseBody).get(0).get("property1")).isEqualTo("a");')
+			blockBuilder.toString().contains('((List<Map<String, Object>>) responseBody).get(1).get("property2")).isEqualTo("b");')
 	}
 
 	def "should generate assertions for array inside response body element"() {
@@ -160,9 +158,8 @@ class MockMvcJunitMethodBuilderSpec extends Specification {
 		when:
 			builder.appendTo(blockBuilder)
 		then:
-			false      // FIXME: fix assertion generation for nested elements
-//			blockBuilder.toString().contains('responseBody.get("property1")[0].get("property2") == "test1"')
-//			blockBuilder.toString().contains('responseBody.get("property1")[1].get("property3") == "test2"')
+			blockBuilder.toString().contains('((Map<String, List<Map<String, Object>>>) responseBody).get("property1").get(0).get("property2")).isEqualTo("test1");')
+			blockBuilder.toString().contains('((Map<String, List<Map<String, Object>>>) responseBody).get("property1").get(1).get("property3")).isEqualTo("test2");')
 	}
 
 	def "should generate assertions for nested objects in response body"() {
@@ -187,9 +184,8 @@ class MockMvcJunitMethodBuilderSpec extends Specification {
 		when:
 			builder.appendTo(blockBuilder)
 		then:
-			false // FIXME: assertion generation for nested elements
-//			blockBuilder.toString().contains("responseBody.property1 == \"a\"")
-//			blockBuilder.toString().contains("responseBody.property2.property3 == \"b\"")
+			blockBuilder.toString().contains('((Map<String, Object>) responseBody).get("property1")).isEqualTo("a");')
+			blockBuilder.toString().contains('((Map<String, Map<String, Object>>) responseBody).get("property2").get("property3")).isEqualTo("b");')
 	}
 
 	def "should generate regex assertions for map objects in response body"() {
@@ -220,8 +216,8 @@ class MockMvcJunitMethodBuilderSpec extends Specification {
 		when:
 			builder.appendTo(blockBuilder)
 		then:
-			blockBuilder.toString().contains('assertThat(responseBody.get("property1")).isEqualTo("a")')
-			blockBuilder.toString().contains('assertThat(responseBody.get("property2")).matches("[0-9]{3}")')
+			blockBuilder.toString().contains('assertThat(((Map<String, Object>) responseBody).get("property1")).isEqualTo("a");')
+			blockBuilder.toString().contains('assertThat(((Map<String, Object>) responseBody).get("property2")).matches("[0-9]{3}");')
 	}
 
 	def "should generate regex assertions for string objects in response body"() {
@@ -246,8 +242,8 @@ class MockMvcJunitMethodBuilderSpec extends Specification {
 		when:
 			builder.appendTo(blockBuilder)
 		then:
-			blockBuilder.toString().contains('assertThat(responseBody.get("property1")).isEqualTo("a");')
-			blockBuilder.toString().contains('assertThat(responseBody.get("property2")).matches("[0-9]{3}");')
+			blockBuilder.toString().contains('assertThat(((Map<String, Object>) responseBody).get("property1")).isEqualTo("a");')
+			blockBuilder.toString().contains('assertThat(((Map<String, Object>) responseBody).get("property2")).matches("[0-9]{3}");')
 	}
 
 	def "should generate a call with an url path and query parameters"() {
@@ -287,8 +283,8 @@ class MockMvcJunitMethodBuilderSpec extends Specification {
 			def spockTest = blockBuilder.toString()
 		then:
 			spockTest.contains('get("/users?limit=10&offset=20&filter=email&sort=name&search=55&age=99&name=Denis.Stepanov&email=bob@email.com")')
-			spockTest.contains('assertThat(responseBody.get("property1")).isEqualTo("a")')
-			spockTest.contains('assertThat(responseBody.get("property2")).isEqualTo("b")')
+			spockTest.contains('assertThat(((Map<String, Object>) responseBody).get("property1")).isEqualTo("a");')
+			spockTest.contains('assertThat(((Map<String, Object>) responseBody).get("property2")).isEqualTo("b");')
 	}
 
 	def "should generate test for empty body"() {

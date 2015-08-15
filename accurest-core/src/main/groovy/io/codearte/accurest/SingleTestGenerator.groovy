@@ -47,9 +47,9 @@ class SingleTestGenerator {
 			clazz.addImport('org.junit.Test', true)
 			clazz.addImport('import java.util.List', true)
 			clazz.addImport('import java.util.Map', true)
-			clazz.addStaticImport('org.assertj.core.api.Assertions.assertThat',true)
+			clazz.addStaticImport('org.assertj.core.api.Assertions.assertThat', true)
 		}
-			clazz.addImport('groovy.json.JsonSlurper', isJUnit())
+		clazz.addImport('groovy.json.JsonSlurper', isJUnit())
 
 
 		if (configProperties.ruleClassForTests) {

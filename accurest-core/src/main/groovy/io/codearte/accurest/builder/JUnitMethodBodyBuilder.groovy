@@ -19,8 +19,6 @@ import static io.codearte.accurest.util.ContentUtils.extractValue
 @TypeChecked
 abstract class JUnitMethodBodyBuilder extends MethodBodyBuilder {
 
-	private BodyTypeBuilder bodyTypeBuilder = new BodyTypeBuilder()
-
 	private List<GString> assertions = new ArrayList<>()
 
 	JUnitMethodBodyBuilder(GroovyDsl stubDefinition) {
@@ -72,7 +70,7 @@ abstract class JUnitMethodBodyBuilder extends MethodBodyBuilder {
 		if (contentType == ContentType.JSON) {
 			processBodyElement(assertions, "", responseBody)
 			bb.addLine("Object responseBody = new JsonSlurper().parseText($responseAsString);")
-			bb.addLines(assertions)
+			bb.addLines(new AssertionBodyTypeDecorator(assertions).decorate() as List<GString>)
 		} else if (contentType == ContentType.XML) {
 			bb.addLine("Object responseBody = new XmlSlurper().parseText($responseAsString);")
 			// TODO xml validation
@@ -83,11 +81,9 @@ abstract class JUnitMethodBodyBuilder extends MethodBodyBuilder {
 		}
 	}
 
-
 	protected void processBodyElement(List<GString> assertions, String property, Map.Entry entry) {
 		processBodyElement(assertions, property + """.get("$entry.key")""", entry.value)
 	}
-
 
 	protected void processBodyElement(List<GString> assertions, String property, Pattern pattern) {
 		assertions.add("""assertThat(responseBody$property).matches("${pattern.pattern()}");""")
@@ -96,7 +92,6 @@ abstract class JUnitMethodBodyBuilder extends MethodBodyBuilder {
 	protected void processBodyElement(List<GString> assertions, String property, Object value) {
 		assertions.add("assertThat(responseBody${property}).isEqualTo(\"${value}\");")
 	}
-
 
 	protected void processBodyElement(List<GString> assertions, String property, String value) {
 		if (value.startsWith('$')) {
@@ -118,9 +113,8 @@ abstract class JUnitMethodBodyBuilder extends MethodBodyBuilder {
 	protected void processBodyElement(List<GString> assertions, String property, Map map) {
 		map.each {
 			processBodyElement(assertions, property, it)
-					}
-			}
-
+		}
+	}
 
 	protected void processBodyElement(List<GString> assertions, String property, List list) {
 		list.eachWithIndex { listElement, listIndex ->

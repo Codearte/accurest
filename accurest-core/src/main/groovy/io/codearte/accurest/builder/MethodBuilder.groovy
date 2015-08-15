@@ -34,6 +34,7 @@ class MethodBuilder {
 	void appendTo(BlockBuilder blockBuilder) {
 		if (configProperties.targetFramework == TestFramework.JUNIT) {
 			blockBuilder.addLine('@Test')
+			blockBuilder.addLine('@SuppressWarnings("unchecked")')
 		}
 		blockBuilder.addLine(configProperties.targetFramework.methodModifier + "$methodName() {")
 		getMethodBodyBuilder().appendTo(blockBuilder)

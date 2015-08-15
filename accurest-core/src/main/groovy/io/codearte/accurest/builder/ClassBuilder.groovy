@@ -39,9 +39,9 @@ class ClassBuilder {
 	}
 
 	ClassBuilder addImport(String importToAdd, Boolean isJUnit = false) {
-		staticImports << importToAdd
+		imports << importToAdd
 		if (isJUnit) {
-			staticImports << ';'
+			imports << ';'
 		}
 		return this
 	}
