@@ -38,13 +38,19 @@ class ClassBuilder {
 		return new ClassBuilder(className, classPackage, baseClassForTests, properties.targetFramework)
 	}
 
-	ClassBuilder addImport(String importToAdd) {
-		imports << importToAdd
+	ClassBuilder addImport(String importToAdd, Boolean isJUnit = false) {
+		staticImports << importToAdd
+		if (isJUnit) {
+			staticImports << ';'
+		}
 		return this
 	}
 
-	ClassBuilder addStaticImport(String importToAdd) {
+	ClassBuilder addStaticImport(String importToAdd, Boolean isJUnit = false) {
 		staticImports << importToAdd
+		if (isJUnit) {
+			staticImports << ';'
+		}
 		return this
 	}
 

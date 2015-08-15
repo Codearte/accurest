@@ -44,7 +44,7 @@ class MockMvcJUnitMethodBodyBuilder extends JUnitMethodBodyBuilder {
 
 	@Override
 	protected void validateResponseCodeBlock(BlockBuilder bb) {
-		bb.addLine("assertTrue(response.statusCode.equals($response.status.serverValue));")
+		bb.addLine("assertThat(response.statusCode()).isEqualTo($response.status.serverValue);")
 	}
 
 	@Override
@@ -55,11 +55,11 @@ class MockMvcJUnitMethodBodyBuilder extends JUnitMethodBodyBuilder {
 	}
 
 	private String createHeader(String headerName, Object headerValue) {
-		return "assertTrue(response.header(\"$headerName\").equals(\"$headerValue\"))"
+		return "assertThat(response.header(\"$headerName\")).isEqualTo(\"$headerValue\");"
 	}
 
 	private String createHeader(String headerName, Pattern headerValue) {
-		return "assertTrue(java.util.regex.Pattern.matches(java.util.regex.Pattern.compile(\"$headerValue\"), response.header(\"$headerName\"))"
+		return "assertThat(response.header(\"$headerName\")).matches(\"$headerValue\");"
 	}
 
 	@Override

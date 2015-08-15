@@ -19,7 +19,6 @@ import static io.codearte.accurest.util.ContentUtils.extractValue
 @TypeChecked
 abstract class JUnitMethodBodyBuilder extends MethodBodyBuilder {
 
-
 	private BodyTypeBuilder bodyTypeBuilder = new BodyTypeBuilder()
 
 	private List<GString> assertions = new ArrayList<>()
@@ -72,14 +71,15 @@ abstract class JUnitMethodBodyBuilder extends MethodBodyBuilder {
 		}
 		if (contentType == ContentType.JSON) {
 			processBodyElement(assertions, "", responseBody)
-			bb.addLine("${bodyTypeBuilder.build()} responseBody = (${bodyTypeBuilder.build()}) new JsonSlurper().parseText($responseAsString);")
+			bb.addLine("Object responseBody = new JsonSlurper().parseText($responseAsString);")
 			bb.addLines(assertions)
 		} else if (contentType == ContentType.XML) {
-			bb.addLine("${bodyTypeBuilder.build()}responseBody = (${bodyTypeBuilder.build()}) new XmlSlurper().parseText($responseAsString);")
+			bb.addLine("Object responseBody = new XmlSlurper().parseText($responseAsString);")
 			// TODO xml validation
 		} else {
 			bb.addLine("String responseBody = ($responseAsString);")
 			processBodyElement(assertions, "", responseBody)
+			bb.addLines(assertions)
 		}
 	}
 
@@ -90,13 +90,11 @@ abstract class JUnitMethodBodyBuilder extends MethodBodyBuilder {
 
 
 	protected void processBodyElement(List<GString> assertions, String property, Pattern pattern) {
-		assertions.add("""assertTrue(java.util.regex.Pattern.matches(java.util.regex.Pattern.compile("${
-			pattern.pattern()
-		}"), responseBody$property);""")
+		assertions.add("""assertThat(responseBody$property).matches("${pattern.pattern()}");""")
 	}
 
 	protected void processBodyElement(List<GString> assertions, String property, Object value) {
-		assertions.add("assertTrue(responseBody${property}.equals(\"${value}\"));")
+		assertions.add("assertThat(responseBody${property}).isEqualTo(\"${value}\");")
 	}
 
 
@@ -105,7 +103,7 @@ abstract class JUnitMethodBodyBuilder extends MethodBodyBuilder {
 			value = value.substring(1).replaceAll('\\$value', "responseBody$property")
 			assertions.add(value as GString)
 		} else {
-			assertions.add("assertTrue(responseBody${property}.equals(\"${value}\"));")
+			assertions.add("assertThat(responseBody${property}).isEqualTo(\"${value}\");")
 		}
 	}
 

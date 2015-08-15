@@ -36,22 +36,22 @@ class SingleTestGenerator {
 		}
 
 		if (configProperties.testMode == TestMode.JAXRSCLIENT) {
-			clazz.addStaticImport('javax.ws.rs.client.Entity.*')
+			clazz.addStaticImport('javax.ws.rs.client.Entity.*', isJUnit())
 		} else if (configProperties.testMode == TestMode.MOCKMVC) {
-			clazz.addStaticImport('com.jayway.restassured.module.mockmvc.RestAssuredMockMvc.*')
+			clazz.addStaticImport('com.jayway.restassured.module.mockmvc.RestAssuredMockMvc.*', isJUnit())
 		} else {
-			clazz.addStaticImport('com.jayway.restassured.RestAssured.*')
+			clazz.addStaticImport('com.jayway.restassured.RestAssured.*', isJUnit())
 		}
 
-		if (configProperties.targetFramework == TestFramework.JUNIT) {
-			clazz.addImport('org.junit.Test')
-			clazz.addStaticImport('org.junit.Assert.assertTrue')
-		} else {
-			clazz.addImport('groovy.json.JsonSlurper')
+		if (isJUnit()) {
+			clazz.addImport('org.junit.Test', true)
+			clazz.addStaticImport('org.assertj.core.api.Assertions.assertThat',true)
 		}
+			clazz.addImport('groovy.json.JsonSlurper', isJUnit())
+
 
 		if (configProperties.ruleClassForTests) {
-			clazz.addImport('org.junit.Rule')
+			clazz.addImport('org.junit.Rule', isJUnit())
 					.addRule(configProperties.ruleClassForTests)
 		}
 
@@ -59,6 +59,10 @@ class SingleTestGenerator {
 			clazz.addMethod(createTestMethod(it, configProperties))
 		}
 		return clazz.build()
+	}
+
+	private boolean isJUnit() {
+		configProperties.targetFramework == TestFramework.JUNIT
 	}
 
 }

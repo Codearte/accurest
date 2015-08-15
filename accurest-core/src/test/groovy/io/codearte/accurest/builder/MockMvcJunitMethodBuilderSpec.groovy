@@ -1,7 +1,6 @@
 package io.codearte.accurest.builder
 
 import io.codearte.accurest.dsl.GroovyDsl
-import io.codearte.accurest.dsl.WireMockStubStrategy
 import spock.lang.Issue
 import spock.lang.Specification
 
@@ -10,7 +9,7 @@ import spock.lang.Specification
  * @since 2015-08-07
  */
 class MockMvcJunitMethodBuilderSpec extends Specification {
-	
+
 	def "should generate assertions for simple response body"() {
 		given:
 			GroovyDsl contractDsl = GroovyDsl.make {
@@ -31,8 +30,8 @@ class MockMvcJunitMethodBuilderSpec extends Specification {
 		when:
 			builder.appendTo(blockBuilder)
 		then:
-			blockBuilder.toString().contains('assertTrue(responseBody.get("property1").equals("a"))')
-			blockBuilder.toString().contains('assertTrue(responseBody.get("property2").equals("b"))')
+			blockBuilder.toString().contains('assertThat(responseBody.get("property1")).isEqualTo("a");')
+			blockBuilder.toString().contains('assertThat(responseBody.get("property2")).isEqualTo("b");')
 	}
 
 	@Issue("#79")
@@ -59,7 +58,7 @@ class MockMvcJunitMethodBuilderSpec extends Specification {
 		when:
 			builder.appendTo(blockBuilder)
 		then:
-				false                 // FIXME: assertion generation for nested elements
+			false                 // FIXME: assertion generation for nested elements
 //			blockBuilder.toString().contains('responseBody.get("property1") == "a"')
 //			blockBuilder.toString().contains('responseBody.get(property2[0].get("a") == "sth"')
 //			blockBuilder.toString().contains('responseBody.get("property2")[1].get("b") == "sthElse"')
@@ -134,7 +133,7 @@ class MockMvcJunitMethodBuilderSpec extends Specification {
 		when:
 			builder.appendTo(blockBuilder)
 		then:
-				false  // FIXME: assertion generation for nested elements
+			false  // FIXME: assertion generation for nested elements
 //			blockBuilder.toString().contains('responseBody[0].get("property1") == "a"')
 //			blockBuilder.toString().contains('responseBody[1].get("property2") == "b"')
 	}
@@ -221,8 +220,8 @@ class MockMvcJunitMethodBuilderSpec extends Specification {
 		when:
 			builder.appendTo(blockBuilder)
 		then:
-			blockBuilder.toString().contains('assertTrue(responseBody.get("property1").equals("a"))')
-			blockBuilder.toString().contains('assertTrue(java.util.regex.Pattern.matches(java.util.regex.Pattern.compile("[0-9]{3}"), responseBody.get("property2"))')
+			blockBuilder.toString().contains('assertThat(responseBody.get("property1")).isEqualTo("a")')
+			blockBuilder.toString().contains('assertThat(responseBody.get("property2")).matches("[0-9]{3}")')
 	}
 
 	def "should generate regex assertions for string objects in response body"() {
@@ -247,8 +246,8 @@ class MockMvcJunitMethodBuilderSpec extends Specification {
 		when:
 			builder.appendTo(blockBuilder)
 		then:
-			blockBuilder.toString().contains('assertTrue(responseBody.get("property1").equals("a"))')
-			blockBuilder.toString().contains('assertTrue(java.util.regex.Pattern.matches(java.util.regex.Pattern.compile("[0-9]{3}"), responseBody.get("property2"))')
+			blockBuilder.toString().contains('assertThat(responseBody.get("property1")).isEqualTo("a");')
+			blockBuilder.toString().contains('assertThat(responseBody.get("property2")).matches("[0-9]{3}");')
 	}
 
 	def "should generate a call with an url path and query parameters"() {
@@ -288,8 +287,8 @@ class MockMvcJunitMethodBuilderSpec extends Specification {
 			def spockTest = blockBuilder.toString()
 		then:
 			spockTest.contains('get("/users?limit=10&offset=20&filter=email&sort=name&search=55&age=99&name=Denis.Stepanov&email=bob@email.com")')
-			spockTest.contains('assertTrue(responseBody.get("property1").equals("a"))')
-			spockTest.contains('assertTrue(responseBody.get("property2").equals("b"))')
+			spockTest.contains('assertThat(responseBody.get("property1")).isEqualTo("a")')
+			spockTest.contains('assertThat(responseBody.get("property2")).isEqualTo("b")')
 	}
 
 	def "should generate test for empty body"() {
@@ -331,8 +330,8 @@ class MockMvcJunitMethodBuilderSpec extends Specification {
 			builder.appendTo(blockBuilder)
 			def spockTest = blockBuilder.toString()
 		then:
-			spockTest.contains('String responseBody = (response.getBody().asString())')
-			spockTest.contains('assertTrue(responseBody.equals("test"))')
+			spockTest.contains('String responseBody = (response.getBody().asString()')
+			spockTest.contains('assertThat(responseBody).isEqualTo("test")')
 	}
 
 	@Issue('113')
@@ -365,6 +364,6 @@ class MockMvcJunitMethodBuilderSpec extends Specification {
 			builder.appendTo(blockBuilder)
 			def spockTest = blockBuilder.toString()
 		then:
-			spockTest.contains('assertTrue(java.util.regex.Pattern.matches(java.util.regex.Pattern.compile("http://localhost/partners/[0-9]+/users/[0-9]+"), response.header("Location"))')
+			spockTest.contains('assertThat(response.header("Location")).matches("http://localhost/partners/[0-9]+/users/[0-9]+");')
 	}
 }
