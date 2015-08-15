@@ -124,20 +124,8 @@ abstract class JUnitMethodBodyBuilder extends MethodBodyBuilder {
 
 	protected void processBodyElement(List<GString> assertions, String property, List list) {
 		list.eachWithIndex { listElement, listIndex ->
-			String prop = "$property[$listIndex]" ?: ''
+			String prop = "${property}.get($listIndex)" ?: ''
 			processBodyElement(assertions, prop, listElement)
 		}
 	}
-
-/*
-	given()
-	.contentType("application/json")
-	.header("Accept", "application/json")
-	.body("{'name': 'MyApp', 'description' : 'awesome app'}".replaceAll("'", "\"")).
-
-	expect()
-	.statusCode(200).body("id", is(not(nullValue()))).
-
-	when()
-	.post(root.toString() + "rest/applications").asString();*/
 }
