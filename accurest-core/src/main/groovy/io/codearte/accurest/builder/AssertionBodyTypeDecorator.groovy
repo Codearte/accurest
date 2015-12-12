@@ -11,9 +11,9 @@ import groovy.transform.TypeChecked
 @TypeChecked
 class AssertionBodyTypeDecorator {
 
-	static final String DEFAULT_TYPE_PLACEHOLDER = 'Object'
-	static final String LIST_STRING = 'List<Object>'
-	static final String MAP_STRING = 'Map<String, Object>'
+	private static final String DEFAULT_TYPE_PLACEHOLDER = 'Object'
+	private static final String LIST_STRING = 'List<Object>'
+	private static final String MAP_STRING = 'Map<String, Object>'
 
 	private List<GString> assertions
 
@@ -32,7 +32,7 @@ class AssertionBodyTypeDecorator {
 	}
 
 	private List<CollectionType> evaluateResponseBodyType(String assertion) {
-		List<CollectionType> collectionTypes = new ArrayList<>()
+		List<CollectionType> collectionTypes = []
 		List<String> elements = assertion.tokenize('.')
 		elements.each {
 			if (it.contains('get')) {
