@@ -20,9 +20,7 @@ import static io.codearte.accurest.util.ContentUtils.*
 abstract class SpockMethodBodyBuilder extends MethodBodyBuilder{
 
 	SpockMethodBodyBuilder(GroovyDsl stubDefinition) {
-		super(stubDefinition)      //TODO
-		this.request = stubDefinition.request
-		this.response = stubDefinition.response
+		super(stubDefinition)
 	}
 
 	void appendTo(BlockBuilder blockBuilder) {
@@ -105,14 +103,6 @@ abstract class SpockMethodBodyBuilder extends MethodBodyBuilder{
 		}
 	}
 
-	protected void processBodyElement(BlockBuilder blockBuilder, String property, Map.Entry entry) {
-		processBodyElement(blockBuilder, property + "." + entry.key, entry.value)
-	}
-
-	protected void processBodyElement(BlockBuilder blockBuilder, String property, Pattern pattern) {
-		blockBuilder.addLine("responseBody$property ==~ java.util.regex.Pattern.compile('${pattern.pattern()}')")
-	}
-
 	protected void processText(BlockBuilder blockBuilder, String property, String value) {
 		if (value.startsWith('$')) {
 			value = value.substring(1).replaceAll('\\$value', "responseBody$property")
@@ -184,16 +174,7 @@ abstract class SpockMethodBodyBuilder extends MethodBodyBuilder{
 	}
 
 	protected void processBodyElement(BlockBuilder blockBuilder, String property, Object value) {
-		blockBuilder.addLine("responseBody$property == ${value}")
-	}
 
-	protected void processBodyElement(BlockBuilder blockBuilder, String property, String value) {
-		if (value.startsWith('$')) {
-			value = value.substring(1).replaceAll('\\$value', "responseBody$property")
-			blockBuilder.addLine(value)
-		} else {
-			blockBuilder.addLine("responseBody$property == \"${value}\"")
-		}
 	}
 
 	protected void appendJsonPath(BlockBuilder blockBuilder, String json) {
@@ -202,9 +183,6 @@ abstract class SpockMethodBodyBuilder extends MethodBodyBuilder{
 
 	protected void processBodyElement(BlockBuilder blockBuilder, String property, ExecutionProperty exec) {
 		blockBuilder.addLine("${exec.insertValue("parsedJson.read('\\\$$property')")}")
-	}
-	protected void processBodyElement(BlockBuilder blockBuilder, String property, Pattern pattern) {
-		blockBuilder.addLine("responseBody$property ==~ java.util.regex.Pattern.compile('${pattern.pattern()}')")
 	}
 
 	protected void processBodyElement(BlockBuilder blockBuilder, String property, Map.Entry entry) {
