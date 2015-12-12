@@ -1,11 +1,15 @@
 package io.codearte.accurest.util
 import groovy.json.JsonException
+import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import groovy.transform.TypeChecked
 import groovy.util.logging.Slf4j
 import io.codearte.accurest.dsl.internal.DslProperty
+import io.codearte.accurest.dsl.internal.ExecutionProperty
 import io.codearte.accurest.dsl.internal.Headers
 import io.codearte.accurest.dsl.internal.MatchingStrategy
+import io.codearte.accurest.dsl.internal.NamedProperty
+import io.codearte.accurest.dsl.internal.OptionalProperty
 import org.codehaus.groovy.runtime.GStringImpl
 
 import java.util.regex.Matcher
@@ -18,8 +22,16 @@ import static org.apache.commons.lang3.StringEscapeUtils.escapeXml11
 @Slf4j
 class ContentUtils {
 
-	private static final Pattern TEMPORARY_PATTERN_HOLDER = Pattern.compile('REGEXP>>(.*)<<')
+	public static final Closure GET_STUB_SIDE = {
+		it instanceof DslProperty ? it.clientValue : it
+	}
+
+	private static final Pattern TEMPORARY_PATTERN_HOLDER = Pattern.compile('.*REGEXP>>(.*)<<.*')
+	private static final Pattern TEMPORARY_EXECUTION_PATTERN_HOLDER = Pattern.compile('EXECUTION>>(.*)<<')
+	private static final Pattern TEMPORARY_OPTIONAL_PATTERN_HOLDER = Pattern.compile('OPTIONAL>>(.*)<<')
 	private static final String JSON_VALUE_PATTERN_FOR_REGEX = 'REGEXP>>%s<<'
+	private static final String JSON_VALUE_PATTERN_FOR_OPTIONAL = 'OPTIONAL>>%s<<'
+	private static final String JSON_VALUE_PATTERN_FOR_EXECUTION = '"EXECUTION>>%s<<"'
 
 	/**
 	 * Due to the fact that we allow users to have a body with GString and different values inside
@@ -57,7 +69,57 @@ class ContentUtils {
 				return extractValueForGString(bodyAsValue, valueProvider)
 			}
 		}
+	}
 
+	public static ContentType getClientContentType(GString bodyAsValue) {
+		try {
+			extractValueForJSON(bodyAsValue, GET_STUB_SIDE)
+			return ContentType.JSON
+		} catch(JsonException e) {
+			try {
+				new XmlSlurper().parseText(extractValueForXML(bodyAsValue, GET_STUB_SIDE).toString())
+				return ContentType.XML
+			} catch (Exception exception) {
+				extractValueForGString(bodyAsValue, GET_STUB_SIDE)
+				return ContentType.UNKNOWN
+			}
+		}
+	}
+
+	public static ContentType getClientContentType(String bodyAsValue) {
+		try {
+			new JsonSlurper().parseText(bodyAsValue)
+			return ContentType.JSON
+		} catch(JsonException e) {
+			try {
+				new XmlSlurper().parseText(bodyAsValue)
+				return ContentType.XML
+			} catch (Exception exception) {
+				return ContentType.UNKNOWN
+			}
+		}
+	}
+
+	public static ContentType getClientContentType(Object bodyAsValue) {
+		return ContentType.UNKNOWN
+	}
+
+	public static ContentType getClientContentType(Map bodyAsValue) {
+		try {
+			JsonOutput.toJson(bodyAsValue)
+			return ContentType.JSON
+		} catch (Exception ignore) {
+			return ContentType.UNKNOWN
+		}
+	}
+
+	public static ContentType getClientContentType(List bodyAsValue) {
+		try {
+			JsonOutput.toJson(bodyAsValue)
+			return ContentType.JSON
+		} catch (Exception ignore) {
+			return ContentType.UNKNOWN
+		}
 	}
 
 	private static GStringImpl extractValueForGString(GString bodyAsValue, Closure valueProvider) {
@@ -76,7 +138,7 @@ class ContentUtils {
 				bodyAsValue.values.collect { transformJSONStringValue(it, valueProvider) } as String[],
 				bodyAsValue.strings.clone() as String[]
 		)
-		def parsedJson = new JsonSlurper().parseText(transformedString.toString())
+		def parsedJson = new JsonSlurper().parseText(transformedString.toString().replace('\\', '\\\\'))
 		return convertAllTemporaryRegexPlaceholdersBackToPatterns(parsedJson)
 	}
 
@@ -99,6 +161,14 @@ class ContentUtils {
 		return String.format(JSON_VALUE_PATTERN_FOR_REGEX, pattern.pattern())
 	}
 
+	private static String transformJSONStringValue(OptionalProperty optional, Closure valueProvider) {
+		return String.format(JSON_VALUE_PATTERN_FOR_OPTIONAL, optional.value)
+	}
+
+	private static String transformJSONStringValue(ExecutionProperty property, Closure valueProvider) {
+		return String.format(JSON_VALUE_PATTERN_FOR_EXECUTION, property.executionCommand)
+	}
+
 	private static String transformXMLStringValue(Object obj, Closure valueProvider) {
 		return escapeXml11(obj.toString())
 	}
@@ -108,19 +178,59 @@ class ContentUtils {
 	}
 
 	private static Object convertAllTemporaryRegexPlaceholdersBackToPatterns(parsedJson) {
-		JsonConverter.transformValues(parsedJson, { Object value ->
+		MapConverter.transformValues(parsedJson, { Object value ->
 			if (value instanceof String) {
 				String string = (String) value
-				Matcher matcher = TEMPORARY_PATTERN_HOLDER.matcher(string)
-				if (matcher.matches()) {
-					List val = matcher[0] as List
-					String pattern = val[1]
-					return Pattern.compile(pattern)
-				}
-				return value
+				return returnParsedObject(string)
 			}
 			return value
 		})
+	}
+
+	/**
+	 * <p>
+	 *     If you wonder why there is val[1] without null-check then take a look at this:
+	 * </p>
+	 * <p>
+	 *     Example:
+	 * </p>
+	 * <p>
+	 *     Our string equals: {@code EXECUTION>>assertThatRejectionReasonIsNull($it)<<}
+	 *     The matcher matches this group with the pattern {@code EXECUTION>>(.*)<<}
+	 * </p>
+	 * <p>
+	 * So {@code executionMatcher[0]} returns 2 elements:
+	 *     <ul>
+	 *         <li> index0: EXECUTION>>assertThatRejectionReasonIsNull($it)<< </li>
+	 *         <li> index1: assertThatRejectionReasonIsNull($it)<< </li>
+	 *     </ul>
+	 * </p>
+	 * <p>
+	 *    Thus one can safely write {@code executionMatcher[0][1]} to retrieve the matched group
+	 * </p>
+	 * @param string to match the regexps against
+	 * @return object converted from temporary holders
+	 */
+	static Object returnParsedObject(String string) {
+		Matcher matcher = TEMPORARY_PATTERN_HOLDER.matcher(string.trim())
+		if (matcher.matches()) {
+			return Pattern.compile(patternFromMatchingGroup(matcher))
+		}
+		Matcher executionMatcher = TEMPORARY_EXECUTION_PATTERN_HOLDER.matcher(string.trim())
+		if (executionMatcher.matches()) {
+			return new ExecutionProperty(patternFromMatchingGroup(executionMatcher))
+		}
+		Matcher optionalMatcher = TEMPORARY_OPTIONAL_PATTERN_HOLDER.matcher(string.trim())
+		if (optionalMatcher.matches()) {
+			String patternToMatch = patternFromMatchingGroup(optionalMatcher)
+			return Pattern.compile(new OptionalProperty(patternToMatch).optionalPattern())
+		}
+		return string
+	}
+
+	private static String patternFromMatchingGroup(Matcher matcher) {
+		List val = matcher[0] as List
+		return val[1]
 	}
 
 	public static ContentType recognizeContentTypeFromHeader(Headers headers) {
@@ -209,6 +319,10 @@ class ContentUtils {
 				return ContentType.JSON
 		}
 		return ContentType.UNKNOWN
+	}
+
+	static String getMultipartFileParameterContent(String propertyName, NamedProperty propertyValue) {
+		return "'$propertyName', '$propertyValue.name.serverValue', '$propertyValue.value.serverValue'.bytes"
 	}
 
 }

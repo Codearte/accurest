@@ -1,16 +1,16 @@
 package io.codearte.accurest.plugin
 
-import groovy.json.JsonSlurper
+import io.codearte.accurest.util.AssertionUtil
 import nebula.test.IntegrationSpec
 import spock.lang.Stepwise
 
 @Stepwise
 class BasicFunctionalSpec extends IntegrationSpec {
 
-	private static final String GENERATED_TEST = "build//generated-sources//accurest//accurest//PairIdSpec.groovy"
-	private static final String GENERATED_CLIENT_JSON_STUB = "build//production//bootSimple-stubs//repository//mappings//pairId//colleratePlacesFromTweet.json"
-	private static final String GROOVY_DSL_CONTRACT = "repository//mappings//com//ofg//twitter-places-analyzer//pairId//colleratePlacesFromTweet.groovy"
-	private static final String TEST_EXECUTION_XML_REPORT = "build/test-results/TEST-accurest.PairIdSpec.xml"
+	private static final String GENERATED_TEST = "build//generated-sources//accurest//accurest//twitter_places_analyzer//PairIdSpec.groovy"
+	private static final String GENERATED_CLIENT_JSON_STUB = "build//production//bootSimple-stubs//repository//mappings//twitter-places-analyzer//pairId//collerate_PlacesFrom_Tweet.json"
+	private static final String GROOVY_DSL_CONTRACT = "repository//mappings//com//ofg//twitter-places-analyzer//pairId//collerate_PlacesFrom_Tweet.groovy"
+	private static final String TEST_EXECUTION_XML_REPORT = "build/test-results/TEST-accurest.twitter_places_analyzer.PairIdSpec.xml"
 
 	void setup() {
 		copyResources("functionalTest/bootSimple", "")
@@ -41,26 +41,26 @@ class BasicFunctionalSpec extends IntegrationSpec {
 			runTasksSuccessfully('generateWireMockClientStubs')
 		then:
 			def generatedClientJsonStub = file(GENERATED_CLIENT_JSON_STUB).text
-			new JsonSlurper().parseText(generatedClientJsonStub) == new JsonSlurper().parseText("""
-{
-    "priority": 2,
-    "request": {
-        "method": "PUT",
-        "headers": {
-            "Content-Type": {
-                "equalTo": "application/json"
-            }
-        },
-        "url": "/api/12",
-        "bodyPatterns": [
-            { "equalToJson": "[{\\"text\\":\\"Gonna see you at Warsaw\\"}]" }
-        ]
-    },
-    "response": {
-        "status": 200
-    }
-}
-""")
+			AssertionUtil.assertThatJsonsAreEqual("""
+	{
+	  "request" : {
+		"url" : "/api/12",
+		"method" : "PUT",
+		"bodyPatterns" : [ {
+		  "matchesJsonPath" : "\$[*][?(@.text == 'Gonna see you at Warsaw')]"
+		} ],
+		"headers" : {
+		  "Content-Type" : {
+			"equalTo" : "application/json"
+		  }
+		}
+	  },
+	  "response" : {
+		"status" : 200
+	  },
+	  "priority" : 2
+	}
+	""", generatedClientJsonStub)
 	}
 
 	def "tasks should be up-to-date when appropriate"() {

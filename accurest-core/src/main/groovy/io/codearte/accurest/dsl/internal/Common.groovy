@@ -13,6 +13,8 @@ import java.util.regex.Pattern
 @PackageScope
 class Common {
 
+	@Delegate private final RegexPatterns regexPatterns = new RegexPatterns()
+
 	Map<String, DslProperty> convertObjectsToDslProperties(Map<String, Object> body) {
 		return body.collectEntries {
 			Map.Entry<String, Object> entry ->
@@ -20,10 +22,10 @@ class Common {
 		} as Map<String, DslProperty>
 	}
 
-	List convertObjectsToDslProperties(List body) {
-		return body.collect {
+	Collection convertObjectsToDslProperties(List body) {
+		return (body.collect {
 			Object element -> toDslProperty(element)
-		} as List
+		} as List)
 	}
 
 	DslProperty toDslProperty(Object property) {
@@ -46,9 +48,21 @@ class Common {
 		return property
 	}
 
+	NamedProperty named(DslProperty name, DslProperty value){
+		return new NamedProperty(name, value)
+	}
+
+	NamedProperty named(Map<String, DslProperty> namedMap){
+		return new NamedProperty(namedMap)
+	}
+
 	DslProperty value(ClientDslProperty client, ServerDslProperty server) {
 		assertThatSidesMatch(client.clientValue, server.serverValue)
 		return new DslProperty(client.clientValue, server.serverValue)
+	}
+
+	DslProperty value(Object value) {
+		return new DslProperty(value)
 	}
 
 	DslProperty value(ServerDslProperty server, ClientDslProperty client) {
@@ -68,6 +82,10 @@ class Common {
 		return Pattern.compile(regex)
 	}
 
+	OptionalProperty optional(Object object) {
+		return new OptionalProperty(object)
+	}
+
 	ExecutionProperty execute(String commandToExecute) {
 		return new ExecutionProperty(commandToExecute)
 	}
@@ -76,16 +94,28 @@ class Common {
 		return new ClientDslProperty(clientValue)
 	}
 
+	ClientDslProperty stub(Object clientValue) {
+		return new ClientDslProperty(clientValue)
+	}
+
 	ServerDslProperty server(Object serverValue) {
 		return new ServerDslProperty(serverValue)
 	}
 
-	void assertThatSidesMatch(Pattern firstSide, String secondSide) {
-		assert secondSide ==~ firstSide
+	ServerDslProperty test(Object serverValue) {
+		return new ServerDslProperty(serverValue)
 	}
 
-	void assertThatSidesMatch(String firstSide, Pattern secondSide) {
-		assert firstSide ==~ secondSide
+	void assertThatSidesMatch(OptionalProperty stubSide, Object testSide) {
+		assert testSide ==~ Pattern.compile(stubSide.optionalPattern())
+	}
+
+	void assertThatSidesMatch(Pattern pattern, String value) {
+		assert value ==~ pattern
+	}
+
+	void assertThatSidesMatch(String value, Pattern pattern) {
+		assert value ==~ pattern
 	}
 
 	void assertThatSidesMatch(MatchingStrategy firstSide, MatchingStrategy secondSide) {

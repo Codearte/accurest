@@ -46,6 +46,12 @@ class ClassBuilder {
 		return this
 	}
 
+	ClassBuilder addImport(List<String> importsToAdd) {
+		imports.addAll(importsToAdd)
+		return this
+	}
+
+	ClassBuilder addStaticImport(String importToAdd) {
 	ClassBuilder addStaticImport(String importToAdd, Boolean isJUnit = false) {
 		staticImports << importToAdd
 		if (isJUnit) {

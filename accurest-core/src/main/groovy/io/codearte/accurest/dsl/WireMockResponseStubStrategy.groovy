@@ -1,7 +1,11 @@
 package io.codearte.accurest.dsl
+
+import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder
+import com.github.tomakehurst.wiremock.http.HttpHeader
+import com.github.tomakehurst.wiremock.http.HttpHeaders
+import com.github.tomakehurst.wiremock.http.ResponseDefinition
 import groovy.transform.PackageScope
 import groovy.transform.TypeChecked
-import io.codearte.accurest.dsl.internal.ClientResponse
 import io.codearte.accurest.dsl.internal.Request
 import io.codearte.accurest.dsl.internal.Response
 import io.codearte.accurest.util.ContentType
@@ -22,23 +26,31 @@ class WireMockResponseStubStrategy extends BaseWireMockStubStrategy {
 	}
 
 	@PackageScope
-	Map buildClientResponseContent() {
-		return buildResponseContent(new ClientResponse(response))
+	ResponseDefinition buildClientResponseContent() {
+		ResponseDefinitionBuilder builder = new ResponseDefinitionBuilder()
+				.withStatus(response.status.clientValue as Integer)
+		appendHeaders(builder)
+		appendBody(builder)
+		return builder.build()
 	}
 
-	private Map<String, Object> buildResponseContent(ClientResponse response) {
-		return ([status : response?.status?.clientValue,
-				headers: buildClientResponseHeadersSection(response.headers)
-		] << appendBody(response)).findAll { it.value }
-	}
-
-	private Map<String, Object> appendBody(ClientResponse response) {
-		Object body = response?.body?.clientValue
-		ContentType contentType = recognizeContentTypeFromHeader(response.headers)
-		if (contentType == ContentType.UNKNOWN) {
-			contentType = recognizeContentTypeFromContent(body)
+	private void appendHeaders(ResponseDefinitionBuilder builder) {
+		if (response.headers) {
+			builder.withHeaders(new HttpHeaders(response.headers.entries?.collect {
+				new HttpHeader(it.name, it.clientValue.toString())
+			}))
 		}
-		return body != null ? [body: parseBody(body, contentType)] : [:]
+	}
+
+	private void appendBody(ResponseDefinitionBuilder builder) {
+		if (response.body) {
+			Object body = response.body.clientValue
+			ContentType contentType = recognizeContentTypeFromHeader(response.headers)
+			if (contentType == ContentType.UNKNOWN) {
+				contentType = recognizeContentTypeFromContent(body)
+			}
+			builder.withBody(parseBody(body, contentType))
+		}
 	}
 
 

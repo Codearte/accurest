@@ -1,12 +1,15 @@
 package io.codearte.accurest
+
 import groovy.transform.PackageScope
 import io.codearte.accurest.config.AccurestConfigProperties
 import org.apache.commons.io.FilenameUtils
 import org.codehaus.plexus.util.DirectoryScanner
 
+import java.nio.charset.StandardCharsets
 import java.util.concurrent.atomic.AtomicInteger
 
-import static io.codearte.accurest.util.NamesUtil.afterLast
+import static io.codearte.accurest.util.NamesUtil.*
+
 /**
  * @author Jakub Kubrynski
  */
@@ -41,35 +44,45 @@ class TestGenerator {
 	}
 
 	@PackageScope
-	void generateTestClasses(final String packageName) {
+	void generateTestClasses(final String basePackageName) {
 		directoryScanner.scan()
 		directoryScanner.getIncludedDirectories()
 				.each { String includedDirectoryRelativePath ->
-			processIncludedDirectory(includedDirectoryRelativePath, packageName)
+			processIncludedDirectory(includedDirectoryRelativePath, basePackageName)
 
 		}
 	}
 
 	private void processIncludedDirectory(
-			final String includedDirectoryRelativePath, final String packageNameForClass) {
+			final String includedDirectoryRelativePath, final String basePackageNameForClass) {
 		if (!includedDirectoryRelativePath.isEmpty()) {
 			List<File> filesToClass = directoryScanner.includedFiles.
 					grep { String includedFile ->
-						return normalizePath(includedFile).matches(normalizePath(includedDirectoryRelativePath + File.separator) + "[A-Za-z0-9]*\\.groovy")
+						return normalizePath(includedFile).matches(normalizePath(includedDirectoryRelativePath + File.separator) + "[A-Za-z0-9_]*\\.groovy")
 					}
 			.collect {
 				return new File(configProperties.contractsDslDir, it)
 			}
 			if (filesToClass.size()) {
-				def className = afterLast(includedDirectoryRelativePath, File.separator) + configProperties.targetFramework.classNameSuffix
-				def classBytes = generator.buildClass(filesToClass, className, packageNameForClass).bytes
-				saver.saveClassFile(className, packageNameForClass, classBytes)
+				def className = afterLast(includedDirectoryRelativePath, File.separator) + resolveNameSuffix()
+				def packageName = buildPackage(basePackageNameForClass, includedDirectoryRelativePath)
+				def classBytes = generator.buildClass(filesToClass, className, packageName).getBytes(StandardCharsets.UTF_8)
+				saver.saveClassFile(className, basePackageNameForClass, convertIllegalPackageChars(includedDirectoryRelativePath), classBytes)
 				counter.incrementAndGet()
 			}
 		}
 	}
-    
-    private String normalizePath(String path) {
-        return FilenameUtils.separatorsToUnix(path)
-    }
+
+	private String resolveNameSuffix() {
+		return configProperties.nameSuffixForTests ?: configProperties.targetFramework.classNameSuffix
+	}
+
+	private static String buildPackage(final String packageNameForClass, final String includedDirectoryRelativePath) {
+		String directory = beforeLast(includedDirectoryRelativePath, File.separator)
+		return !directory.empty ? "$packageNameForClass.${directoryToPackage(convertIllegalPackageChars(directory))}" : packageNameForClass
+	}
+
+	private static String normalizePath(String path) {
+		return FilenameUtils.separatorsToUnix(path)
+	}
 }

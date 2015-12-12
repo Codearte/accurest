@@ -4,13 +4,14 @@ buildscript {
 		mavenCentral()
 	}
 	dependencies {
-		classpath "org.springframework.boot:spring-boot-gradle-plugin:1.2.1.RELEASE"
+		classpath "org.springframework.boot:spring-boot-gradle-plugin:1.2.6.RELEASE"
 	}
 }
 
 ext {
-	spockVersion = '0.7-groovy-2.0'
-	restAssuredVersion = '2.4.0'
+	restAssuredVersion = '2.5.0'
+	spockVersion = '1.0-groovy-2.4'
+	wiremockVersion = '2.0.5-beta'
 
 	accurestStubsBaseDirectory = 'src/test/resources/stubs'
 }
@@ -18,19 +19,16 @@ ext {
 subprojects {
 	apply plugin: 'groovy'
 
-
 	repositories {
 		mavenCentral()
 		mavenLocal()
 	}
 
 	dependencies {
-		testCompile "org.codehaus.groovy:groovy-all:2.3.7"
+		testCompile 'org.codehaus.groovy:groovy-all:2.4.5'
 		testCompile "org.spockframework:spock-core:$spockVersion"
-		testCompile("junit:junit:4.12")
-		testCompile('com.github.tomakehurst:wiremock:1.52') {
-			exclude group: 'org.mortbay.jetty', module: 'servlet-api'
-		}
+		testCompile 'junit:junit:4.12'
+		testCompile "com.github.tomakehurst:wiremock:$wiremockVersion"
 	}
 }
 
@@ -56,18 +54,19 @@ configure([project(':fraudDetectionService'), project(':loanApplicationService')
 		version = '0.0.1'
 	}
 
+	configurations {
+		compile.exclude module: "spring-boot-starter-tomcat"
+	}
+
 	dependencies {
-		compile "javax.ws.rs:javax.ws.rs-api:2.0.1"
 		compile 'org.glassfish.jersey.containers:jersey-container-jetty-http:2.15'
-		compile('org.springframework.boot:spring-boot-starter-jersey:1.2.5.RELEASE') {
-			exclude module: "spring-boot-starter-tomcat"
-		}
-		compile 'org.springframework.boot:spring-boot-starter-jetty:1.2.5.RELEASE'
+		compile 'org.springframework.boot:spring-boot-starter-jersey'
+		compile 'org.springframework.boot:spring-boot-starter-jetty'
 
 		testRuntime "org.spockframework:spock-spring:$spockVersion"
 
 		compile 'org.glassfish.jersey.connectors:jersey-apache-connector:2.15'
-		testCompile 'org.springframework:spring-test:4.1.7.RELEASE'
+		testCompile 'org.springframework:spring-test'
 	}
 
 	task cleanup(type: Delete) {

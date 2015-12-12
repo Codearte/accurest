@@ -7,7 +7,8 @@ import io.codearte.accurest.dsl.GroovyDsl
 import io.codearte.accurest.dsl.internal.Header
 import io.codearte.accurest.dsl.internal.QueryParameter
 import io.codearte.accurest.dsl.internal.Request
-import io.codearte.accurest.dsl.internal.UrlPath
+import io.codearte.accurest.dsl.internal.Url
+import io.codearte.accurest.util.MapConverter
 
 import java.util.regex.Pattern
 
@@ -24,15 +25,17 @@ class MockMvcSpockMethodBodyBuilder extends SpockMethodBodyBuilder {
 		bb.addLine('def request = given()')
 		bb.indent()
 		request.headers?.collect { Header header ->
-			bb.addLine(".header('${header.name}', '${header.serverValue}')")
+			bb.addLine(".header('${getTestSideValue(header.name)}', '${getTestSideValue(header.serverValue)}')")
 		}
 		if (request.body) {
-			bb.addLine(".body('$bodyAsString')")
+			bb.addLine(".body('''$bodyAsString''')")
+		}
+		if (request.multipart) {
+			multipartParameters?.each { Map.Entry<String, Object> entry -> bb.addLine(getMultipartParameterLine(entry)) }
 		}
 		bb.unindent()
 	}
 
-	@Override
 	protected void when(BlockBuilder bb) {
 		bb.addLine('def response = given().spec(request)')
 		bb.indent()
@@ -69,4 +72,29 @@ class MockMvcSpockMethodBodyBuilder extends SpockMethodBodyBuilder {
 		return 'response.body.asString()'
 	}
 
+	protected String buildUrl(Request request) {
+		if (request.url)
+			return getTestSideValue(buildUrlFromUrlPath(request.url))
+		if (request.urlPath)
+			return getTestSideValue(buildUrlFromUrlPath(request.urlPath))
+		throw new IllegalStateException("URL is not set!")
+	}
+
+	@TypeChecked(TypeCheckingMode.SKIP)
+	protected String buildUrlFromUrlPath(Url url) {
+		if (hasQueryParams(url)) {
+			String params = url.queryParameters.parameters
+					.findAll(this.&allowedQueryParameter)
+					.inject([] as List<String>) { List<String> result, QueryParameter param ->
+				result << "${param.name}=${resolveParamValue(param).toString()}"
+			}
+			.join('&')
+			return "${MapConverter.getTestSideValues(url.serverValue)}?$params"
+		}
+		return MapConverter.getTestSideValues(url.serverValue)
+	}
+
+	private boolean hasQueryParams(Url url) {
+		return url.queryParameters
+	}
 }

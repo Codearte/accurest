@@ -57,10 +57,18 @@ class SingleTestGenerator {
 					.addRule(configProperties.ruleClassForTests)
 		}
 
+		addJsonPathRelatedImports(clazz)
+
 		listOfFiles.each {
 			clazz.addMethod(createTestMethod(it, configProperties))
 		}
 		return clazz.build()
+	}
+
+	private ClassBuilder addJsonPathRelatedImports(ClassBuilder clazz) {
+		clazz.addImport(['com.jayway.jsonpath.DocumentContext',
+						 'com.jayway.jsonpath.JsonPath',
+						 'net.minidev.json.JSONArray'])
 	}
 
 	private boolean isJUnit() {

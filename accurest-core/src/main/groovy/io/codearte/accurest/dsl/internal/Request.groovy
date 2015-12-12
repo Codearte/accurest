@@ -3,7 +3,6 @@ import groovy.transform.CompileStatic
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 import groovy.transform.TypeChecked
-import groovy.xml.MarkupBuilder
 
 @TypeChecked
 @EqualsAndHashCode
@@ -15,6 +14,7 @@ class Request extends Common {
 	UrlPath urlPath
 	Headers headers
 	Body body
+	Multipart multipart
 
 	Request() {
 	}
@@ -25,6 +25,7 @@ class Request extends Common {
 		this.urlPath = request.urlPath
 		this.headers = request.headers
 		this.body = request.body
+		this.multipart = request.multipart
 	}
 
 	void method(String method) {
@@ -101,6 +102,22 @@ class Request extends Common {
 		return body
 	}
 
+	void multipart(Map<String, Object> body) {
+		this.multipart = new Multipart(convertObjectsToDslProperties(body))
+	}
+
+	void multipart(List multipartAsList) {
+		this.multipart = new Multipart(convertObjectsToDslProperties(multipartAsList))
+	}
+
+	void multipart(DslProperty dslProperty) {
+		this.multipart = new Multipart(dslProperty)
+	}
+
+	void multipart(Object multipartAsValue) {
+		this.multipart = new Multipart(multipartAsValue)
+	}
+
 	MatchingStrategy equalTo(Object value) {
 		return new MatchingStrategy(value, MatchingStrategy.Type.EQUAL_TO)
 	}
@@ -127,6 +144,10 @@ class Request extends Common {
 
 	MatchingStrategy absent() {
 		return new MatchingStrategy(true, MatchingStrategy.Type.ABSENT)
+	}
+
+	void assertThatSidesMatch(Object stubSide, OptionalProperty testSide) {
+		throw new IllegalStateException("Optional can be used only for the stub side of the request!")
 	}
 
 }

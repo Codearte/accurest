@@ -4,13 +4,14 @@ buildscript {
 		mavenLocal()
 	}
 	dependencies {
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.1.RELEASE")
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.6.RELEASE")
 	}
 }
 
 ext {
-	spockVersion = '0.7-groovy-2.0'
-	restAssuredVersion = '2.4.0'
+	restAssuredVersion = '2.5.0'
+	spockVersion = '1.0-groovy-2.4'
+	wiremockVersion = '2.0.5-beta'
 
 	accurestStubsBaseDirectory = 'src/test/resources/stubs'
 }
@@ -18,19 +19,16 @@ ext {
 subprojects {
 	apply plugin: 'groovy'
 
-
 	repositories {
 		mavenCentral()
 		mavenLocal()
 	}
 
 	dependencies {
-		testCompile "org.codehaus.groovy:groovy-all:2.3.7"
+		testCompile "org.codehaus.groovy:groovy-all:2.4.5"
 		testCompile "org.spockframework:spock-core:$spockVersion"
 		testCompile("junit:junit:4.12")
-		testCompile('com.github.tomakehurst:wiremock:1.52') {
-			exclude group: 'org.mortbay.jetty', module: 'servlet-api'
-		}
+		testCompile "com.github.tomakehurst:wiremock:$wiremockVersion"
 	}
 }
 
