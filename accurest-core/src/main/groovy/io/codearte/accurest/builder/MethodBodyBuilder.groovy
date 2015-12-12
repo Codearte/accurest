@@ -1,21 +1,19 @@
 package io.codearte.accurest.builder
 
 import groovy.json.JsonOutput
+import groovy.json.StringEscapeUtils
 import groovy.transform.PackageScope
 import groovy.transform.TypeChecked
 import groovy.transform.TypeCheckingMode
 import io.codearte.accurest.dsl.GroovyDsl
 import io.codearte.accurest.dsl.internal.DslProperty
-import io.codearte.accurest.dsl.internal.ExecutionProperty
 import io.codearte.accurest.dsl.internal.MatchingStrategy
 import io.codearte.accurest.dsl.internal.QueryParameter
 import io.codearte.accurest.dsl.internal.Request
 import io.codearte.accurest.dsl.internal.Response
-import io.codearte.accurest.dsl.internal.UrlPath
+import io.codearte.accurest.dsl.internal.Url
 import io.codearte.accurest.util.ContentType
-import io.codearte.accurest.util.JsonConverter
-
-import java.util.regex.Pattern
+import io.codearte.accurest.util.MapConverter
 
 import static io.codearte.accurest.util.ContentUtils.extractValue
 import static io.codearte.accurest.util.ContentUtils.recognizeContentTypeFromContent
@@ -53,6 +51,43 @@ abstract class MethodBodyBuilder {
 
 	protected abstract void thenBlock(BlockBuilder bb)
 
+	protected abstract void then(BlockBuilder bb)
+
+	protected abstract void validateResponseBodyBlock(BlockBuilder bb)
+
+	protected void then(BlockBuilder bb, String label) {
+		validateResponseCodeBlock(bb)
+		if (response.headers) {
+			validateResponseHeadersBlock(bb)
+		}
+		if (response.body) {
+			bb.endBlock()
+			bb.addLine(label).startBlock()
+			validateResponseBodyBlock(bb)
+		}
+	}
+
+	protected void thenBlock(BlockBuilder bb, String label) {
+		bb.addLine(label)
+		bb.startBlock()
+		then(bb)
+		bb.endBlock()
+	}
+
+	protected void whenBlock(BlockBuilder bb, String label) {
+		bb.addLine(label)
+		bb.startBlock()
+		when(bb)
+		bb.endBlock().addEmptyLine()
+	}
+
+	protected void givenBlock(BlockBuilder bb, String label) {
+		bb.addLine(label)
+		bb.startBlock()
+		given(bb)
+		bb.endBlock().addEmptyLine()
+	}
+
 	void appendTo(BlockBuilder blockBuilder) {
 		blockBuilder.startBlock()
 
@@ -63,7 +98,6 @@ abstract class MethodBodyBuilder {
 		blockBuilder.endBlock()
 	}
 
-
 	protected ContentType getResponseContentType() {
 		ContentType contentType = recognizeContentTypeFromHeader(response.headers)
 		if (contentType == ContentType.UNKNOWN) {
@@ -71,7 +105,6 @@ abstract class MethodBodyBuilder {
 		}
 		return contentType
 	}
-
 
 	protected ContentType getRequestContentType() {
 		ContentType contentType = recognizeContentTypeFromHeader(request.headers)
@@ -83,43 +116,57 @@ abstract class MethodBodyBuilder {
 
 	protected String buildUrl(Request request) {
 		if (request.url)
-			return request.url.serverValue;
+			return getTestSideValue(buildUrlFromUrlPath(request.url))
 		if (request.urlPath)
-			return buildUrlFromUrlPath(request.urlPath)
+			return getTestSideValue(buildUrlFromUrlPath(request.urlPath))
 		throw new IllegalStateException("URL is not set!")
 	}
 
+	protected String getTestSideValue(Object object) {
+		return MapConverter.getTestSideValues(object).toString()
+	}
 
 	@TypeChecked(TypeCheckingMode.SKIP)
-	protected String buildUrlFromUrlPath(UrlPath urlPath) {
-		String params = urlPath.queryParameters.parameters
-				.findAll(this.&allowedQueryParameter)
-				.inject([] as List<String>) { List<String> result, QueryParameter param ->
-			result << "${param.name}=${resolveParamValue(param).toString()}"
+	protected String buildUrlFromUrlPath(Url url) {
+		if (hasQueryParams(url)) {
+			String params = url.queryParameters.parameters
+					.findAll(this.&allowedQueryParameter)
+					.inject([] as List<String>) { List<String> result, QueryParameter param ->
+				result << "${param.name}=${resolveParamValue(param).toString()}"
+			}
+			.join('&')
+			return "${MapConverter.getTestSideValues(url.serverValue)}?$params"
 		}
-		.join('&')
-		return "$urlPath.serverValue?$params"
+		return MapConverter.getTestSideValues(url.serverValue)
+	}
+
+	private boolean hasQueryParams(Url url) {
+		return url.queryParameters
 	}
 
 	protected String getBodyAsString() {
 		Object bodyValue = extractServerValueFromBody(request.body.serverValue)
-		return trimRepeatedQuotes(new JsonOutput().toJson(bodyValue))
+		String json = new JsonOutput().toJson(bodyValue)
+		json = convertUnicodeEscapes(json)
+		return trimRepeatedQuotes(json)
 	}
 
+	private String convertUnicodeEscapes(String json) {
+		return StringEscapeUtils.unescapeJavaScript(json)
+	}
 
-	protected String trimRepeatedQuotes(String toTrim) {
+	private String trimRepeatedQuotes(String toTrim) {
 		return toTrim.startsWith('"') ? toTrim.replaceAll('"', '') : toTrim
 	}
 
-	protected Object extractServerValueFromBody(bodyValue) {
+	private Object extractServerValueFromBody(bodyValue) {
 		if (bodyValue instanceof GString) {
 			bodyValue = extractValue(bodyValue, { DslProperty dslProperty -> dslProperty.serverValue })
 		} else {
-			bodyValue = JsonConverter.transformValues(bodyValue, { it instanceof DslProperty ? it.serverValue : it })
+			bodyValue = MapConverter.transformValues(bodyValue, { it instanceof DslProperty ? it.serverValue : it })
 		}
 		return bodyValue
 	}
-
 
 	protected boolean allowedQueryParameter(QueryParameter param) {
 		return allowedQueryParameter(param.serverValue)
@@ -133,7 +180,6 @@ abstract class MethodBodyBuilder {
 		return true
 	}
 
-
 	protected String resolveParamValue(QueryParameter param) {
 		return resolveParamValue(param.serverValue)
 	}
@@ -145,5 +191,4 @@ abstract class MethodBodyBuilder {
 	protected String resolveParamValue(MatchingStrategy matchingStrategy) {
 		return matchingStrategy.serverValue.toString()
 	}
-
 }

@@ -1,82 +1,47 @@
 package io.codearte.accurest.builder
 
-import groovy.json.JsonOutput
-import groovy.json.StringEscapeUtils
 import groovy.transform.PackageScope
 import groovy.transform.TypeChecked
 import io.codearte.accurest.dsl.GroovyDsl
-import io.codearte.accurest.dsl.internal.*
+import io.codearte.accurest.dsl.internal.DslProperty
+import io.codearte.accurest.dsl.internal.ExecutionProperty
+import io.codearte.accurest.dsl.internal.NamedProperty
 import io.codearte.accurest.util.ContentType
-import io.codearte.accurest.util.MapConverter
-import io.codearte.accurest.util.JsonToJsonPathsConverter
 import io.codearte.accurest.util.JsonPaths
+import io.codearte.accurest.util.JsonToJsonPathsConverter
 
-import static io.codearte.accurest.util.ContentUtils.*
+import static io.codearte.accurest.util.ContentUtils.extractValue
+import static io.codearte.accurest.util.ContentUtils.getMultipartFileParameterContent
+
 /**
  * @author Jakub Kubrynski
  */
 @PackageScope
 @TypeChecked
-abstract class SpockMethodBodyBuilder extends MethodBodyBuilder{
+abstract class SpockMethodBodyBuilder extends MethodBodyBuilder {
 
 	SpockMethodBodyBuilder(GroovyDsl stubDefinition) {
 		super(stubDefinition)
 	}
 
-	void appendTo(BlockBuilder blockBuilder) {
-		blockBuilder.startBlock()
-
-		givenBlock(blockBuilder)
-		whenBlock(blockBuilder)
-		thenBlock(blockBuilder)
-
-		blockBuilder.endBlock()
-	}
-
 	@Override
 	protected void thenBlock(BlockBuilder bb) {
-		bb.addLine('then:')
-		bb.startBlock()
-		then(bb)
-		bb.endBlock()
+		thenBlock(bb, 'then:')
 	}
 
 	@Override
 	protected void whenBlock(BlockBuilder bb) {
-		bb.addLine('when:')
-		bb.startBlock()
-		when(bb)
-		bb.endBlock().addEmptyLine()
+		whenBlock(bb, 'when:')
 	}
 
 	@Override
 	protected void givenBlock(BlockBuilder bb) {
-		bb.addLine('given:')
-		bb.startBlock()
-		given(bb)
-		bb.endBlock().addEmptyLine()
+		givenBlock(bb, 'given:')
 	}
 
-	protected void given(BlockBuilder bb) {}
-
-	protected abstract void when(BlockBuilder bb)
-
-	protected abstract void validateResponseCodeBlock(BlockBuilder bb)
-
-	protected abstract void validateResponseHeadersBlock(BlockBuilder bb)
-
-	protected abstract String getResponseAsString()
-
+	@Override
 	protected void then(BlockBuilder bb) {
-		validateResponseCodeBlock(bb)
-		if (response.headers) {
-			validateResponseHeadersBlock(bb)
-		}
-		if (response.body) {
-			bb.endBlock()
-			bb.addLine('and:').startBlock()
-			validateResponseBodyBlock(bb)
-		}
+		then(bb, 'and:')
 	}
 
 	protected void validateResponseBodyBlock(BlockBuilder bb) {
@@ -97,7 +62,7 @@ abstract class SpockMethodBodyBuilder extends MethodBodyBuilder{
 		} else if (contentType == ContentType.XML) {
 			bb.addLine("def responseBody = new XmlSlurper().parseText($responseAsString)")
 			// TODO xml validation
-		}   else {
+		} else {
 			bb.addLine("def responseBody = ($responseAsString)")
 			processText(bb, "", responseBody as String)
 		}
@@ -112,65 +77,15 @@ abstract class SpockMethodBodyBuilder extends MethodBodyBuilder{
 		}
 	}
 
-	protected String
-
-	protected String getBodyAsString() {
-		Object bodyValue = extractServerValueFromBody(request.body.serverValue)
-		String json = new JsonOutput().toJson(bodyValue)
-		json = convertUnicodeEscapes(json)
-		return trimRepeatedQuotes(json)
-	}
-
 	protected Map<String, Object> getMultipartParameters() {
-		return (Map<String, Object>)request?.multipart?.serverValue
+		return (Map<String, Object>) request?.multipart?.serverValue
 	}
 
 	protected String getMultipartParameterLine(Map.Entry<String, Object> parameter) {
-		if (parameter.value instanceof  NamedProperty) {
+		if (parameter.value instanceof NamedProperty) {
 			return ".multiPart(${getMultipartFileParameterContent(parameter.key, (NamedProperty) parameter.value)})"
 		}
 		return ".param('$parameter.key', '$parameter.value')"
-	}
-
-	protected String convertUnicodeEscapes(String json) {
-		return StringEscapeUtils.unescapeJavaScript(json)
-	}
-
-	protected String trimRepeatedQuotes(String toTrim) {
-		return toTrim.startsWith('"') ? toTrim.replaceAll('"', '') : toTrim
-	}
-
-	protected Object extractServerValueFromBody(bodyValue) {
-		if (bodyValue instanceof GString) {
-			bodyValue = extractValue(bodyValue, { DslProperty dslProperty -> dslProperty.serverValue })
-		} else {
-			bodyValue = MapConverter.transformValues(bodyValue, { it instanceof DslProperty ? it.serverValue : it })
-		}
-		return bodyValue
-	}
-
-	protected boolean allowedQueryParameter(QueryParameter param) {
-		return allowedQueryParameter(param.serverValue)
-	}
-
-	protected boolean allowedQueryParameter(MatchingStrategy matchingStrategy) {
-		return matchingStrategy.type != MatchingStrategy.Type.ABSENT
-	}
-
-	protected boolean allowedQueryParameter(Object o) {
-		return true
-	}
-
-	protected String resolveParamValue(QueryParameter param) {
-		return resolveParamValue(param.serverValue)
-	}
-
-	protected String resolveParamValue(Object value) {
-		return value.toString()
-	}
-
-	protected String resolveParamValue(MatchingStrategy matchingStrategy) {
-		return matchingStrategy.serverValue.toString()
 	}
 
 	protected void processBodyElement(BlockBuilder blockBuilder, String property, Object value) {
@@ -200,25 +115,5 @@ abstract class SpockMethodBodyBuilder extends MethodBodyBuilder{
 			String prop = "$property[$listIndex]" ?: ''
 			processBodyElement(blockBuilder, prop, listElement)
 		}
-	}
-
-	protected ContentType getRequestContentType() {
-		ContentType contentType = recognizeContentTypeFromHeader(request.headers)
-		if (contentType == ContentType.UNKNOWN) {
-			contentType = recognizeContentTypeFromContent(request.body.serverValue)
-		}
-		return contentType
-	}
-
-	protected ContentType getResponseContentType() {
-		ContentType contentType = recognizeContentTypeFromHeader(response.headers)
-		if (contentType == ContentType.UNKNOWN) {
-			contentType = recognizeContentTypeFromContent(response.body.serverValue)
-		}
-		return contentType
-	}
-
-	protected String getTestSideValue(Object object) {
-		return MapConverter.getTestSideValues(object).toString()
 	}
 }

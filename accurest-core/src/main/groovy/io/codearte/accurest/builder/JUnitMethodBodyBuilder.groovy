@@ -27,39 +27,24 @@ abstract class JUnitMethodBodyBuilder extends MethodBodyBuilder {
 
 	@Override
 	protected void thenBlock(BlockBuilder bb) {
-		bb.addLine('// then:')
-		bb.startBlock()
-		then(bb)
-		bb.endBlock().addEmptyLine()
+		thenBlock(bb, '// then:')
 	}
 
 	@Override
 	protected void whenBlock(BlockBuilder bb) {
-		bb.addLine('// when:')
-		bb.startBlock()
-		when(bb)
-		bb.endBlock().addEmptyLine()
+		whenBlock(bb, '// when:')
 	}
 
 	@Override
 	protected void givenBlock(BlockBuilder bb) {
-		bb.addLine('// given:')
-		bb.startBlock()
-		given(bb)
-		bb.endBlock().addEmptyLine()
+		givenBlock(bb, '// given:')
 	}
 
+	@Override
 	protected void then(BlockBuilder bb) {
-		validateResponseCodeBlock(bb)
-		if (response.headers) {
-			validateResponseHeadersBlock(bb)
-		}
-		if (response.body) {
-			bb.endBlock()
-					.startBlock()
-			validateResponseBodyBlock(bb)
-		}
+		then(bb, '// and:')
 	}
+
 
 	protected void validateResponseBodyBlock(BlockBuilder bb) {
 		def responseBody = response.body.serverValue

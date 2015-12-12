@@ -280,11 +280,11 @@ class MockMvcJunitMethodBuilderSpec extends Specification {
 			BlockBuilder blockBuilder = new BlockBuilder(" ")
 		when:
 			builder.appendTo(blockBuilder)
-			def spockTest = blockBuilder.toString()
+			def junitTest = blockBuilder.toString()
 		then:
-			spockTest.contains('get("/users?limit=10&offset=20&filter=email&sort=name&search=55&age=99&name=Denis.Stepanov&email=bob@email.com")')
-			spockTest.contains('assertThat(((Map<String, Object>) responseBody).get("property1")).isEqualTo("a");')
-			spockTest.contains('assertThat(((Map<String, Object>) responseBody).get("property2")).isEqualTo("b");')
+			junitTest.contains('get("/users?limit=10&offset=20&filter=email&sort=name&search=55&age=99&name=Denis.Stepanov&email=bob@email.com")')
+			junitTest.contains('assertThat(((Map<String, Object>) responseBody).get("property1")).isEqualTo("a");')
+			junitTest.contains('assertThat(((Map<String, Object>) responseBody).get("property2")).isEqualTo("b");')
 	}
 
 	def "should generate test for empty body"() {
@@ -303,9 +303,9 @@ class MockMvcJunitMethodBuilderSpec extends Specification {
 			BlockBuilder blockBuilder = new BlockBuilder(" ")
 		when:
 			builder.appendTo(blockBuilder)
-			def spockTest = blockBuilder.toString()
+			def junitTest = blockBuilder.toString()
 		then:
-			spockTest.contains(".body('')")
+			junitTest.contains(".body('')")
 	}
 
 	def "should generate test for String in response body"() {
@@ -324,10 +324,10 @@ class MockMvcJunitMethodBuilderSpec extends Specification {
 			BlockBuilder blockBuilder = new BlockBuilder(" ")
 		when:
 			builder.appendTo(blockBuilder)
-			def spockTest = blockBuilder.toString()
+			def junitTest = blockBuilder.toString()
 		then:
-			spockTest.contains('String responseBody = (response.getBody().asString()')
-			spockTest.contains('assertThat(responseBody).isEqualTo("test")')
+			junitTest.contains('String responseBody = (response.getBody().asString()')
+			junitTest.contains('assertThat(responseBody).isEqualTo("test")')
 	}
 
 	@Issue('113')
@@ -358,8 +358,8 @@ class MockMvcJunitMethodBuilderSpec extends Specification {
 			BlockBuilder blockBuilder = new BlockBuilder(" ")
 		when:
 			builder.appendTo(blockBuilder)
-			def spockTest = blockBuilder.toString()
+			def junitTest = blockBuilder.toString()
 		then:
-			spockTest.contains('assertThat(response.header("Location")).matches("http://localhost/partners/[0-9]+/users/[0-9]+");')
+			junitTest.contains('assertThat(response.header("Location")).matches("http://localhost/partners/[0-9]+/users/[0-9]+");')
 	}
 }
