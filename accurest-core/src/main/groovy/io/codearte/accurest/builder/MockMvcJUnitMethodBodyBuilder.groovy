@@ -66,5 +66,4 @@ class MockMvcJUnitMethodBodyBuilder extends JUnitMethodBodyBuilder {
 	protected String getResponseAsString() {
 		return 'response.getBody().asString()'
 	}
-
 }

@@ -3,14 +3,9 @@ package io.codearte.accurest.builder
 import groovy.transform.PackageScope
 import groovy.transform.TypeChecked
 import io.codearte.accurest.dsl.GroovyDsl
-import io.codearte.accurest.dsl.internal.DslProperty
 import io.codearte.accurest.dsl.internal.ExecutionProperty
 import io.codearte.accurest.dsl.internal.NamedProperty
-import io.codearte.accurest.util.ContentType
-import io.codearte.accurest.util.JsonPaths
-import io.codearte.accurest.util.JsonToJsonPathsConverter
 
-import static io.codearte.accurest.util.ContentUtils.extractValue
 import static io.codearte.accurest.util.ContentUtils.getMultipartFileParameterContent
 
 /**
@@ -44,30 +39,7 @@ abstract class SpockMethodBodyBuilder extends MethodBodyBuilder {
 		then(bb, 'and:')
 	}
 
-	protected void validateResponseBodyBlock(BlockBuilder bb) {
-		def responseBody = response.body.serverValue
-		ContentType contentType = getResponseContentType()
-		if (responseBody instanceof GString) {
-			responseBody = extractValue(responseBody, contentType, { DslProperty dslProperty -> dslProperty.serverValue })
-		}
-		if (contentType == ContentType.JSON) {
-			appendJsonPath(bb, responseAsString)
-			JsonPaths jsonPaths = JsonToJsonPathsConverter.transformToJsonPathWithTestsSideValues(responseBody)
-			jsonPaths.each {
-				it.buildJsonPathComparison('parsedJson').each {
-					bb.addLine(it)
-				}
-			}
-			processBodyElement(bb, "", responseBody)
-		} else if (contentType == ContentType.XML) {
-			bb.addLine("def responseBody = new XmlSlurper().parseText($responseAsString)")
-			// TODO xml validation
-		} else {
-			bb.addLine("def responseBody = ($responseAsString)")
-			processText(bb, "", responseBody as String)
-		}
-	}
-
+	@Override
 	protected void processText(BlockBuilder blockBuilder, String property, String value) {
 		if (value.startsWith('$')) {
 			value = value.substring(1).replaceAll('\\$value', "responseBody$property")
@@ -88,10 +60,12 @@ abstract class SpockMethodBodyBuilder extends MethodBodyBuilder {
 		return ".param('$parameter.key', '$parameter.value')"
 	}
 
+	@Override
 	protected void processBodyElement(BlockBuilder blockBuilder, String property, Object value) {
 
 	}
 
+	@Override
 	protected void appendJsonPath(BlockBuilder blockBuilder, String json) {
 		blockBuilder.addLine("DocumentContext parsedJson = JsonPath.parse($json)")
 	}

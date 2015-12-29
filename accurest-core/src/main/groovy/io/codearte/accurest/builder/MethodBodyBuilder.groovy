@@ -13,6 +13,8 @@ import io.codearte.accurest.dsl.internal.Request
 import io.codearte.accurest.dsl.internal.Response
 import io.codearte.accurest.dsl.internal.Url
 import io.codearte.accurest.util.ContentType
+import io.codearte.accurest.util.JsonPaths
+import io.codearte.accurest.util.JsonToJsonPathsConverter
 import io.codearte.accurest.util.MapConverter
 
 import static io.codearte.accurest.util.ContentUtils.extractValue
@@ -53,7 +55,11 @@ abstract class MethodBodyBuilder {
 
 	protected abstract void then(BlockBuilder bb)
 
-	protected abstract void validateResponseBodyBlock(BlockBuilder bb)
+	protected abstract void appendJsonPath(BlockBuilder bb, String responseAsString)
+
+	protected abstract void processBodyElement(BlockBuilder bb, String property, Object value)
+
+	protected abstract void processText(BlockBuilder bb, String property, String value)
 
 	protected void then(BlockBuilder bb, String label) {
 		validateResponseCodeBlock(bb)
@@ -112,6 +118,31 @@ abstract class MethodBodyBuilder {
 			contentType = recognizeContentTypeFromContent(request.body.serverValue)
 		}
 		return contentType
+	}
+
+	//TODO: not necessary in base class? only leave abstract
+	protected void validateResponseBodyBlock(BlockBuilder bb) {
+		def responseBody = response.body.serverValue
+		ContentType contentType = getResponseContentType()
+		if (responseBody instanceof GString) {
+			responseBody = extractValue(responseBody, contentType, { DslProperty dslProperty -> dslProperty.serverValue })
+		}
+		if (contentType == ContentType.JSON) {
+			appendJsonPath(bb, responseAsString)
+			JsonPaths jsonPaths = JsonToJsonPathsConverter.transformToJsonPathWithTestsSideValues(responseBody)
+			jsonPaths.each {
+				it.buildJsonPathComparison('parsedJson').each {
+					bb.addLine(it)
+				}
+			}
+			processBodyElement(bb, "", responseBody)
+		} else if (contentType == ContentType.XML) {
+			bb.addLine("def responseBody = new XmlSlurper().parseText($responseAsString)")
+			// TODO xml validation
+		} else {
+			bb.addLine("def responseBody = ($responseAsString)")
+			processText(bb, "", responseBody as String)
+		}
 	}
 
 	protected String buildUrl(Request request) {
