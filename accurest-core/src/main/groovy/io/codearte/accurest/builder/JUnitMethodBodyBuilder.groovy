@@ -7,8 +7,8 @@ import io.codearte.accurest.dsl.internal.DslProperty
 import io.codearte.accurest.dsl.internal.ExecutionProperty
 import io.codearte.accurest.dsl.internal.NamedProperty
 import io.codearte.accurest.util.ContentType
-import io.codearte.accurest.util.JsonPaths
-import io.codearte.accurest.util.JsonToJsonPathsConverter
+import io.codearte.accurest.util.jsonpath.JsonPaths
+import io.codearte.accurest.util.jsonpath.JsonToJsonPathsConverter
 
 import static io.codearte.accurest.util.ContentUtils.extractValue
 import static io.codearte.accurest.util.ContentUtils.getMultipartFileParameterContent

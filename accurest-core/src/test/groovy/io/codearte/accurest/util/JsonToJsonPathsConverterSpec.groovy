@@ -5,6 +5,8 @@ import com.jayway.jsonpath.Configuration
 import com.jayway.jsonpath.DocumentContext
 import com.jayway.jsonpath.JsonPath
 import com.jayway.jsonpath.Option
+import io.codearte.accurest.util.jsonpath.JsonPaths
+import io.codearte.accurest.util.jsonpath.JsonToJsonPathsConverter
 import net.minidev.json.JSONArray
 import spock.lang.Specification
 import spock.lang.Unroll

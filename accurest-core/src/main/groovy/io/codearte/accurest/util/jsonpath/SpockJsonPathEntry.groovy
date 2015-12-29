@@ -1,18 +1,15 @@
-package io.codearte.accurest.util
+package io.codearte.accurest.util.jsonpath
 
 import java.util.regex.Pattern
 
-class JsonPathEntry {
-	final String jsonPath
-	final String optionalSuffix
-	final Object value
+class SpockJsonPathEntry extends JsonPathEntry{
 
-	JsonPathEntry(String jsonPath, String optionalSuffix, Object value) {
-		this.jsonPath = jsonPath
-		this.optionalSuffix = optionalSuffix
-		this.value = value
+
+	SpockJsonPathEntry(String jsonPath, String optionalSuffix, Object value) {
+		super(jsonPath, optionalSuffix, value)
 	}
-	
+
+	@Override
 	List<String> buildJsonPathComparison(String parsedJsonVariable) {
 		if (optionalSuffix) {
 			return ["!${parsedJsonVariable}.read('''${jsonPath}''', JSONArray).empty"]
@@ -22,19 +19,16 @@ class JsonPathEntry {
 		return ["${parsedJsonVariable}.read('''${jsonPath}''') ${operator()} ${potentiallyWrappedWithQuotesValue()}"]
 	}
 
-	private boolean traversesOverCollections() {
-		return jsonPath.contains('[*]')
-	}
-
-	String operator() {
+	private String operator() {
 		return value instanceof Pattern ? "==~" : "=="
 	}
 
-	String potentiallyWrappedWithQuotesValue() {
+	private String potentiallyWrappedWithQuotesValue() {
 		return value instanceof Number ? value : "'''$value'''"
 	}
 
-	static JsonPathEntry simple(String jsonPath, Object value) {
-		return new JsonPathEntry(jsonPath, "", value)
+	// TODO: move to factory
+	static SpockJsonPathEntry simple(String jsonPath, Object value) {
+		return new SpockJsonPathEntry(jsonPath, "", value)
 	}
 }

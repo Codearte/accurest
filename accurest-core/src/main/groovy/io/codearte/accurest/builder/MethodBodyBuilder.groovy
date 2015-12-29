@@ -13,8 +13,8 @@ import io.codearte.accurest.dsl.internal.Request
 import io.codearte.accurest.dsl.internal.Response
 import io.codearte.accurest.dsl.internal.Url
 import io.codearte.accurest.util.ContentType
-import io.codearte.accurest.util.JsonPaths
-import io.codearte.accurest.util.JsonToJsonPathsConverter
+import io.codearte.accurest.util.jsonpath.JsonPaths
+import io.codearte.accurest.util.jsonpath.JsonToJsonPathsConverter
 import io.codearte.accurest.util.MapConverter
 
 import static io.codearte.accurest.util.ContentUtils.extractValue
