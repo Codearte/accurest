@@ -1,6 +1,12 @@
-package io.codearte.accurest.util
+package io.codearte.accurest.util.jsonpath
 
 class JsonPaths extends HashSet<JsonPathEntry> {
+
+	final JsonPathEntryFactory jsonPathEntryFactory
+
+	JsonPaths(JsonPathEntryFactory jsonPathEntryFactory) {
+		this.jsonPathEntryFactory = jsonPathEntryFactory
+	}
 
 	Object getAt(String key) {
 		return find {
@@ -16,7 +22,7 @@ class JsonPaths extends HashSet<JsonPathEntry> {
 			return null
 		}
 		Object oldValue = entry.value
-		add(new JsonPathEntry(entry.jsonPath, entry.optionalSuffix, value))
+		add(jsonPathEntryFactory.createJsonPathEntry(entry.jsonPath, entry.optionalSuffix, value))
 		return oldValue
 	}
 }

@@ -15,8 +15,8 @@ import io.codearte.accurest.dsl.internal.RegexPatterns
 import io.codearte.accurest.dsl.internal.Request
 import io.codearte.accurest.util.ContentType
 import io.codearte.accurest.util.ContentUtils
-import io.codearte.accurest.util.JsonPaths
-import io.codearte.accurest.util.JsonToJsonPathsConverter
+import io.codearte.accurest.util.jsonpath.JsonPaths
+import io.codearte.accurest.util.jsonpath.JsonToJsonPathsConverter
 import io.codearte.accurest.util.MapConverter
 
 import java.util.regex.Pattern

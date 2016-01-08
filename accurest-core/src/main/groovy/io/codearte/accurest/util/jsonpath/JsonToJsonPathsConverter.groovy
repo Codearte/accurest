@@ -1,4 +1,8 @@
-package io.codearte.accurest.util
+package io.codearte.accurest.util.jsonpath
+
+import io.codearte.accurest.util.MapConverter
+import io.codearte.accurest.util.RegexpBuilders
+
 import java.util.regex.Pattern
 import groovy.json.JsonSlurper
 import io.codearte.accurest.dsl.internal.ExecutionProperty
@@ -7,6 +11,8 @@ import io.codearte.accurest.dsl.internal.OptionalProperty
 /**
  * @author Marcin Grzejszczak
  */
+
+//TODO: start using appropriate JsonPathEntry
 class JsonToJsonPathsConverter {
 
 	private static final Boolean SERVER_SIDE = false
@@ -33,7 +39,7 @@ class JsonToJsonPathsConverter {
 			if (value instanceof ExecutionProperty) {
 				return
 			}
-			JsonPathEntry entry = getValueToInsert(key, value)
+			SpockJsonPathEntry entry = getValueToInsert(key, value)
 			pathsAndValues.add(entry)
 		}
 		return pathsAndValues
@@ -102,11 +108,11 @@ class JsonToJsonPathsConverter {
 		traverseRecursively(Map, rootKey, json, closure)
 	}
 
-	private static JsonPathEntry getValueToInsert(String key, Object value) {
+	private static SpockJsonPathEntry getValueToInsert(String key, Object value) {
 		return convertToListElementFiltering(key, value)
 	}
 
-	protected static JsonPathEntry convertToListElementFiltering(String key, Object value) {
+	protected static SpockJsonPathEntry convertToListElementFiltering(String key, Object value) {
 		if (key.endsWith(ALL_ELEMENTS)) {
 			int lastAllElements = key.lastIndexOf(ALL_ELEMENTS)
 			String keyWithoutAllElements = key.substring(0, lastAllElements)
@@ -115,11 +121,11 @@ class JsonToJsonPathsConverter {
 		return getKeyForTraversalOfListWithNonPrimitiveTypes(key, value)
 	}
 
-	private static JsonPathEntry getKeyForTraversalOfListWithNonPrimitiveTypes(String key, Object value) {
+	private static SpockJsonPathEntry getKeyForTraversalOfListWithNonPrimitiveTypes(String key, Object value) {
 		int lastDot = key.lastIndexOf('.')
 		String keyWithoutLastElement = key.substring(0, lastDot)
 		String lastElement = key.substring(lastDot + 1).replaceAll(~/\[\*\]/, "")
-		return new JsonPathEntry(
+		return new SpockJsonPathEntry(
 				"""$keyWithoutLastElement[?(@.$lastElement ${compareWith(value)})]""".toString(),
 				lastElement,
 				value
