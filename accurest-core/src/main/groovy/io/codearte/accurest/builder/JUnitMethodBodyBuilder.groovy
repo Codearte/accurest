@@ -47,30 +47,6 @@ abstract class JUnitMethodBodyBuilder extends MethodBodyBuilder {
 		then(bb, '// and:')
 	}
 
-	protected void validateResponseBodyBlock(BlockBuilder bb) {
-		def responseBody = response.body.serverValue
-		ContentType contentType = getResponseContentType()
-		if (responseBody instanceof GString) {
-			responseBody = extractValue(responseBody, contentType, { DslProperty dslProperty -> dslProperty.serverValue })
-		}
-		if (contentType == ContentType.JSON) {
-			appendJsonPath(bb, responseAsString)
-			JsonPaths jsonPaths = JsonToJsonPathsConverter.transformToJsonPathWithTestsSideValues(responseBody)
-			jsonPaths.each {
-				it.buildJsonPathComparison('parsedJson').each {
-					bb.addLine(it)
-				}
-			}
-			processBodyElement(bb, "", responseBody)
-		} else if (contentType == ContentType.XML) {
-			bb.addLine("Object responseBody = new XmlSlurper().parseText($responseAsString);")
-			// TODO xml validation
-		} else {
-			bb.addLine("Object responseBody = ($responseAsString);")
-			processText(bb, "", responseBody as String)
-		}
-	}
-
 	@Override
 	protected void processText(BlockBuilder blockBuilder, String property, String value) {
 		if (value.startsWith('$')) {
@@ -80,6 +56,22 @@ abstract class JUnitMethodBodyBuilder extends MethodBodyBuilder {
 			blockBuilder.addLine("assertThat(responseBody${property}).isEqualTo(\"${value}\");")
 		}
 	}
+
+	@Override
+	protected String getParsedXmlResponseBodyString(String response) {
+		return "Object responseBody = new XmlSlurper().parseText($response);"
+	}
+
+	@Override
+	protected String getTextResponseBodyString(String response) {
+		return "Object responseBody = ($response);"
+	}
+
+//TODO
+//	@Override
+//	protected JsonPaths transformToJsonPathWithTestSideValues(Object responseBody) {
+//		return JsonToJsonPathsConverter.transformToJsonPathWithTestsSideValues(responseBody)
+//	}
 
 	protected Map<String, Object> getMultipartParameters() {
 		return (Map<String, Object>) request?.multipart?.serverValue

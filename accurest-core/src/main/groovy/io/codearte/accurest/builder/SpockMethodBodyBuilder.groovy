@@ -5,6 +5,8 @@ import groovy.transform.TypeChecked
 import io.codearte.accurest.dsl.GroovyDsl
 import io.codearte.accurest.dsl.internal.ExecutionProperty
 import io.codearte.accurest.dsl.internal.NamedProperty
+import io.codearte.accurest.util.jsonpath.JsonPaths
+import io.codearte.accurest.util.jsonpath.JsonToJsonPathsConverter
 
 import static io.codearte.accurest.util.ContentUtils.getMultipartFileParameterContent
 
@@ -48,6 +50,22 @@ abstract class SpockMethodBodyBuilder extends MethodBodyBuilder {
 			blockBuilder.addLine("responseBody$property == \"${value}\"")
 		}
 	}
+
+	@Override
+	protected String getParsedXmlResponseBodyString(String response) {
+		return "def responseBody = new XmlSlurper().parseText($response)"
+	}
+
+	@Override
+	protected String getTextResponseBodyString(String response) {
+		return "def responseBody = ($response)"
+	}
+
+//TODO
+//	@Override
+//	protected JsonPaths transformToJsonPathWithTestSideValues(Object responseBody) {
+//		return JsonToJsonPathsConverter.transformToJsonPathWithTestsSideValues(responseBody)
+//	}
 
 	protected Map<String, Object> getMultipartParameters() {
 		return (Map<String, Object>) request?.multipart?.serverValue

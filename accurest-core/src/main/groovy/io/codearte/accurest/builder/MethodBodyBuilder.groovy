@@ -13,9 +13,8 @@ import io.codearte.accurest.dsl.internal.Request
 import io.codearte.accurest.dsl.internal.Response
 import io.codearte.accurest.dsl.internal.Url
 import io.codearte.accurest.util.ContentType
-import io.codearte.accurest.util.jsonpath.JsonPaths
-import io.codearte.accurest.util.jsonpath.JsonToJsonPathsConverter
 import io.codearte.accurest.util.MapConverter
+import io.codearte.accurest.util.jsonpath.JsonPaths
 
 import static io.codearte.accurest.util.ContentUtils.extractValue
 import static io.codearte.accurest.util.ContentUtils.recognizeContentTypeFromContent
@@ -60,6 +59,12 @@ abstract class MethodBodyBuilder {
 	protected abstract void processBodyElement(BlockBuilder bb, String property, Object value)
 
 	protected abstract void processText(BlockBuilder bb, String property, String value)
+
+	protected abstract JsonPaths transformToJsonPathWithTestSideValues(Object responseBody);
+
+	protected abstract String getParsedXmlResponseBodyString(String response);
+
+	protected abstract String getTextResponseBodyString(String response);
 
 	protected void then(BlockBuilder bb, String label) {
 		validateResponseCodeBlock(bb)
@@ -120,8 +125,7 @@ abstract class MethodBodyBuilder {
 		return contentType
 	}
 
-	//TODO: not necessary in base class? only leave abstract
-	protected void validateResponseBodyBlock(BlockBuilder bb) {
+	private void validateResponseBodyBlock(BlockBuilder bb) {
 		def responseBody = response.body.serverValue
 		ContentType contentType = getResponseContentType()
 		if (responseBody instanceof GString) {
@@ -129,7 +133,7 @@ abstract class MethodBodyBuilder {
 		}
 		if (contentType == ContentType.JSON) {
 			appendJsonPath(bb, responseAsString)
-			JsonPaths jsonPaths = JsonToJsonPathsConverter.transformToJsonPathWithTestsSideValues(responseBody)
+			JsonPaths jsonPaths = transformToJsonPathWithTestSideValues(responseBody)
 			jsonPaths.each {
 				it.buildJsonPathComparison('parsedJson').each {
 					bb.addLine(it)
@@ -137,15 +141,15 @@ abstract class MethodBodyBuilder {
 			}
 			processBodyElement(bb, "", responseBody)
 		} else if (contentType == ContentType.XML) {
-			bb.addLine("def responseBody = new XmlSlurper().parseText($responseAsString)")
+			bb.addLine(getParsedXmlResponseBodyString(responseAsString))
 			// TODO xml validation
 		} else {
-			bb.addLine("def responseBody = ($responseAsString)")
+			bb.addLine(getTextResponseBodyString(responseAsString))
 			processText(bb, "", responseBody as String)
 		}
 	}
 
-	protected String buildUrl(Request request) {
+  protected String buildUrl(Request request) {
 		if (request.url)
 			return getTestSideValue(buildUrlFromUrlPath(request.url))
 		if (request.urlPath)
