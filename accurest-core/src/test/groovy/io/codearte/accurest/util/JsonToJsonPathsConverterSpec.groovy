@@ -119,6 +119,36 @@ class JsonToJsonPathsConverterSpec extends Specification {
 			assertThatJsonPathsInMapAreValid(json, pathAndValues)
 		}
 
+	def 'should convert a json with null and boolean values'() {
+		given:
+			String json = '''
+					 {
+							"property1" : null,
+							"property2" : true
+					}
+'''
+		when:
+			JsonPaths pathAndValues = JsonToJsonPathsConverter.transformToJsonPathWithTestsSideValues(new JsonSlurper().parseText(json))
+		then:
+			pathAndValues['''$[?(@.property1 == null)]'''] == null
+			pathAndValues['''$[?(@.property2 == true)]'''] == true
+	}
+
+	def "should convert numbers map"() {
+		given:
+			String json = ''' {
+                     "extensions": {"7":28.00,"14":41.00,"30":60.00}
+                     }
+ '''
+		when:
+			JsonPaths pathAndValues = JsonToJsonPathsConverter.transformToJsonPathWithTestsSideValues(new JsonSlurper().parseText(json))
+		then:
+			pathAndValues['''$.extensions[?(@.7 == 28)]'''] == 28.0
+			pathAndValues['''$.extensions[?(@.14 == 41)]'''] == 41.0
+			pathAndValues['''$.extensions[?(@.30 == 60)]'''] == 60.0
+		and:
+			assertThatJsonPathsInMapAreValid(json, pathAndValues)
+	}
 
 	def 'should convert a json with a list of errors'() {
 		given:
@@ -192,7 +222,8 @@ class JsonToJsonPathsConverterSpec extends Specification {
 	private void assertThatJsonPathsInMapAreValid(String json, JsonPaths pathAndValues) {
 		DocumentContext parsedJson = JsonPath.using(Configuration.builder().options(Option.ALWAYS_RETURN_LIST).build()).parse(json);
 		pathAndValues.each {
-			assert parsedJson.read(it.jsonPath, JSONArray).getAt(it.optionalSuffix ?: 0) == it.optionalSuffix ? [it.value] : it.value
+			def at = parsedJson.read(it.jsonPath, JSONArray).getAt(it.optionalSuffix ?: 0)
+			assert at == it.optionalSuffix ? [it.value] : it.value
 		}
 	}
 

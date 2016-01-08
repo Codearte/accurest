@@ -93,7 +93,7 @@ class JsonToJsonPathsConverter {
 
 	private static Map convertWithKey(Class parentType, String parentKey, Map map, Closure closureToExecute) {
 		return map.collectEntries {
-			String entrykey, value ->
+			Object entrykey, value ->
 				[entrykey, traverseRecursively(parentType, "${parentKey}.${entrykey}", value, closureToExecute)]
 		}
 	}
@@ -142,7 +142,19 @@ class JsonToJsonPathsConverter {
 	}
 
 	protected static String potentiallyWrappedWithQuotesValue(Object value) {
-		return value instanceof Number ? value : "'$value'"
+		return isNumber(value) || isBoolean(value) || isNull(value) ? value : "'$value'"
+	}
+
+	private static boolean isNull(value) {
+		return value == null
+	}
+
+	private static boolean isBoolean(value) {
+		return value instanceof Boolean
+	}
+
+	private static boolean isNumber(value) {
+		return value instanceof Number
 	}
 
 }
