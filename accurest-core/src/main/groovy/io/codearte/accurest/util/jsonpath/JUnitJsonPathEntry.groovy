@@ -15,7 +15,7 @@ class JUnitJsonPathEntry extends JsonPathEntry {
     @Override
     List<String> buildJsonPathComparison(String parsedJsonVariable) {
         if (optionalSuffix) {
-            return ["assertThat(!${parsedJsonVariable}.read(\"${jsonPath}\", JSONArray.class).empty()).isTrue();"]
+            return ["assertThat(${parsedJsonVariable}.read(\"${jsonPath}\", JSONArray.class)).isNotEmpty();"]
         } else if (traversesOverCollections()) {
             return ["${assertionStatement()}(${parsedJsonVariable}.read(\"${jsonPath}\", JSONArray.class).get(0), ${potentiallyWrappedWithQuotesValue()});"]
         }

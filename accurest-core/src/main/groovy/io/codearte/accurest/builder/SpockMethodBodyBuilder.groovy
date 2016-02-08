@@ -7,6 +7,7 @@ import io.codearte.accurest.dsl.internal.ExecutionProperty
 import io.codearte.accurest.dsl.internal.NamedProperty
 import io.codearte.accurest.util.jsonpath.JsonPaths
 import io.codearte.accurest.util.jsonpath.JsonToJsonPathsConverter
+import io.codearte.accurest.util.jsonpath.SpockJsonToJsonPathsConverter
 
 import static io.codearte.accurest.util.ContentUtils.getMultipartFileParameterContent
 
@@ -61,11 +62,10 @@ abstract class SpockMethodBodyBuilder extends MethodBodyBuilder {
 		return "def responseBody = ($response)"
 	}
 
-//TODO
-//	@Override
-//	protected JsonPaths transformToJsonPathWithTestSideValues(Object responseBody) {
-//		return JsonToJsonPathsConverter.transformToJsonPathWithTestsSideValues(responseBody)
-//	}
+	@Override
+	protected JsonPaths transformToJsonPathWithTestSideValues(Object responseBody) {
+		return new SpockJsonToJsonPathsConverter().transformToJsonPathWithTestsSideValues(responseBody)
+	}
 
 	protected Map<String, Object> getMultipartParameters() {
 		return (Map<String, Object>) request?.multipart?.serverValue

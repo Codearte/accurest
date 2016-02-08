@@ -39,6 +39,7 @@ class SingleTestGenerator {
 			clazz.addStaticImport('javax.ws.rs.client.Entity.*', isJUnit())
 		} else if (configProperties.testMode == TestMode.MOCKMVC) {
 			clazz.addStaticImport('com.jayway.restassured.module.mockmvc.RestAssuredMockMvc.*', isJUnit())
+			clazz.addImport('com.jayway.restassured.module.mockmvc.specification.MockMvcRequestSpecification', isJUnit())
 		} else {
 			clazz.addStaticImport('com.jayway.restassured.RestAssured.*', isJUnit())
 		}
@@ -49,7 +50,7 @@ class SingleTestGenerator {
 			clazz.addImport('import java.util.Map', true)
 			clazz.addStaticImport('org.assertj.core.api.Assertions.assertThat', true)
 		}
-		clazz.addImport('groovy.json.JsonSlurper', isJUnit())
+		clazz.addImport('groovy.json.JsonSlurper', isJUnit())           // TODO: is this still required?
 
 
 		if (configProperties.ruleClassForTests) {

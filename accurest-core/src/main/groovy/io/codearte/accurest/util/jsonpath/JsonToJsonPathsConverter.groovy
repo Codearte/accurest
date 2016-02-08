@@ -12,8 +12,8 @@ import io.codearte.accurest.dsl.internal.OptionalProperty
  * @author Marcin Grzejszczak
  */
 
-//TODO: start using appropriate JsonPathEntry
-class JsonToJsonPathsConverter {
+//TODO: add different method implementations for JUnit and for Spock
+abstract class JsonToJsonPathsConverter {
 
 	private static final Boolean SERVER_SIDE = false
 	private static final Boolean CLIENT_SIDE = true
@@ -21,17 +21,19 @@ class JsonToJsonPathsConverter {
 	public static final String ROOT_JSON_PATH_ELEMENT = '$'
 	public static final String ALL_ELEMENTS = "[*]"
 
-	public static JsonPaths transformToJsonPathWithTestsSideValues(def json) {
+	public JsonPaths transformToJsonPathWithTestsSideValues(def json) {
 		return transformToJsonPathWithValues(json, SERVER_SIDE)
 	}
 
-	public static JsonPaths transformToJsonPathWithStubsSideValues(def json) {
+	public JsonPaths transformToJsonPathWithStubsSideValues(def json) {
 		return transformToJsonPathWithValues(json, CLIENT_SIDE)
 	}
 
-	private static JsonPaths transformToJsonPathWithValues(def json, boolean clientSide) {
+	protected abstract JsonPathEntryFactory getJsonPathEntryFactory()
+
+	private  JsonPaths transformToJsonPathWithValues(def json, boolean clientSide) {
 		if(!json) {
-			return new JsonPaths()
+			return new JsonPaths(getJsonPathEntryFactory())
 		}
 		JsonPaths pathsAndValues = [] as Set
 		Object convertedJson = MapConverter.getClientOrServerSideValues(json, clientSide)
@@ -39,7 +41,7 @@ class JsonToJsonPathsConverter {
 			if (value instanceof ExecutionProperty) {
 				return
 			}
-			SpockJsonPathEntry entry = getValueToInsert(key, value)
+			JsonPathEntry entry = getValueToInsert(key, value)
 			pathsAndValues.add(entry)
 		}
 		return pathsAndValues
@@ -97,35 +99,35 @@ class JsonToJsonPathsConverter {
 		}
 	}
 
-	private static Map convertWithKey(Class parentType, String parentKey, Map map, Closure closureToExecute) {
+	protected static Map convertWithKey(Class parentType, String parentKey, Map map, Closure closureToExecute) {
 		return map.collectEntries {
 			Object entrykey, value ->
 				[entrykey, traverseRecursively(parentType, "${parentKey}.${entrykey}", value, closureToExecute)]
 		}
 	}
 
-	private static void traverseRecursivelyForKey(def json, String rootKey, Closure closure) {
+	protected static void traverseRecursivelyForKey(def json, String rootKey, Closure closure) {
 		traverseRecursively(Map, rootKey, json, closure)
 	}
 
-	private static SpockJsonPathEntry getValueToInsert(String key, Object value) {
+	protected JsonPathEntry getValueToInsert(String key, Object value) {
 		return convertToListElementFiltering(key, value)
 	}
 
-	protected static SpockJsonPathEntry convertToListElementFiltering(String key, Object value) {
+	protected JsonPathEntry convertToListElementFiltering(String key, Object value) {
 		if (key.endsWith(ALL_ELEMENTS)) {
 			int lastAllElements = key.lastIndexOf(ALL_ELEMENTS)
 			String keyWithoutAllElements = key.substring(0, lastAllElements)
-			return JsonPathEntry.simple("""$keyWithoutAllElements[?(@ ${compareWith(value)})]""".toString(), value)
+			return JsonPathEntry.simple("""$keyWithoutAllElements[?(@ ${compareWith(value)})]""".toString(), value)       // TODO
 		}
 		return getKeyForTraversalOfListWithNonPrimitiveTypes(key, value)
 	}
 
-	private static SpockJsonPathEntry getKeyForTraversalOfListWithNonPrimitiveTypes(String key, Object value) {
+	protected JsonPathEntry getKeyForTraversalOfListWithNonPrimitiveTypes(String key, Object value) {
 		int lastDot = key.lastIndexOf('.')
 		String keyWithoutLastElement = key.substring(0, lastDot)
 		String lastElement = key.substring(lastDot + 1).replaceAll(~/\[\*\]/, "")
-		return new SpockJsonPathEntry(
+		return getJsonPathEntryFactory().createJsonPathEntry(
 				"""$keyWithoutLastElement[?(@.$lastElement ${compareWith(value)})]""".toString(),
 				lastElement,
 				value
@@ -151,15 +153,15 @@ class JsonToJsonPathsConverter {
 		return isNumber(value) || isBoolean(value) || isNull(value) ? value : "'$value'"
 	}
 
-	private static boolean isNull(value) {
+	protected static boolean isNull(value) {
 		return value == null
 	}
 
-	private static boolean isBoolean(value) {
+	protected static boolean isBoolean(value) {
 		return value instanceof Boolean
 	}
 
-	private static boolean isNumber(value) {
+	protected static boolean isNumber(value) {
 		return value instanceof Number
 	}
 

@@ -7,6 +7,7 @@ import io.codearte.accurest.dsl.internal.DslProperty
 import io.codearte.accurest.dsl.internal.ExecutionProperty
 import io.codearte.accurest.dsl.internal.NamedProperty
 import io.codearte.accurest.util.ContentType
+import io.codearte.accurest.util.jsonpath.JUnitJsonToJsonPathConverter
 import io.codearte.accurest.util.jsonpath.JsonPaths
 import io.codearte.accurest.util.jsonpath.JsonToJsonPathsConverter
 
@@ -67,11 +68,10 @@ abstract class JUnitMethodBodyBuilder extends MethodBodyBuilder {
 		return "Object responseBody = ($response);"
 	}
 
-//TODO
-//	@Override
-//	protected JsonPaths transformToJsonPathWithTestSideValues(Object responseBody) {
-//		return JsonToJsonPathsConverter.transformToJsonPathWithTestsSideValues(responseBody)
-//	}
+	@Override
+	protected JsonPaths transformToJsonPathWithTestSideValues(Object responseBody) {
+		return new  JUnitJsonToJsonPathConverter().transformToJsonPathWithTestsSideValues(responseBody)
+	}
 
 	protected Map<String, Object> getMultipartParameters() {
 		return (Map<String, Object>) request?.multipart?.serverValue
