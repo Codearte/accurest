@@ -143,7 +143,7 @@ class MockMvcJunitMethodBuilderSpec extends Specification implements WireMockStu
         when:
             builder.appendTo(blockBuilder)
         then:
-            blockBuilder.toString().contains(".body('property1=VAL1')")
+            blockBuilder.toString().contains('.body("\\"property1=VAL1\\"")')
     }
 
     def "should generate assertions for array in response body"() {
