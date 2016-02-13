@@ -6,6 +6,8 @@ package io.codearte.accurest.util.jsonpath
  */
 interface JsonPathEntryFactory {
 
- JsonPathEntry createJsonPathEntry(String jsonPath, String optionalSuffix, Object value)
+	JsonPathEntry create(String jsonPath, String optionalSuffix, Object value)
+
+	JsonPathEntry simple(String jsonPath, Object value)
 
 }

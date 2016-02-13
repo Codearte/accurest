@@ -22,7 +22,7 @@ class JsonPaths extends HashSet<JsonPathEntry> {
 			return null
 		}
 		Object oldValue = entry.value
-		add(jsonPathEntryFactory.createJsonPathEntry(entry.jsonPath, entry.optionalSuffix, value))
+		add(jsonPathEntryFactory.create(entry.jsonPath, entry.optionalSuffix, value))
 		return oldValue
 	}
 }

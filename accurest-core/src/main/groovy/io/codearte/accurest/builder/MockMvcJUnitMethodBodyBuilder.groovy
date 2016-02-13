@@ -23,7 +23,7 @@ class MockMvcJUnitMethodBodyBuilder extends JUnitMethodBodyBuilder {
 			bb.addLine(".header('${header.name}', '${header.serverValue}')")
 		}
 		if (request.body) {
-			bb.addLine(".body('$bodyAsString')")
+			bb.addLine(".body(\"$bodyAsString\")")
 		}
 		bb.addAtTheEnd(';')
 		bb.unindent()

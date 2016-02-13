@@ -186,7 +186,7 @@ abstract class MethodBodyBuilder {
 		return trimRepeatedQuotes(json)
 	}
 
-	private String convertUnicodeEscapes(String json) {
+	protected String convertUnicodeEscapes(String json) {
 		return StringEscapeUtils.unescapeJavaScript(json)
 	}
 

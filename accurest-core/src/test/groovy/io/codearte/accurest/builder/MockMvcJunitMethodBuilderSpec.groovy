@@ -118,7 +118,7 @@ class MockMvcJunitMethodBuilderSpec extends Specification implements WireMockStu
         when:
             builder.appendTo(blockBuilder)
         then:
-            blockBuilder.toString().contains(".body('''{\"items\":[\"HOP\"]}''')")
+            blockBuilder.toString().contains('.body("{\\"items\\":[\\"HOP\\"]}")')
         and:
             stubMappingIsValidWireMockStub(new WireMockStubStrategy(contractDsl).toWireMockClientStub())
     }

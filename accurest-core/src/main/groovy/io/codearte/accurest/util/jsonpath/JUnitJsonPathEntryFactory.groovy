@@ -6,8 +6,13 @@ package io.codearte.accurest.util.jsonpath
  */
 class JUnitJsonPathEntryFactory implements JsonPathEntryFactory {
 
-    @Override
-    JsonPathEntry createJsonPathEntry(String jsonPath, String optionalSuffix, Object value) {
-        return new JUnitJsonPathEntry(jsonPath, optionalSuffix, value)
-    }
+	@Override
+	JsonPathEntry create(String jsonPath, String optionalSuffix, Object value) {
+		return new JUnitJsonPathEntry(jsonPath, optionalSuffix, value)
+	}
+
+
+	JUnitJsonPathEntry simple(String jsonPath, Object value) {
+		return new JUnitJsonPathEntry(jsonPath, "", value)
+	}
 }

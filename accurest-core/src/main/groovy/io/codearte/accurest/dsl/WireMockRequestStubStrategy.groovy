@@ -16,8 +16,8 @@ import io.codearte.accurest.dsl.internal.Request
 import io.codearte.accurest.util.ContentType
 import io.codearte.accurest.util.ContentUtils
 import io.codearte.accurest.util.jsonpath.JsonPaths
-import io.codearte.accurest.util.jsonpath.JsonToJsonPathsConverter
 import io.codearte.accurest.util.MapConverter
+import io.codearte.accurest.util.jsonpath.SpockJsonToJsonPathsConverter
 
 import java.util.regex.Pattern
 
@@ -62,8 +62,8 @@ class WireMockRequestStubStrategy extends BaseWireMockStubStrategy {
 			return
 		}
 		ContentType contentType = tryToGetContentType(request.body.clientValue, request.headers)
-		if (contentType == ContentType.JSON) {
-			JsonPaths values = JsonToJsonPathsConverter.transformToJsonPathWithStubsSideValues(getMatchingStrategyFromBody(request.body)?.clientValue)
+		if (contentType == ContentType.JSON) {                       // TODO: start using the right converter!
+			JsonPaths values = new SpockJsonToJsonPathsConverter().transformToJsonPathWithStubsSideValues(getMatchingStrategyFromBody(request.body)?.clientValue)
 			if (values.empty) {
 				requestPattern.bodyPatterns = [new ValuePattern(jsonCompareMode: org.skyscreamer.jsonassert.JSONCompareMode.LENIENT,
 						equalToJson: JsonOutput.toJson(getMatchingStrategy(request.body.clientValue).clientValue) ) ]
@@ -186,10 +186,10 @@ class WireMockRequestStubStrategy extends BaseWireMockStubStrategy {
 	}
 
 	private MatchingStrategy getMatchingStrategy(Object bodyValue) {
-		return tryToFindMachingStrategy(bodyValue)
+		return tryToFindMatchingStrategy(bodyValue)
 	}
 
-	private MatchingStrategy tryToFindMachingStrategy(Object bodyValue) {
+	private MatchingStrategy tryToFindMatchingStrategy(Object bodyValue) {
 		return new MatchingStrategy(MapConverter.transformToClientValues(bodyValue), getEqualsTypeFromContentTypeHeader())
 	}
 

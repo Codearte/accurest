@@ -1,12 +1,12 @@
 package io.codearte.accurest.util.jsonpath
 
+import groovy.json.JsonSlurper
+import io.codearte.accurest.dsl.internal.ExecutionProperty
+import io.codearte.accurest.dsl.internal.OptionalProperty
 import io.codearte.accurest.util.MapConverter
 import io.codearte.accurest.util.RegexpBuilders
 
 import java.util.regex.Pattern
-import groovy.json.JsonSlurper
-import io.codearte.accurest.dsl.internal.ExecutionProperty
-import io.codearte.accurest.dsl.internal.OptionalProperty
 
 /**
  * @author Marcin Grzejszczak
@@ -31,8 +31,8 @@ abstract class JsonToJsonPathsConverter {
 
 	protected abstract JsonPathEntryFactory getJsonPathEntryFactory()
 
-	private  JsonPaths transformToJsonPathWithValues(def json, boolean clientSide) {
-		if(!json) {
+	private JsonPaths transformToJsonPathWithValues(def json, boolean clientSide) {
+		if (!json) {
 			return new JsonPaths(getJsonPathEntryFactory())
 		}
 		JsonPaths pathsAndValues = [] as Set
@@ -118,7 +118,7 @@ abstract class JsonToJsonPathsConverter {
 		if (key.endsWith(ALL_ELEMENTS)) {
 			int lastAllElements = key.lastIndexOf(ALL_ELEMENTS)
 			String keyWithoutAllElements = key.substring(0, lastAllElements)
-			return JsonPathEntry.simple("""$keyWithoutAllElements[?(@ ${compareWith(value)})]""".toString(), value)       // TODO
+			return getJsonPathEntryFactory().simple("""$keyWithoutAllElements[?(@ ${compareWith(value)})]""".toString(), value)
 		}
 		return getKeyForTraversalOfListWithNonPrimitiveTypes(key, value)
 	}
@@ -127,7 +127,7 @@ abstract class JsonToJsonPathsConverter {
 		int lastDot = key.lastIndexOf('.')
 		String keyWithoutLastElement = key.substring(0, lastDot)
 		String lastElement = key.substring(lastDot + 1).replaceAll(~/\[\*\]/, "")
-		return getJsonPathEntryFactory().createJsonPathEntry(
+		return getJsonPathEntryFactory().create(
 				"""$keyWithoutLastElement[?(@.$lastElement ${compareWith(value)})]""".toString(),
 				lastElement,
 				value
@@ -145,7 +145,7 @@ abstract class JsonToJsonPathsConverter {
 		return """== ${potentiallyWrappedWithQuotesValue(value)}"""
 	}
 
-	protected static String patternComparison(String pattern){
+	protected static String patternComparison(String pattern) {
 		return """=~ /$pattern/"""
 	}
 

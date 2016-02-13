@@ -6,8 +6,12 @@ package io.codearte.accurest.util.jsonpath
  */
 class SpockJsonPathEntryFactory implements JsonPathEntryFactory {
 
-    @Override
-    JsonPathEntry createJsonPathEntry(String jsonPath, String optionalSuffix, Object value) {
-        return new SpockJsonPathEntry(jsonPath, optionalSuffix, value)
-    }
+	@Override
+	JsonPathEntry create(String jsonPath, String optionalSuffix, Object value) {
+		return new SpockJsonPathEntry(jsonPath, optionalSuffix, value)
+	}
+
+	SpockJsonPathEntry simple(String jsonPath, Object value) {
+		return new SpockJsonPathEntry(jsonPath, "", value)
+	}
 }

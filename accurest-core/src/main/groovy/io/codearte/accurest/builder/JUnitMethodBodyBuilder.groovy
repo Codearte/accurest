@@ -1,5 +1,6 @@
 package io.codearte.accurest.builder
 
+import groovy.json.StringEscapeUtils
 import groovy.transform.PackageScope
 import groovy.transform.TypeChecked
 import io.codearte.accurest.dsl.GroovyDsl
@@ -113,6 +114,12 @@ abstract class JUnitMethodBodyBuilder extends MethodBodyBuilder {
 			String prop = "${property}.get($listIndex)" ?: ''
 			processBodyElement(blockBuilder, prop, listElement)
 		}
+	}
+
+	@Override
+	protected String convertUnicodeEscapes(String json) {
+		String unescapedJson = StringEscapeUtils.unescapeJavaScript(json)
+		return StringEscapeUtils.escapeJava(unescapedJson)
 	}
 	////////
 //	protected void processBodyElement(List<GString> assertions, String property, Map.Entry entry) {

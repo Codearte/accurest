@@ -2,7 +2,7 @@ package io.codearte.accurest.util.jsonpath
 
 import java.util.regex.Pattern
 
-class SpockJsonPathEntry extends JsonPathEntry{
+class SpockJsonPathEntry extends JsonPathEntry {
 
 
 	SpockJsonPathEntry(String jsonPath, String optionalSuffix, Object value) {
@@ -27,8 +27,4 @@ class SpockJsonPathEntry extends JsonPathEntry{
 		return value instanceof Number ? value : "'''$value'''"
 	}
 
-	// TODO: move to factory
-	static SpockJsonPathEntry simple(String jsonPath, Object value) {
-		return new SpockJsonPathEntry(jsonPath, "", value)
-	}
 }
