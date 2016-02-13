@@ -96,11 +96,11 @@ abstract class JUnitMethodBodyBuilder extends MethodBodyBuilder {
 	}
 
 	protected void processBodyElement(BlockBuilder blockBuilder, String property, ExecutionProperty exec) {
-		blockBuilder.addLine("${exec.insertValue("parsedJson.read('\\\$$property')")};")
+		blockBuilder.addLine("${exec.insertValue("parsedJson.read(\"\\\$$property\")")};")
 	}
 
 	protected void processBodyElement(BlockBuilder blockBuilder, String property, Map.Entry entry) {
-		processBodyElement(blockBuilder, property + """.get("$entry.key")""", entry.value)
+		processBodyElement(blockBuilder, property + """.get(\\\"$entry.key\\\")""", entry.value)
 	}
 
 	protected void processBodyElement(BlockBuilder blockBuilder, String property, Map map) {

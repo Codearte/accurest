@@ -20,7 +20,7 @@ class MockMvcJUnitMethodBodyBuilder extends JUnitMethodBodyBuilder {
 		bb.addLine('MockMvcRequestSpecification request = given()')
 		bb.indent()
 		request.headers?.collect { Header header ->
-			bb.addLine(".header('${header.name}', '${header.serverValue}')")
+			bb.addLine(".header(\"${header.name}\", \"${header.serverValue}\")")
 		}
 		if (request.body) {
 			bb.addLine(".body(\"$bodyAsString\")")
