@@ -514,43 +514,32 @@ table.CodeRay td.code>pre{padding:0}
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel0">
-<li><a href="#1-introduction">1. Introduction</a></li>
+<li><a href="#1-introduction">1. Introduction</a>
+<ul class="sectlevel1">
 <li><a href="#why">Why?</a></li>
+</ul>
+</li>
 <li><a href="#2-using-in-your-project">2. Using in your project</a>
 <ul class="sectlevel1">
-<li><a href="#prerequisites">Prerequisites</a></li>
-</ul>
-</li>
 <li><a href="#2-1-gradle-project">2.1. Gradle Project</a>
-<ul class="sectlevel1">
-<li><a href="#prerequisites-2">Prerequisites</a></li>
-<li><a href="#add-gradle-plugin">Add gradle plugin</a></li>
-<li><a href="#add-maven-plugin">Add maven plugin</a></li>
-<li><a href="#add-stubs">Add stubs</a></li>
-<li><a href="#run-plugin">Run plugin</a></li>
-<li><a href="#configure-plugin">Configure plugin</a>
 <ul class="sectlevel2">
-<li><a href="#configuration-options">Configuration options</a></li>
-</ul>
-</li>
-<li><a href="#base-class-for-tests">Base class for tests</a></li>
+<li><a href="#prerequisites">Prerequisites</a></li>
+<li><a href="#run-plugin">Run plugin</a></li>
+<li><a href="#configure-plugin">Configure plugin</a></li>
 <li><a href="#invoking-generated-tests">Invoking generated tests</a></li>
 <li><a href="#accurest-on-consumer-side">Accurest on consumer side</a></li>
 </ul>
 </li>
 <li><a href="#2-2-using-in-your-maven-project">2.2. Using in your Maven project</a>
-<ul class="sectlevel1">
+<ul class="sectlevel2">
 <li><a href="#add-maven-plugin-2">Add maven plugin</a></li>
 <li><a href="#add-stubs-2">Add stubs</a></li>
 <li><a href="#run-plugin-2">Run plugin</a></li>
-<li><a href="#configure-plugin-2">Configure plugin</a>
-<ul class="sectlevel2">
-<li><a href="#configuration-options-2">Configuration options</a></li>
-</ul>
-</li>
-<li><a href="#base-class-for-tests-2">Base class for tests</a></li>
+<li><a href="#configure-plugin-2">Configure plugin</a></li>
 <li><a href="#invoking-generated-tests-2">Invoking generated tests</a></li>
 <li><a href="#accurest-on-consumer-side-2">Accurest on consumer side</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#3-contract-dsl">3. Contract DSL</a>
@@ -588,9 +577,13 @@ table.CodeRay td.code>pre{padding:0}
 </li>
 </ul>
 </li>
-<li><a href="#9-migration-guide">9. Migration Guide</a></li>
+<li><a href="#9-migration-guide">9. Migration Guide</a>
+<ul class="sectlevel1">
 <li><a href="#migration-to-0-4-7">Migration to 0.4.7</a></li>
 <li><a href="#migration-to-1-0-0-rc1">Migration to 1.0.0-RC1</a></li>
+<li><a href="#migration-to-1-0-7">Migration to 1.0.7</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -618,7 +611,9 @@ table.CodeRay td.code>pre{padding:0}
 <div class="paragraph">
 <p>AccuREST moves TDD to the level of software architecture.</p>
 </div>
-<h1 id="why" class="sect0">Why?</h1>
+<div class="sect1">
+<h2 id="why">Why?</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>The main purposes of AccuREST are:</p>
 </div>
@@ -638,25 +633,19 @@ table.CodeRay td.code>pre{padding:0}
 </li>
 </ul>
 </div>
+</div>
+</div>
 <h1 id="2-using-in-your-project" class="sect0">2. Using in your project</h1>
 <div class="sect1">
-<h2 id="prerequisites">Prerequisites</h2>
+<h2 id="2-1-gradle-project">2.1. Gradle Project</h2>
 <div class="sectionbody">
-
-</div>
-</div>
-<h1 id="2-1-gradle-project" class="sect0">2.1. Gradle Project</h1>
-<div class="sect1">
-<h2 id="prerequisites-2">Prerequisites</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="prerequisites">Prerequisites</h3>
 <div class="paragraph">
 <p>In order to use Accurest with Wiremock you have to use gradle or maven plugin.</p>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="add-gradle-plugin">Add gradle plugin</h2>
-<div class="sectionbody">
+<div class="sect3">
+<h4 id="add-gradle-plugin">Add gradle plugin</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy">buildscript {
@@ -679,10 +668,8 @@ dependencies {
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="add-maven-plugin">Add maven plugin</h2>
-<div class="sectionbody">
+<div class="sect3">
+<h4 id="add-maven-plugin">Add maven plugin</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
@@ -704,10 +691,8 @@ dependencies {
 <p>Read more: <a href="https://github.com/Codearte/accurest-maven-plugin">accurest-maven-plugin</a></p>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="add-stubs">Add stubs</h2>
-<div class="sectionbody">
+<div class="sect3">
+<h4 id="add-stubs">Add stubs</h4>
 <div class="paragraph">
 <p>By default Accurest is looking for stubs in src/test/resources/stubs directory.
 Directory containing stub definitions is treated as a class name, and each stub definition is treated as a single test.
@@ -725,17 +710,14 @@ src/test/resources/stubs/myservice/shouldReturnUser.groovy</p>
 </div>
 </div>
 </div>
-<div class="sect1">
-<h2 id="run-plugin">Run plugin</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="run-plugin">Run plugin</h3>
 <div class="paragraph">
 <p>Plugin registers itself to be invoked before <code>compileTestGroovy</code> task. You have nothing to do as long as you want it to be part of your build process. If you just want to generate tests please invoke <code>generateAccurest</code> task.</p>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="configure-plugin">Configure plugin</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="configure-plugin">Configure plugin</h3>
 <div class="paragraph">
 <p>To change default configuration just add <code>accurest</code> snippet to your Gradle config</p>
 </div>
@@ -748,8 +730,8 @@ src/test/resources/stubs/myservice/shouldReturnUser.groovy</p>
 }</code></pre>
 </div>
 </div>
-<div class="sect2">
-<h3 id="configuration-options">Configuration options</h3>
+<div class="sect3">
+<h4 id="configuration-options">Configuration options</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -788,11 +770,8 @@ src/test/resources/stubs/myservice/shouldReturnUser.groovy</p>
 </ul>
 </div>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="base-class-for-tests">Base class for tests</h2>
-<div class="sectionbody">
+<div class="sect3">
+<h4 id="base-class-for-tests">Base class for tests</h4>
 <div class="literalblock">
 <div class="content">
 <pre>When using Accurest in default MockMvc you need to create a base specification for all generated acceptance tests. In this class you need to point to endpoint which should be verified.</pre>
@@ -818,18 +797,15 @@ src/test/resources/stubs/myservice/shouldReturnUser.groovy</p>
 </div>
 </div>
 </div>
-<div class="sect1">
-<h2 id="invoking-generated-tests">Invoking generated tests</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="invoking-generated-tests">Invoking generated tests</h3>
 <div class="paragraph">
 <p>To ensure that provider side is complaint with defined contracts, you need to invoke:
 <code>./gradlew generateAccurest test</code></p>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="accurest-on-consumer-side">Accurest on consumer side</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="accurest-on-consumer-side">Accurest on consumer side</h3>
 <div class="paragraph">
 <p>In consumer service you need to configure Accurest plugin in exactly the same way as in case of provider. You need to copy contracts stored in src/test/resources/stubs and generate Wiremock json stubs using: <code>./gradlew generateWireMockClientStubs</code> command. Note that <code>stubsOutputDir</code> option has to be set for stub generation to work.</p>
 </div>
@@ -866,10 +842,12 @@ src/test/resources/stubs/myservice/shouldReturnUser.groovy</p>
 </div>
 </div>
 </div>
-<h1 id="2-2-using-in-your-maven-project" class="sect0">2.2. Using in your Maven project</h1>
+</div>
 <div class="sect1">
-<h2 id="add-maven-plugin-2">Add maven plugin</h2>
+<h2 id="2-2-using-in-your-maven-project">2.2. Using in your Maven project</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="add-maven-plugin-2">Add maven plugin</h3>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
@@ -891,10 +869,8 @@ src/test/resources/stubs/myservice/shouldReturnUser.groovy</p>
 <p>Read more: [accurest-maven-plugin](<a href="https://github.com/Codearte/accurest-maven-plugin" class="bare">https://github.com/Codearte/accurest-maven-plugin</a>)</p>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="add-stubs-2">Add stubs</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="add-stubs-2">Add stubs</h3>
 <div class="paragraph">
 <p>By default Accurest is looking for stubs in <code>src/test/accurest</code> directory.
 Directory containing stub definitions is treated as a class name, and each stub definition is treated as a single test.
@@ -913,18 +889,14 @@ src/test/accurest/myservice/shouldReturnUser.groovy</code></pre>
  - <code>shouldReturnUser()</code></p>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="run-plugin-2">Run plugin</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="run-plugin-2">Run plugin</h3>
 <div class="paragraph">
 <p>Plugin goal <code>generateTests</code> is assigned to be invoked in phase <code>generate-test-sources</code>. You have nothing to do as long as you want it to be part of your build process. If you just want to generate tests please invoke <code>generateTests</code> goal.</p>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="configure-plugin-2">Configure plugin</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="configure-plugin-2">Configure plugin</h3>
 <div class="paragraph">
 <p>To change default configuration just add <code>configuration</code> section to plugin definition or <code>execution</code> definition.</p>
 </div>
@@ -949,8 +921,8 @@ src/test/accurest/myservice/shouldReturnUser.groovy</code></pre>
 <span class="tag">&lt;/plugin&gt;</span></code></pre>
 </div>
 </div>
-<div class="sect2">
-<h3 id="configuration-options-2">Configuration options</h3>
+<div class="sect3">
+<h4 id="configuration-options-2">Configuration options</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -980,11 +952,8 @@ src/test/accurest/myservice/shouldReturnUser.groovy</code></pre>
 </ul>
 </div>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="base-class-for-tests-2">Base class for tests</h2>
-<div class="sectionbody">
+<div class="sect3">
+<h4 id="base-class-for-tests-2">Base class for tests</h4>
 <div class="literalblock">
 <div class="content">
 <pre>When using Accurest in default MockMvc you need to create a base specification for all generated acceptance tests. In this class you need to point to endpoint which should be verified.</pre>
@@ -1010,9 +979,8 @@ src/test/accurest/myservice/shouldReturnUser.groovy</code></pre>
 </div>
 </div>
 </div>
-<div class="sect1">
-<h2 id="invoking-generated-tests-2">Invoking generated tests</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="invoking-generated-tests-2">Invoking generated tests</h3>
 <div class="paragraph">
 <p>Accurest Maven Plugins generates verification code into directory <code>/generated-test-sources/accurest</code> and attach this directory to <code>testCompile</code> goal.</p>
 </div>
@@ -1055,10 +1023,8 @@ src/test/accurest/myservice/shouldReturnUser.groovy</code></pre>
 <p>To ensure that provider side is complaint with defined contracts, you need to invoke <code>mvn generateTest test</code></p>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="accurest-on-consumer-side-2">Accurest on consumer side</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="accurest-on-consumer-side-2">Accurest on consumer side</h3>
 <div class="paragraph">
 <p>In consumer service you need to configure Accurest plugin in exactly the same way as in case of provider. You need to copy contracts stored in <code>src/test/accurest</code> and generate Wiremock json stubs using: <code>mvn generateStubs</code> command. By default generated WireMock mapping is stored in directory <code>target/mappings</code>. Your project should create from this generated mappings additional artifact with classifier <code>stubs</code> for easy deploy to maven repository.</p>
 </div>
@@ -1112,6 +1078,7 @@ src/test/accurest/myservice/shouldReturnUser.groovy</code></pre>
 </div>
 <div class="paragraph">
 <p>Underneath LoanApplication makes a call to FraudDetection service. This request is handled by Wiremock server configured using stubs generated by Accurest.</p>
+</div>
 </div>
 </div>
 </div>
@@ -2088,8 +2055,9 @@ publishing {
 </div>
 </div>
 <h1 id="9-migration-guide" class="sect0">9. Migration Guide</h1>
-
-<h1 id="migration-to-0-4-7" class="sect0">Migration to 0.4.7</h1>
+<div class="sect1">
+<h2 id="migration-to-0-4-7">Migration to 0.4.7</h2>
+<div class="sectionbody">
 <div class="ulist">
 <ul>
 <li>
@@ -2097,7 +2065,11 @@ publishing {
 </li>
 </ul>
 </div>
-<h1 id="migration-to-1-0-0-rc1" class="sect0">Migration to 1.0.0-RC1</h1>
+</div>
+</div>
+<div class="sect1">
+<h2 id="migration-to-1-0-0-rc1">Migration to 1.0.0-RC1</h2>
+<div class="sectionbody">
 <div class="ulist">
 <ul>
 <li>
@@ -2124,9 +2096,29 @@ publishing {
 </ul>
 </div>
 </div>
+</div>
+<div class="sect1">
+<h2 id="migration-to-1-0-7">Migration to 1.0.7</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>from 1.0.7 we&#8217;re setting JUnit as a default testing utility. You have to pass the following option to keep Spock
+as your first choice:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">targetFramework = <span class="string"><span class="delimiter">'</span><span class="content">Spock</span><span class="delimiter">'</span></span></code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-04-20 22:26:55 CEST
+Last updated 2016-04-20 23:28:47 CEST
 </div>
 </div>
 </body>
