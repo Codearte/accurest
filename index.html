@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
-<title>1. Introduction</title>
+<title>Introduction</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -513,72 +513,47 @@ table.CodeRay td.code>pre{padding:0}
 <div id="header">
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
-<ul class="sectlevel0">
-<li><a href="#1-introduction">1. Introduction</a>
 <ul class="sectlevel1">
+<li><a href="#introduction">Introduction</a>
+<ul class="sectlevel2">
 <li><a href="#why">Why?</a></li>
 </ul>
 </li>
-<li><a href="#2-using-in-your-project">2. Using in your project</a>
-<ul class="sectlevel1">
-<li><a href="#2-1-gradle-project">2.1. Gradle Project</a>
+<li><a href="#accurest-rest">Accurest REST</a>
 <ul class="sectlevel2">
-<li><a href="#prerequisites">Prerequisites</a></li>
-<li><a href="#run-plugin">Run plugin</a></li>
-<li><a href="#configure-plugin">Configure plugin</a></li>
-<li><a href="#invoking-generated-tests">Invoking generated tests</a></li>
-<li><a href="#accurest-on-consumer-side">Accurest on consumer side</a></li>
+<li><a href="#gradle-project">Gradle Project</a></li>
+<li><a href="#using-in-your-maven-project">Using in your Maven project</a></li>
 </ul>
 </li>
-<li><a href="#2-2-using-in-your-maven-project">2.2. Using in your Maven project</a>
+<li><a href="#accurest-messaging">Accurest Messaging</a>
 <ul class="sectlevel2">
-<li><a href="#add-maven-plugin-2">Add maven plugin</a></li>
-<li><a href="#add-stubs-2">Add stubs</a></li>
-<li><a href="#run-plugin-2">Run plugin</a></li>
-<li><a href="#configure-plugin-2">Configure plugin</a></li>
-<li><a href="#invoking-generated-tests-2">Invoking generated tests</a></li>
-<li><a href="#accurest-on-consumer-side-2">Accurest on consumer side</a></li>
+<li><a href="#integrations">Integrations</a></li>
+<li><a href="#manual-integration">Manual Integration</a></li>
 </ul>
 </li>
-</ul>
-</li>
-<li><a href="#3-contract-dsl">3. Contract DSL</a>
-<ul class="sectlevel1">
+<li><a href="#contract-dsl">Contract DSL</a>
+<ul class="sectlevel2">
 <li><a href="#top-level-elements">Top-Level Elements</a></li>
 <li><a href="#request">Request</a></li>
 <li><a href="#response">Response</a></li>
 <li><a href="#regular-expressions">Regular expressions</a></li>
 <li><a href="#passing-optional-parameters">Passing optional parameters</a></li>
-<li><a href="#executing-custom-methods-on-server-side">Executing custom methods on server side</a>
-<ul class="sectlevel2">
-<li><a href="#groovy-dsl">Groovy DSL</a></li>
-<li><a href="#base-mock-spec">Base Mock Spec</a></li>
-</ul>
-</li>
+<li><a href="#executing-custom-methods-on-server-side">Executing custom methods on server side</a></li>
 <li><a href="#jax-rs-support">JAX-RS support</a></li>
 </ul>
 </li>
-<li><a href="#4-client-side">4. Client Side</a></li>
-<li><a href="#5-server-side">5. Server Side</a></li>
-<li><a href="#6-examples">6. Examples</a></li>
-<li><a href="#7-scenarios">7. Scenarios</a></li>
-<li><a href="#8-stub-runner">8. Stub Runner</a>
-<ul class="sectlevel1">
-<li><a href="#publishing-stubs-as-jars">Publishing stubs as JARs</a>
+<li><a href="#client-side">Client Side</a></li>
+<li><a href="#server-side">Server Side</a></li>
+<li><a href="#examples">Examples</a></li>
+<li><a href="#scenarios">Scenarios</a></li>
+<li><a href="#stub-runner">Stub Runner</a>
 <ul class="sectlevel2">
-<li><a href="#gradle">Gradle</a></li>
-<li><a href="#maven">Maven</a></li>
+<li><a href="#publishing-stubs-as-jars">Publishing stubs as JARs</a></li>
+<li><a href="#using-stub-runner-to-automate-running-stubs">Using Stub Runner to automate running stubs</a></li>
 </ul>
 </li>
-<li><a href="#using-stub-runner-to-automate-running-stubs">Using Stub Runner to automate running stubs</a>
+<li><a href="#migration-guide">Migration Guide</a>
 <ul class="sectlevel2">
-<li><a href="#modules">Modules</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#9-migration-guide">9. Migration Guide</a>
-<ul class="sectlevel1">
 <li><a href="#migration-to-0-4-7">Migration to 0.4.7</a></li>
 <li><a href="#migration-to-1-0-0-rc1">Migration to 1.0.0-RC1</a></li>
 <li><a href="#migration-to-1-0-7">Migration to 1.0.7</a></li>
@@ -594,7 +569,9 @@ table.CodeRay td.code>pre{padding:0}
 <div class="paragraph">
 <p>Please follow to the Introduction page to start your journey with Consumer Driven Contracts in JVM</p>
 </div>
-<h1 id="1-introduction" class="sect0">1. Introduction</h1>
+<div class="sect1">
+<h2 id="introduction">Introduction</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>Just to make long story short - AccuREST is a tool that enables Consumer Driven Contract (CDC) development of JVM-based applications. It is shipped with <em>REST Contract Definition Language</em> (DSL). Contract definitions are used by AccuREST to produce following resources:</p>
 </div>
@@ -611,9 +588,8 @@ table.CodeRay td.code>pre{padding:0}
 <div class="paragraph">
 <p>AccuREST moves TDD to the level of software architecture.</p>
 </div>
-<div class="sect1">
-<h2 id="why">Why?</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="why">Why?</h3>
 <div class="paragraph">
 <p>The main purposes of AccuREST are:</p>
 </div>
@@ -635,17 +611,19 @@ table.CodeRay td.code>pre{padding:0}
 </div>
 </div>
 </div>
-<h1 id="2-using-in-your-project" class="sect0">2. Using in your project</h1>
+</div>
 <div class="sect1">
-<h2 id="2-1-gradle-project">2.1. Gradle Project</h2>
+<h2 id="accurest-rest">Accurest REST</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="prerequisites">Prerequisites</h3>
+<h3 id="gradle-project">Gradle Project</h3>
+<div class="sect3">
+<h4 id="prerequisites">Prerequisites</h4>
 <div class="paragraph">
 <p>In order to use Accurest with Wiremock you have to use gradle or maven plugin.</p>
 </div>
-<div class="sect3">
-<h4 id="add-gradle-plugin">Add gradle plugin</h4>
+<div class="sect4">
+<h5 id="add-gradle-plugin">Add gradle plugin</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy">buildscript {
@@ -668,8 +646,8 @@ dependencies {
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="add-maven-plugin">Add maven plugin</h4>
+<div class="sect4">
+<h5 id="add-maven-plugin">Add maven plugin</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
@@ -691,8 +669,8 @@ dependencies {
 <p>Read more: <a href="https://github.com/Codearte/accurest-maven-plugin">accurest-maven-plugin</a></p>
 </div>
 </div>
-<div class="sect3">
-<h4 id="add-stubs">Add stubs</h4>
+<div class="sect4">
+<h5 id="add-stubs">Add stubs</h5>
 <div class="paragraph">
 <p>By default Accurest is looking for stubs in src/test/resources/stubs directory.
 Directory containing stub definitions is treated as a class name, and each stub definition is treated as a single test.
@@ -710,28 +688,28 @@ src/test/resources/stubs/myservice/shouldReturnUser.groovy</p>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="run-plugin">Run plugin</h3>
+<div class="sect3">
+<h4 id="run-plugin">Run plugin</h4>
 <div class="paragraph">
-<p>Plugin registers itself to be invoked before <code>compileTestGroovy</code> task. You have nothing to do as long as you want it to be part of your build process. If you just want to generate tests please invoke <code>generateAccurest</code> task.</p>
+<p>Plugin registers itself to be invoked before <code>check</code> task. You have nothing to do as long as you want it to be part of your build process. If you just want to generate tests please invoke <code>generateAccurest</code> task.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="configure-plugin">Configure plugin</h3>
+<div class="sect3">
+<h4 id="configure-plugin">Configure plugin</h4>
 <div class="paragraph">
 <p>To change default configuration just add <code>accurest</code> snippet to your Gradle config</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy">accurest {
-        testMode = <span class="string"><span class="delimiter">'</span><span class="content">MockMvc</span><span class="delimiter">'</span></span>
-        baseClassForTests = <span class="string"><span class="delimiter">'</span><span class="content">org.mycompany.tests</span><span class="delimiter">'</span></span>
-        generatedTestSourcesDir = project.file(<span class="string"><span class="delimiter">'</span><span class="content">src/accurest</span><span class="delimiter">'</span></span>)
+        testMode == <span class="string"><span class="delimiter">'</span><span class="content">MockMvc</span><span class="delimiter">'</span></span>
+        baseClassForTests == <span class="string"><span class="delimiter">'</span><span class="content">org.mycompany.tests</span><span class="delimiter">'</span></span>
+        generatedTestSourcesDir == project.file(<span class="string"><span class="delimiter">'</span><span class="content">src/accurest</span><span class="delimiter">'</span></span>)
 }</code></pre>
 </div>
 </div>
-<div class="sect3">
-<h4 id="configuration-options">Configuration options</h4>
+<div class="sect4">
+<h5 id="configuration-options">Configuration options</h5>
 <div class="ulist">
 <ul>
 <li>
@@ -770,8 +748,8 @@ src/test/resources/stubs/myservice/shouldReturnUser.groovy</p>
 </ul>
 </div>
 </div>
-<div class="sect3">
-<h4 id="base-class-for-tests">Base class for tests</h4>
+<div class="sect4">
+<h5 id="base-class-for-tests">Base class for tests</h5>
 <div class="literalblock">
 <div class="content">
 <pre>When using Accurest in default MockMvc you need to create a base specification for all generated acceptance tests. In this class you need to point to endpoint which should be verified.</pre>
@@ -797,15 +775,15 @@ src/test/resources/stubs/myservice/shouldReturnUser.groovy</p>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="invoking-generated-tests">Invoking generated tests</h3>
+<div class="sect3">
+<h4 id="invoking-generated-tests">Invoking generated tests</h4>
 <div class="paragraph">
 <p>To ensure that provider side is complaint with defined contracts, you need to invoke:
 <code>./gradlew generateAccurest test</code></p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="accurest-on-consumer-side">Accurest on consumer side</h3>
+<div class="sect3">
+<h4 id="accurest-on-consumer-side">Accurest on consumer side</h4>
 <div class="paragraph">
 <p>In consumer service you need to configure Accurest plugin in exactly the same way as in case of provider. You need to copy contracts stored in src/test/resources/stubs and generate Wiremock json stubs using: <code>./gradlew generateWireMockClientStubs</code> command. Note that <code>stubsOutputDir</code> option has to be set for stub generation to work.</p>
 </div>
@@ -814,12 +792,12 @@ src/test/resources/stubs/myservice/shouldReturnUser.groovy</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="annotation">@ContextConfiguration</span>(loader = SpringApplicationContextLoader, classes = Application)
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="annotation">@ContextConfiguration</span>(loader == SpringApplicationContextLoader, classes == Application)
 <span class="type">class</span> <span class="class">LoanApplicationServiceSpec</span> <span class="directive">extends</span> Specification {
 
  <span class="annotation">@ClassRule</span>
  <span class="annotation">@Shared</span>
- WireMockClassRule wireMockRule = <span class="keyword">new</span> WireMockClassRule()
+ WireMockClassRule wireMockRule == <span class="keyword">new</span> WireMockClassRule()
 
  <span class="annotation">@Autowired</span>
  LoanApplicationService sut
@@ -829,10 +807,10 @@ src/test/resources/stubs/myservice/shouldReturnUser.groovy</p>
          LoanApplication application =
                         <span class="keyword">new</span> LoanApplication(<span class="key">client</span>: <span class="keyword">new</span> Client(<span class="key">pesel</span>: <span class="string"><span class="delimiter">'</span><span class="content">12345678901</span><span class="delimiter">'</span></span>), <span class="key">amount</span>: <span class="float">123.123</span>)
    <span class="key">when</span>:
-        LoanApplicationResult loanApplication = sut.loanApplication(application)
+        LoanApplicationResult loanApplication == sut.loanApplication(application)
    <span class="key">then</span>:
-        loanApplication.loanApplicationStatus == LoanApplicationStatus.LOAN_APPLIED
-        loanApplication.rejectionReason == <span class="predefined-constant">null</span>
+        loanApplication.loanApplicationStatus === LoanApplicationStatus.LOAN_APPLIED
+        loanApplication.rejectionReason === <span class="predefined-constant">null</span>
  }
 }</code></pre>
 </div>
@@ -842,12 +820,10 @@ src/test/resources/stubs/myservice/shouldReturnUser.groovy</p>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="2-2-using-in-your-maven-project">2.2. Using in your Maven project</h2>
-<div class="sectionbody">
 <div class="sect2">
-<h3 id="add-maven-plugin-2">Add maven plugin</h3>
+<h3 id="using-in-your-maven-project">Using in your Maven project</h3>
+<div class="sect3">
+<h4 id="add-maven-plugin-2">Add maven plugin</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
@@ -869,8 +845,8 @@ src/test/resources/stubs/myservice/shouldReturnUser.groovy</p>
 <p>Read more: [accurest-maven-plugin](<a href="https://github.com/Codearte/accurest-maven-plugin" class="bare">https://github.com/Codearte/accurest-maven-plugin</a>)</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="add-stubs-2">Add stubs</h3>
+<div class="sect3">
+<h4 id="add-stubs-2">Add stubs</h4>
 <div class="paragraph">
 <p>By default Accurest is looking for stubs in <code>src/test/accurest</code> directory.
 Directory containing stub definitions is treated as a class name, and each stub definition is treated as a single test.
@@ -889,14 +865,14 @@ src/test/accurest/myservice/shouldReturnUser.groovy</code></pre>
  - <code>shouldReturnUser()</code></p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="run-plugin-2">Run plugin</h3>
+<div class="sect3">
+<h4 id="run-plugin-2">Run plugin</h4>
 <div class="paragraph">
 <p>Plugin goal <code>generateTests</code> is assigned to be invoked in phase <code>generate-test-sources</code>. You have nothing to do as long as you want it to be part of your build process. If you just want to generate tests please invoke <code>generateTests</code> goal.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="configure-plugin-2">Configure plugin</h3>
+<div class="sect3">
+<h4 id="configure-plugin-2">Configure plugin</h4>
 <div class="paragraph">
 <p>To change default configuration just add <code>configuration</code> section to plugin definition or <code>execution</code> definition.</p>
 </div>
@@ -921,8 +897,8 @@ src/test/accurest/myservice/shouldReturnUser.groovy</code></pre>
 <span class="tag">&lt;/plugin&gt;</span></code></pre>
 </div>
 </div>
-<div class="sect3">
-<h4 id="configuration-options-2">Configuration options</h4>
+<div class="sect4">
+<h5 id="configuration-options-2">Configuration options</h5>
 <div class="ulist">
 <ul>
 <li>
@@ -952,8 +928,8 @@ src/test/accurest/myservice/shouldReturnUser.groovy</code></pre>
 </ul>
 </div>
 </div>
-<div class="sect3">
-<h4 id="base-class-for-tests-2">Base class for tests</h4>
+<div class="sect4">
+<h5 id="base-class-for-tests-2">Base class for tests</h5>
 <div class="literalblock">
 <div class="content">
 <pre>When using Accurest in default MockMvc you need to create a base specification for all generated acceptance tests. In this class you need to point to endpoint which should be verified.</pre>
@@ -979,8 +955,8 @@ src/test/accurest/myservice/shouldReturnUser.groovy</code></pre>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="invoking-generated-tests-2">Invoking generated tests</h3>
+<div class="sect3">
+<h4 id="invoking-generated-tests-2">Invoking generated tests</h4>
 <div class="paragraph">
 <p>Accurest Maven Plugins generates verification code into directory <code>/generated-test-sources/accurest</code> and attach this directory to <code>testCompile</code> goal.</p>
 </div>
@@ -1023,8 +999,8 @@ src/test/accurest/myservice/shouldReturnUser.groovy</code></pre>
 <p>To ensure that provider side is complaint with defined contracts, you need to invoke <code>mvn generateTest test</code></p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="accurest-on-consumer-side-2">Accurest on consumer side</h3>
+<div class="sect3">
+<h4 id="accurest-on-consumer-side-2">Accurest on consumer side</h4>
 <div class="paragraph">
 <p>In consumer service you need to configure Accurest plugin in exactly the same way as in case of provider. You need to copy contracts stored in <code>src/test/accurest</code> and generate Wiremock json stubs using: <code>mvn generateStubs</code> command. By default generated WireMock mapping is stored in directory <code>target/mappings</code>. Your project should create from this generated mappings additional artifact with classifier <code>stubs</code> for easy deploy to maven repository.</p>
 </div>
@@ -1053,12 +1029,12 @@ src/test/accurest/myservice/shouldReturnUser.groovy</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="annotation">@ContextConfiguration</span>(loader = SpringApplicationContextLoader, classes = Application)
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="annotation">@ContextConfiguration</span>(loader == SpringApplicationContextLoader, classes == Application)
 <span class="type">class</span> <span class="class">LoanApplicationServiceSpec</span> <span class="directive">extends</span> Specification {
 
  <span class="annotation">@ClassRule</span>
  <span class="annotation">@Shared</span>
- WireMockClassRule wireMockRule = <span class="keyword">new</span> WireMockClassRule()
+ WireMockClassRule wireMockRule == <span class="keyword">new</span> WireMockClassRule()
 
  <span class="annotation">@Autowired</span>
  LoanApplicationService sut
@@ -1068,10 +1044,10 @@ src/test/accurest/myservice/shouldReturnUser.groovy</code></pre>
          LoanApplication application =
                         <span class="keyword">new</span> LoanApplication(<span class="key">client</span>: <span class="keyword">new</span> Client(<span class="key">pesel</span>: <span class="string"><span class="delimiter">'</span><span class="content">12345678901</span><span class="delimiter">'</span></span>), <span class="key">amount</span>: <span class="float">123.123</span>)
    <span class="key">when</span>:
-        LoanApplicationResult loanApplication = sut.loanApplication(application)
+        LoanApplicationResult loanApplication == sut.loanApplication(application)
    <span class="key">then</span>:
-        loanApplication.loanApplicationStatus == LoanApplicationStatus.LOAN_APPLIED
-        loanApplication.rejectionReason == <span class="predefined-constant">null</span>
+        loanApplication.loanApplicationStatus === LoanApplicationStatus.LOAN_APPLIED
+        loanApplication.rejectionReason === <span class="predefined-constant">null</span>
  }
 }</code></pre>
 </div>
@@ -1082,7 +1058,97 @@ src/test/accurest/myservice/shouldReturnUser.groovy</code></pre>
 </div>
 </div>
 </div>
-<h1 id="3-contract-dsl" class="sect0">3. Contract DSL</h1>
+</div>
+<div class="sect1">
+<h2 id="accurest-messaging">Accurest Messaging</h2>
+<div class="sectionbody">
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Feature available since 1.0.7
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Accurest allows you to verify your application that uses messaging as means of communication.
+All of our integrations are working with Spring but you can also set one yourself.</p>
+</div>
+<div class="sect2">
+<h3 id="integrations">Integrations</h3>
+<div class="paragraph">
+<p>You can use one of the three integration configurations:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Apache Camel</p>
+</li>
+<li>
+<p>Spring Integration</p>
+</li>
+<li>
+<p>Spring Cloud Stream</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If you&#8217;re using Spring Boot, the aforementioned test configurations will be appended automatically.</p>
+</div>
+<div class="paragraph">
+<p>You have to provide as a dependency one of the Accurest Messaging modules. Example for Gradle:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="comment">// for Apache Camel</span>
+testCompile <span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest:accurest-messaging-camel:</span><span class="inline"><span class="inline-delimiter">${</span>accurestVersion<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span>
+<span class="comment">// for Spring Integration</span>
+testCompile <span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest:accurest-messaging-integration:</span><span class="inline"><span class="inline-delimiter">${</span>accurestVersion<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span>
+<span class="comment">// for Spring Cloud Stream</span>
+testCompile <span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest:accurest-messaging-stream:</span><span class="inline"><span class="inline-delimiter">${</span>accurestVersion<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="manual-integration">Manual Integration</h3>
+<div class="paragraph">
+<p>The <code>accurest-messaging-core</code> module contains 3 main interfaces:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>AccurestMessage - describes a message received / sent to a channel / queue / topic etc.</p>
+</li>
+<li>
+<p>AccurestMessageBuilder - describes how to build a message</p>
+</li>
+<li>
+<p>AccurestMessaging - class that allows you to build, send and receive messages</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In the generated test the <code>AccurestMessaging</code> is injected via <code>@Inject</code> annotation thus you can use other injection
+frameworks than Spring.</p>
+</div>
+<div class="paragraph">
+<p>You have to provide as a dependency the <code>accurest-messaging-core</code> module. Example for Gradle:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">testCompile <span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest:accurest-messaging-core:</span><span class="inline"><span class="inline-delimiter">${</span>accurestVersion<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span></code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="contract-dsl">Contract DSL</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>Contract DSL in AccuREST is written in Groovy, but don&#8217;t be alarmed if you didn&#8217;t use Groovy before. Knowledge of the language is not really needed as our DSL uses only a tiny subset of it (namely literals, method calls and closures). What&#8217;s more, AccuREST&#8217;s DSL is designed to be programmer-readable without any knowledge of the DSL itself.</p>
 </div>
@@ -1125,9 +1191,8 @@ src/test/accurest/myservice/shouldReturnUser.groovy</code></pre>
 </div>
 </blockquote>
 </div>
-<div class="sect1">
-<h2 id="top-level-elements">Top-Level Elements</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="top-level-elements">Top-Level Elements</h3>
 <div class="paragraph">
 <p>Following methods can be called in the top-level closure of a contract definition. Request and response are mandatory, priority is optional.</p>
 </div>
@@ -1156,10 +1221,8 @@ src/test/accurest/myservice/shouldReturnUser.groovy</code></pre>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="request">Request</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="request">Request</h3>
 <div class="paragraph">
 <p>HTTP protocol requires only <strong>method and address</strong> to be specified in a request. The same information is mandatory in request definition of AccuREST contract.</p>
 </div>
@@ -1312,10 +1375,8 @@ src/test/accurest/myservice/shouldReturnUser.groovy</code></pre>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="response">Response</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="response">Response</h3>
 <div class="paragraph">
 <p>Minimal response must contain <strong>HTTP status code</strong>.</p>
 </div>
@@ -1337,10 +1398,8 @@ src/test/accurest/myservice/shouldReturnUser.groovy</code></pre>
 <p>Besides status response may contain <strong>headers</strong> and <strong>body</strong>, which are specified the same way as in the request (see previous paragraph).</p>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="regular-expressions">Regular expressions</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="regular-expressions">Regular expressions</h3>
 <div class="paragraph">
 <p>You can use regular expressions to write your requests in Contract DSL. It is particularly useful when you want to indicate that a given response should be provided for requests that follow a given pattern. Also, you can use it when you need to use patterns and not exact values both for your test and your server side tests.</p>
 </div>
@@ -1351,7 +1410,7 @@ src/test/accurest/myservice/shouldReturnUser.groovy</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest.dsl.GroovyDsl groovyDsl = GroovyDsl.make {
+<pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest.dsl.GroovyDsl groovyDsl == GroovyDsl.make {
     request {
         method(<span class="string"><span class="delimiter">'</span><span class="content">GET</span><span class="delimiter">'</span></span>)
         url <span class="error">$</span>(client(~<span class="regexp"><span class="delimiter">/</span><span class="char">\/</span><span class="content">[0-9]{2}</span><span class="delimiter">/</span></span>), server(<span class="string"><span class="delimiter">'</span><span class="content">/12</span><span class="delimiter">'</span></span>))
@@ -1381,10 +1440,8 @@ src/test/accurest/myservice/shouldReturnUser.groovy</code></pre>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="passing-optional-parameters">Passing optional parameters</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="passing-optional-parameters">Passing optional parameters</h3>
 <div class="paragraph">
 <p>It is possible to provide optional parameters in your contract. It&#8217;s only possible to have optional parameter for the:</p>
 </div>
@@ -1423,7 +1480,7 @@ src/test/accurest/myservice/shouldReturnUser.groovy</code></pre>
         }
         body(
                 <span class="key">code</span>: value(stub(<span class="string"><span class="delimiter">&quot;</span><span class="content">123123</span><span class="delimiter">&quot;</span></span>), test(optional(<span class="string"><span class="delimiter">&quot;</span><span class="content">123123</span><span class="delimiter">&quot;</span></span>))),
-                <span class="key">message</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">User not found by email = [</span><span class="inline"><span class="inline-delimiter">${</span>value(test(regex(email())), stub(<span class="string"><span class="delimiter">'</span><span class="content">not.existing@user.com</span><span class="delimiter">'</span></span>))<span class="inline-delimiter">}</span></span><span class="content">]</span><span class="delimiter">&quot;</span></span>
+                <span class="key">message</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">User not found by email == [</span><span class="inline"><span class="inline-delimiter">${</span>value(test(regex(email())), stub(<span class="string"><span class="delimiter">'</span><span class="content">not.existing@user.com</span><span class="delimiter">'</span></span>))<span class="inline-delimiter">}</span></span><span class="content">]</span><span class="delimiter">&quot;</span></span>
         )
     }
 }</code></pre>
@@ -1438,21 +1495,21 @@ src/test/accurest/myservice/shouldReturnUser.groovy</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy"><span class="key">given</span>:
- <span class="keyword">def</span> request = given()
+ <span class="keyword">def</span> request == given()
    .header(<span class="string"><span class="delimiter">'</span><span class="content">Content-Type</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">application/json</span><span class="delimiter">'</span></span>)
    .body(<span class="string"><span class="delimiter">'</span><span class="content">{&quot;email&quot;:&quot;abc@abc.com&quot;,&quot;callback_url&quot;:&quot;http://partners.com&quot;}</span><span class="delimiter">'</span></span>)
 
 <span class="key">when</span>:
- <span class="keyword">def</span> response = given().spec(request)
+ <span class="keyword">def</span> response == given().spec(request)
    .post(<span class="string"><span class="delimiter">&quot;</span><span class="content">/users/password</span><span class="delimiter">&quot;</span></span>)
 
 <span class="key">then</span>:
- response.statusCode == <span class="integer">404</span>
- response.header(<span class="string"><span class="delimiter">'</span><span class="content">Content-Type</span><span class="delimiter">'</span></span>)  == <span class="string"><span class="delimiter">'</span><span class="content">application/json</span><span class="delimiter">'</span></span>
+ response.statusCode === <span class="integer">404</span>
+ response.header(<span class="string"><span class="delimiter">'</span><span class="content">Content-Type</span><span class="delimiter">'</span></span>)  === <span class="string"><span class="delimiter">'</span><span class="content">application/json</span><span class="delimiter">'</span></span>
 <span class="key">and</span>:
- DocumentContext parsedJson = JsonPath.parse(response.body.asString())
+ DocumentContext parsedJson == JsonPath.parse(response.body.asString())
  !parsedJson.read(<span class="string"><span class="delimiter">'''</span><span class="content">$[?(@.code =~ /(123123)?/)]</span><span class="delimiter">'''</span></span>, JSONArray).empty
- !parsedJson.read(<span class="string"><span class="delimiter">'''</span><span class="content">$[?(@.message =~ /User not found by email = </span><span class="char">\\</span><span class="content">[[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+</span><span class="char">\\</span><span class="content">.[a-zA-Z]{2,4}</span><span class="char">\\</span><span class="content">]/)]</span><span class="delimiter">'''</span></span>, JSONArray).empty</code></pre>
+ !parsedJson.read(<span class="string"><span class="delimiter">'''</span><span class="content">$[?(@.message =~ /User not found by email == </span><span class="char">\\</span><span class="content">[[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+</span><span class="char">\\</span><span class="content">.[a-zA-Z]{2,4}</span><span class="char">\\</span><span class="content">]/)]</span><span class="delimiter">'''</span></span>, JSONArray).empty</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1477,7 +1534,7 @@ src/test/accurest/myservice/shouldReturnUser.groovy</code></pre>
   },
   <span class="key"><span class="delimiter">&quot;</span><span class="content">response</span><span class="delimiter">&quot;</span></span> : {
     <span class="key"><span class="delimiter">&quot;</span><span class="content">status</span><span class="delimiter">&quot;</span></span> : <span class="integer">404</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">body</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">{</span><span class="char">\&quot;</span><span class="content">code</span><span class="char">\&quot;</span><span class="content">:</span><span class="char">\&quot;</span><span class="content">123123</span><span class="char">\&quot;</span><span class="content">,</span><span class="char">\&quot;</span><span class="content">message</span><span class="char">\&quot;</span><span class="content">:</span><span class="char">\&quot;</span><span class="content">User not found by email = [not.existing@user.com]</span><span class="char">\&quot;</span><span class="content">}</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">body</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">{</span><span class="char">\&quot;</span><span class="content">code</span><span class="char">\&quot;</span><span class="content">:</span><span class="char">\&quot;</span><span class="content">123123</span><span class="char">\&quot;</span><span class="content">,</span><span class="char">\&quot;</span><span class="content">message</span><span class="char">\&quot;</span><span class="content">:</span><span class="char">\&quot;</span><span class="content">User not found by email == [not.existing@user.com]</span><span class="char">\&quot;</span><span class="content">}</span><span class="delimiter">&quot;</span></span>,
     <span class="key"><span class="delimiter">&quot;</span><span class="content">headers</span><span class="delimiter">&quot;</span></span> : {
       <span class="key"><span class="delimiter">&quot;</span><span class="content">Content-Type</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">application/json</span><span class="delimiter">&quot;</span></span>
     }
@@ -1487,15 +1544,13 @@ src/test/accurest/myservice/shouldReturnUser.groovy</code></pre>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="executing-custom-methods-on-server-side">Executing custom methods on server side</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="executing-custom-methods-on-server-side">Executing custom methods on server side</h3>
 <div class="paragraph">
 <p>It is also possible to define a method call to be executed on the server side during the test. Such a method can be added to the class defined as "baseClassForTests" in the configuration. Please see the examples below:</p>
 </div>
-<div class="sect2">
-<h3 id="groovy-dsl">Groovy DSL</h3>
+<div class="sect3">
+<h4 id="groovy-dsl">Groovy DSL</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest.dsl.GroovyDsl.make {
@@ -1522,8 +1577,8 @@ src/test/accurest/myservice/shouldReturnUser.groovy</code></pre>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="base-mock-spec">Base Mock Spec</h3>
+<div class="sect3">
+<h4 id="base-mock-spec">Base Mock Spec</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy"><span class="directive">abstract</span> <span class="type">class</span> <span class="class">BaseMockMvcSpec</span> <span class="directive">extends</span> Specification {
@@ -1533,17 +1588,15 @@ src/test/accurest/myservice/shouldReturnUser.groovy</code></pre>
     }
 
     <span class="type">void</span> isProperCorrelationId(<span class="predefined-type">Integer</span> correlationId) {
-        <span class="keyword">assert</span> correlationId == <span class="integer">123456</span>
+        <span class="keyword">assert</span> correlationId === <span class="integer">123456</span>
     }
 }</code></pre>
 </div>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="jax-rs-support">JAX-RS support</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="jax-rs-support">JAX-RS support</h3>
 <div class="paragraph">
 <p>Starting with release 0.8.0 we support JAX-RS 2 Client API. Base class needs to define <code>protected WebTarget webTarget</code> and server initialization, right now the only option how to test JAX-RS API is to start a web server.</p>
 </div>
@@ -1555,7 +1608,7 @@ src/test/accurest/myservice/shouldReturnUser.groovy</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">testMode = <span class="string"><span class="delimiter">'</span><span class="content">JAXRSCLIENT</span><span class="delimiter">'</span></span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">testMode == <span class="string"><span class="delimiter">'</span><span class="content">JAXRSCLIENT</span><span class="delimiter">'</span></span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1567,38 +1620,38 @@ src/test/accurest/myservice/shouldReturnUser.groovy</code></pre>
 
         <span class="keyword">def</span> <span class="function">shouldMarkClientAsNotFraud</span>() {
                 <span class="key">when</span>:
-                        <span class="keyword">def</span> response = webTarget
+                        <span class="keyword">def</span> response == webTarget
                                         .path(<span class="string"><span class="delimiter">'</span><span class="content">/fraudcheck</span><span class="delimiter">'</span></span>)
                                         .request()
                                         .method(<span class="string"><span class="delimiter">'</span><span class="content">put</span><span class="delimiter">'</span></span>, entity(<span class="string"><span class="delimiter">'</span><span class="content">{&quot;clientPesel&quot;:&quot;1234567890&quot;,&quot;loanAmount&quot;:123.123}</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">application/vnd.fraud.v1+json</span><span class="delimiter">'</span></span>))
 
-                        <span class="predefined-type">String</span> responseAsString = response.readEntity(<span class="predefined-type">String</span>)
+                        <span class="predefined-type">String</span> responseAsString == response.readEntity(<span class="predefined-type">String</span>)
 
                 <span class="key">then</span>:
-                        response.status == <span class="integer">200</span>
-                        response.getHeaderString(<span class="string"><span class="delimiter">'</span><span class="content">Content-Type</span><span class="delimiter">'</span></span>) == <span class="string"><span class="delimiter">'</span><span class="content">application/vnd.fraud.v1+json</span><span class="delimiter">'</span></span>
+                        response.status === <span class="integer">200</span>
+                        response.getHeaderString(<span class="string"><span class="delimiter">'</span><span class="content">Content-Type</span><span class="delimiter">'</span></span>) === <span class="string"><span class="delimiter">'</span><span class="content">application/vnd.fraud.v1+json</span><span class="delimiter">'</span></span>
                 <span class="key">and</span>:
-                        <span class="keyword">def</span> responseBody = <span class="keyword">new</span> JsonSlurper().parseText(responseAsString)
-                        responseBody.fraudCheckStatus == <span class="string"><span class="delimiter">&quot;</span><span class="content">OK</span><span class="delimiter">&quot;</span></span>
+                        <span class="keyword">def</span> responseBody == <span class="keyword">new</span> JsonSlurper().parseText(responseAsString)
+                        responseBody.fraudCheckStatus === <span class="string"><span class="delimiter">&quot;</span><span class="content">OK</span><span class="delimiter">&quot;</span></span>
                         assertThatRejectionReasonIsNull(responseBody.rejectionReason)
         }
 
         <span class="keyword">def</span> <span class="function">shouldMarkClientAsFraud</span>() {
                 <span class="key">when</span>:
-                        <span class="keyword">def</span> response = webTarget
+                        <span class="keyword">def</span> response == webTarget
                                         .path(<span class="string"><span class="delimiter">'</span><span class="content">/fraudcheck</span><span class="delimiter">'</span></span>)
                                         .request()
                                         .method(<span class="string"><span class="delimiter">'</span><span class="content">put</span><span class="delimiter">'</span></span>, entity(<span class="string"><span class="delimiter">'</span><span class="content">{&quot;clientPesel&quot;:&quot;1234567890&quot;,&quot;loanAmount&quot;:99999}</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">application/vnd.fraud.v1+json</span><span class="delimiter">'</span></span>))
 
-                        <span class="predefined-type">String</span> responseAsString = response.readEntity(<span class="predefined-type">String</span>)
+                        <span class="predefined-type">String</span> responseAsString == response.readEntity(<span class="predefined-type">String</span>)
 
                 <span class="key">then</span>:
-                        response.status == <span class="integer">200</span>
-                        response.getHeaderString(<span class="string"><span class="delimiter">'</span><span class="content">Content-Type</span><span class="delimiter">'</span></span>) == <span class="string"><span class="delimiter">'</span><span class="content">application/vnd.fraud.v1+json</span><span class="delimiter">'</span></span>
+                        response.status === <span class="integer">200</span>
+                        response.getHeaderString(<span class="string"><span class="delimiter">'</span><span class="content">Content-Type</span><span class="delimiter">'</span></span>) === <span class="string"><span class="delimiter">'</span><span class="content">application/vnd.fraud.v1+json</span><span class="delimiter">'</span></span>
                 <span class="key">and</span>:
-                        <span class="keyword">def</span> responseBody = <span class="keyword">new</span> JsonSlurper().parseText(responseAsString)
+                        <span class="keyword">def</span> responseBody == <span class="keyword">new</span> JsonSlurper().parseText(responseAsString)
                         responseBody.fraudCheckStatus ==~ java.util.regex.Pattern.compile(<span class="string"><span class="delimiter">'</span><span class="content">[A-Z]{5}</span><span class="delimiter">'</span></span>)
-                        responseBody.rejectionReason == <span class="string"><span class="delimiter">&quot;</span><span class="content">Amount too high</span><span class="delimiter">&quot;</span></span>
+                        responseBody.rejectionReason === <span class="string"><span class="delimiter">&quot;</span><span class="content">Amount too high</span><span class="delimiter">&quot;</span></span>
         }
 
 }</code></pre>
@@ -1606,7 +1659,10 @@ src/test/accurest/myservice/shouldReturnUser.groovy</code></pre>
 </div>
 </div>
 </div>
-<h1 id="4-client-side" class="sect0">4. Client Side</h1>
+</div>
+<div class="sect1">
+<h2 id="client-side">Client Side</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>During the tests you want to have a Wiremock instance up and running that simulates the service Y.
 You would like to feed that instance with a proper stub definition. That stub definition would need
@@ -1616,7 +1672,11 @@ to be valid from the Wiremock&#8217;s perspective but should also be reusable on
 <p><em>Summing it up:</em> On this side, in the stub definition, you can use patterns for request stubbing and you need exact
 values for responses.</p>
 </div>
-<h1 id="5-server-side" class="sect0">5. Server Side</h1>
+</div>
+</div>
+<div class="sect1">
+<h2 id="server-side">Server Side</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>Being a service Y since you are developing your stub, you need to be sure that it&#8217;s actually resembling your
 concrete implementation. You can&#8217;t have a situation where your stub acts in one way and your application on
@@ -1630,7 +1690,11 @@ that your application behaves in the same way as you define in your stub.</p>
 <p><em>Summing it up:</em> On this side, in the stub definition, you need exact values as request and can use patterns/methods
 for response verification.</p>
 </div>
-<h1 id="6-examples" class="sect0">6. Examples</h1>
+</div>
+</div>
+<div class="sect1">
+<h2 id="examples">Examples</h2>
+<div class="sectionbody">
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest.dsl.GroovyDsl.make {
@@ -1677,7 +1741,11 @@ for response verification.</p>
 }</code></pre>
 </div>
 </div>
-<h1 id="7-scenarios" class="sect0">7. Scenarios</h1>
+</div>
+</div>
+<div class="sect1">
+<h2 id="scenarios">Scenarios</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>It&#8217;s possible to handle scenarios with Accurest. All you need to do is to stick to proper naming convention while creating your contracts. The convention requires to include order number followed by the underscore.</p>
 </div>
@@ -1700,21 +1768,24 @@ More details about Wiremock scenarios can be found under [<a href="http://wiremo
 <div class="paragraph">
 <p>Accurest will also generate tests with guaranteed order of execution.</p>
 </div>
-<h1 id="8-stub-runner" class="sect0">8. Stub Runner</h1>
+</div>
+</div>
+<div class="sect1">
+<h2 id="stub-runner">Stub Runner</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>One of the issues that you could have encountered while using AccuREST was to pass the generated WireMock JSON stubs from the server side to the client side (or various clients). Copying the JSON files manually is out of the question.</p>
 </div>
 <div class="paragraph">
 <p>In this article you&#8217;ll see how to prepare your project to start publishing stubs as JARs and how to use Stub Runner in your tests to run WireMock servers and feed them with stub definitions.</p>
 </div>
-<div class="sect1">
-<h2 id="publishing-stubs-as-jars">Publishing stubs as JARs</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="publishing-stubs-as-jars">Publishing stubs as JARs</h3>
 <div class="paragraph">
 <p>The easiest approach would be to centralize the way stubs are kept. For example you can keep them as JARs in a Maven repository.</p>
 </div>
-<div class="sect2">
-<h3 id="gradle">Gradle</h3>
+<div class="sect3">
+<h4 id="gradle">Gradle</h4>
 <div class="paragraph">
 <p>Example of AccuREST Gradle setup:</p>
 </div>
@@ -1723,21 +1794,21 @@ More details about Wiremock scenarios can be found under [<a href="http://wiremo
 <pre class="CodeRay highlight"><code data-lang="groovy">apply <span class="key">plugin</span>: <span class="string"><span class="delimiter">'</span><span class="content">maven-publish</span><span class="delimiter">'</span></span>
 
 ext {
-        wiremockStubsOutputDirRoot = file(<span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>project.buildDir<span class="inline-delimiter">}</span></span><span class="content">/production/</span><span class="inline"><span class="inline-delimiter">${</span>project.name<span class="inline-delimiter">}</span></span><span class="content">-stubs/</span><span class="delimiter">&quot;</span></span>)
-        wiremockStubsOutputDir = <span class="keyword">new</span> <span class="predefined-type">File</span>(wiremockStubsOutputDirRoot)
+        wiremockStubsOutputDirRoot == file(<span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>project.buildDir<span class="inline-delimiter">}</span></span><span class="content">/production/</span><span class="inline"><span class="inline-delimiter">${</span>project.name<span class="inline-delimiter">}</span></span><span class="content">-stubs/</span><span class="delimiter">&quot;</span></span>)
+        wiremockStubsOutputDir == <span class="keyword">new</span> <span class="predefined-type">File</span>(wiremockStubsOutputDirRoot)
 }
 
 accurest {
-        targetFramework = <span class="string"><span class="delimiter">'</span><span class="content">Spock</span><span class="delimiter">'</span></span>
-        testMode = <span class="string"><span class="delimiter">'</span><span class="content">MockMvc</span><span class="delimiter">'</span></span>
-        baseClassForTests = <span class="string"><span class="delimiter">'</span><span class="content">com.toomuchcoding.MvcSpec</span><span class="delimiter">'</span></span>
-        contractsDslDir = file(<span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>project.projectDir.absolutePath<span class="inline-delimiter">}</span></span><span class="content">/mappings/</span><span class="delimiter">&quot;</span></span>)
-        generatedTestSourcesDir = file(<span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>project.buildDir<span class="inline-delimiter">}</span></span><span class="content">/generated-sources/</span><span class="delimiter">&quot;</span></span>)
-        stubsOutputDir = wiremockStubsOutputDir
+        targetFramework == <span class="string"><span class="delimiter">'</span><span class="content">Spock</span><span class="delimiter">'</span></span>
+        testMode == <span class="string"><span class="delimiter">'</span><span class="content">MockMvc</span><span class="delimiter">'</span></span>
+        baseClassForTests == <span class="string"><span class="delimiter">'</span><span class="content">com.toomuchcoding.MvcSpec</span><span class="delimiter">'</span></span>
+        contractsDslDir == file(<span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>project.projectDir.absolutePath<span class="inline-delimiter">}</span></span><span class="content">/mappings/</span><span class="delimiter">&quot;</span></span>)
+        generatedTestSourcesDir == file(<span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>project.buildDir<span class="inline-delimiter">}</span></span><span class="content">/generated-sources/</span><span class="delimiter">&quot;</span></span>)
+        stubsOutputDir == wiremockStubsOutputDir
 }
 
 task stubsJar(<span class="key">type</span>: Jar, <span class="key">dependsOn</span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">generateWireMockClientStubs</span><span class="delimiter">&quot;</span></span>]) {
-    baseName = <span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>project.name<span class="inline-delimiter">}</span></span><span class="content">-stubs</span><span class="delimiter">&quot;</span></span>
+    baseName == <span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>project.name<span class="inline-delimiter">}</span></span><span class="content">-stubs</span><span class="delimiter">&quot;</span></span>
     from wiremockStubsOutputDirRoot
 }
 
@@ -1756,22 +1827,20 @@ publishing {
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="maven">Maven</h3>
+<div class="sect3">
+<h4 id="maven">Maven</h4>
 <div class="paragraph">
 <p>Example of Maven can be found in the [AccuREST Maven Plugin README](<a href="https://github.com/Codearte/accurest-maven-plugin/=publishing-wiremock-stubs-projectf-stubsjar" class="bare">https://github.com/Codearte/accurest-maven-plugin/=publishing-wiremock-stubs-projectf-stubsjar</a>)</p>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="using-stub-runner-to-automate-running-stubs">Using Stub Runner to automate running stubs</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="using-stub-runner-to-automate-running-stubs">Using Stub Runner to automate running stubs</h3>
 <div class="paragraph">
 <p>Stub Runner automates downloading stubs from a Maven repository (that includes also the local Maven repository) and starting the WireMock server for each of those stubs.</p>
 </div>
-<div class="sect2">
-<h3 id="modules">Modules</h3>
+<div class="sect3">
+<h4 id="modules">Modules</h4>
 <div class="paragraph">
 <p>AccuREST comes with a new structure of modules</p>
 </div>
@@ -1784,8 +1853,8 @@ publishing {
     └── stub-runner-spring-cloud</code></pre>
 </div>
 </div>
-<div class="sect3">
-<h4 id="stub-runner">Stub Runner</h4>
+<div class="sect4">
+<h5 id="stub-runner-2">Stub Runner</h5>
 <div class="paragraph">
 <p>Contains core logic of Stub Runner. Gives you a main class to run Stub Runner from the command line or from Gradle.</p>
 </div>
@@ -1831,14 +1900,14 @@ publishing {
 <p><code>./gradlew stub-runner-root:stub-runner:run -Pc=pl -Pminp=10000 -Pmaxp=10005 -Ps=a:b:c,d:e,f:g:h</code></p>
 </div>
 </div>
-<div class="sect3">
-<h4 id="stub-runner-junit-rule">Stub Runner JUnit Rule</h4>
+<div class="sect4">
+<h5 id="stub-runner-junit-rule">Stub Runner JUnit Rule</h5>
 <div class="paragraph">
 <p>Stub Runner comes with a JUnit rule thanks to which you can very easily download and run stubs for given group and artifact id:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@ClassRule</span> <span class="directive">public</span> <span class="directive">static</span> AccurestRule rule = <span class="keyword">new</span> AccurestRule()
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@ClassRule</span> <span class="directive">public</span> <span class="directive">static</span> AccurestRule rule == <span class="keyword">new</span> AccurestRule()
                         .repoRoot(<span class="string"><span class="delimiter">&quot;</span><span class="content">http://your.repo.com</span><span class="delimiter">&quot;</span></span>)
                         .downloadStub(<span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">loanIssuance</span><span class="delimiter">&quot;</span></span>)
                         .downloadStub(<span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest.stubs:fraudDetectionServer</span><span class="delimiter">&quot;</span></span>)
@@ -1892,24 +1961,24 @@ publishing {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="annotation">@ClassRule</span> <span class="annotation">@Shared</span> AccurestRule rule = <span class="keyword">new</span> AccurestRule()
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="annotation">@ClassRule</span> <span class="annotation">@Shared</span> AccurestRule rule == <span class="keyword">new</span> AccurestRule()
                         .repoRoot(<span class="string"><span class="delimiter">'</span><span class="content">http://your.repo.com</span><span class="delimiter">'</span></span>)
                         .downloadStub(<span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">loanIssuance</span><span class="delimiter">&quot;</span></span>)
                         .downloadStub(<span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest.stubs:fraudDetectionServer</span><span class="delimiter">&quot;</span></span>)
 
         <span class="keyword">def</span> <span class="string"><span class="delimiter">'</span><span class="content">should start WireMock servers</span><span class="delimiter">'</span></span>() {
                 <span class="key">expect</span>: <span class="string"><span class="delimiter">'</span><span class="content">WireMocks are running</span><span class="delimiter">'</span></span>
-                        rule.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>) != <span class="predefined-constant">null</span>
-                        rule.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>) != <span class="predefined-constant">null</span>
-                        rule.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>) == rule.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>)
-                        rule.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:fraudDetectionServer</span><span class="delimiter">'</span></span>) != <span class="predefined-constant">null</span>
+                        rule.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>) !== <span class="predefined-constant">null</span>
+                        rule.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>) !== <span class="predefined-constant">null</span>
+                        rule.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>) === rule.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>)
+                        rule.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:fraudDetectionServer</span><span class="delimiter">'</span></span>) !== <span class="predefined-constant">null</span>
                 <span class="key">and</span>:
                         rule.findAllRunningStubs().isPresent(<span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>)
                         rule.findAllRunningStubs().isPresent(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">fraudDetectionServer</span><span class="delimiter">'</span></span>)
                         rule.findAllRunningStubs().isPresent(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:fraudDetectionServer</span><span class="delimiter">'</span></span>)
                 <span class="key">and</span>: <span class="string"><span class="delimiter">'</span><span class="content">Stubs were registered</span><span class="delimiter">'</span></span>
-                        <span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>rule.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>).toString()<span class="inline-delimiter">}</span></span><span class="content">/name</span><span class="delimiter">&quot;</span></span>.toURL().text == <span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>
-                        <span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>rule.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">fraudDetectionServer</span><span class="delimiter">'</span></span>).toString()<span class="inline-delimiter">}</span></span><span class="content">/name</span><span class="delimiter">&quot;</span></span>.toURL().text == <span class="string"><span class="delimiter">'</span><span class="content">fraudDetectionServer</span><span class="delimiter">'</span></span>
+                        <span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>rule.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>).toString()<span class="inline-delimiter">}</span></span><span class="content">/name</span><span class="delimiter">&quot;</span></span>.toURL().text === <span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>
+                        <span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>rule.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">fraudDetectionServer</span><span class="delimiter">'</span></span>).toString()<span class="inline-delimiter">}</span></span><span class="content">/name</span><span class="delimiter">&quot;</span></span>.toURL().text === <span class="string"><span class="delimiter">'</span><span class="content">fraudDetectionServer</span><span class="delimiter">'</span></span>
         }</code></pre>
 </div>
 </div>
@@ -1918,7 +1987,7 @@ publishing {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@ClassRule</span> <span class="directive">public</span> <span class="directive">static</span> AccurestRule rule = <span class="keyword">new</span> AccurestRule()
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@ClassRule</span> <span class="directive">public</span> <span class="directive">static</span> AccurestRule rule == <span class="keyword">new</span> AccurestRule()
                         .repoRoot(<span class="string"><span class="delimiter">&quot;</span><span class="content">http://your.repo.com</span><span class="delimiter">&quot;</span></span>)
                         .downloadStub(<span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">loanIssuance</span><span class="delimiter">&quot;</span></span>)
                         .downloadStub(<span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest.stubs:fraudDetectionServer</span><span class="delimiter">&quot;</span></span>);
@@ -1944,8 +2013,8 @@ publishing {
 <p>Check the <strong>Common properties for JUnit and Spring</strong> for more information on how to apply global configuration of Stub Runner.</p>
 </div>
 </div>
-<div class="sect3">
-<h4 id="stub-runner-spring">Stub Runner Spring</h4>
+<div class="sect4">
+<h5 id="stub-runner-spring">Stub Runner Spring</h5>
 <div class="paragraph">
 <p>If you&#8217;re using Spring then you can just import the <code>io.codearte.accurest.stubrunner.spring.StubRunnerConfiguration</code> and a bean of type <code>StubFinder</code> will get registered.</p>
 </div>
@@ -1954,24 +2023,24 @@ publishing {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="annotation">@ContextConfiguration</span>(classes = Config, loader = SpringApplicationContextLoader)
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="annotation">@ContextConfiguration</span>(classes == Config, loader == SpringApplicationContextLoader)
 <span class="type">class</span> <span class="class">StubRunnerConfigurationSpec</span> <span class="directive">extends</span> Specification {
 
         <span class="annotation">@Autowired</span> StubFinder stubFinder
 
         <span class="keyword">def</span> <span class="string"><span class="delimiter">'</span><span class="content">should start WireMock servers</span><span class="delimiter">'</span></span>() {
                 <span class="key">expect</span>: <span class="string"><span class="delimiter">'</span><span class="content">WireMocks are running</span><span class="delimiter">'</span></span>
-                        stubFinder.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>) != <span class="predefined-constant">null</span>
-                        stubFinder.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>) != <span class="predefined-constant">null</span>
-                        stubFinder.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>) == stubFinder.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>)
-                        stubFinder.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:fraudDetectionServer</span><span class="delimiter">'</span></span>) != <span class="predefined-constant">null</span>
+                        stubFinder.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>) !== <span class="predefined-constant">null</span>
+                        stubFinder.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>) !== <span class="predefined-constant">null</span>
+                        stubFinder.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>) === stubFinder.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>)
+                        stubFinder.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:fraudDetectionServer</span><span class="delimiter">'</span></span>) !== <span class="predefined-constant">null</span>
                 <span class="key">and</span>:
                         stubFinder.findAllRunningStubs().isPresent(<span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>)
                         stubFinder.findAllRunningStubs().isPresent(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">fraudDetectionServer</span><span class="delimiter">'</span></span>)
                         stubFinder.findAllRunningStubs().isPresent(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:fraudDetectionServer</span><span class="delimiter">'</span></span>)
                 <span class="key">and</span>: <span class="string"><span class="delimiter">'</span><span class="content">Stubs were registered</span><span class="delimiter">'</span></span>
-                        <span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>stubFinder.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>).toString()<span class="inline-delimiter">}</span></span><span class="content">/name</span><span class="delimiter">&quot;</span></span>.toURL().text == <span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>
-                        <span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>stubFinder.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">fraudDetectionServer</span><span class="delimiter">'</span></span>).toString()<span class="inline-delimiter">}</span></span><span class="content">/name</span><span class="delimiter">&quot;</span></span>.toURL().text == <span class="string"><span class="delimiter">'</span><span class="content">fraudDetectionServer</span><span class="delimiter">'</span></span>
+                        <span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>stubFinder.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>).toString()<span class="inline-delimiter">}</span></span><span class="content">/name</span><span class="delimiter">&quot;</span></span>.toURL().text === <span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>
+                        <span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>stubFinder.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">fraudDetectionServer</span><span class="delimiter">'</span></span>).toString()<span class="inline-delimiter">}</span></span><span class="content">/name</span><span class="delimiter">&quot;</span></span>.toURL().text === <span class="string"><span class="delimiter">'</span><span class="content">fraudDetectionServer</span><span class="delimiter">'</span></span>
         }
 
         <span class="annotation">@Configuration</span>
@@ -1985,14 +2054,14 @@ publishing {
 <p>Check the <strong>Common properties for JUnit and Spring</strong> for more information on how to apply global configuration of Stub Runner.</p>
 </div>
 </div>
-<div class="sect3">
-<h4 id="stub-runner-spring-cloud">Stub Runner Spring Cloud</h4>
+<div class="sect4">
+<h5 id="stub-runner-spring-cloud">Stub Runner Spring Cloud</h5>
 <div class="paragraph">
 <p>If you&#8217;re using Spring Cloud then it&#8217;s enough to add <code>stub-runner-spring-cloud</code> on classpath and automatically a bean of type <code>StubFinder</code> will get registered.</p>
 </div>
 </div>
-<div class="sect3">
-<h4 id="common-properties-for-junit-and-spring">Common properties for JUnit and Spring</h4>
+<div class="sect4">
+<h5 id="common-properties-for-junit-and-spring">Common properties for JUnit and Spring</h5>
 <div class="paragraph">
 <p>Some of the properties that are repetitive can be set using system properties or property sources (for Spring). Here are their names with their default values:</p>
 </div>
@@ -2054,10 +2123,12 @@ publishing {
 </div>
 </div>
 </div>
-<h1 id="9-migration-guide" class="sect0">9. Migration Guide</h1>
+</div>
 <div class="sect1">
-<h2 id="migration-to-0-4-7">Migration to 0.4.7</h2>
+<h2 id="migration-guide">Migration Guide</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="migration-to-0-4-7">Migration to 0.4.7</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -2066,10 +2137,8 @@ publishing {
 </ul>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="migration-to-1-0-0-rc1">Migration to 1.0.0-RC1</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="migration-to-1-0-0-rc1">Migration to 1.0.0-RC1</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -2096,10 +2165,8 @@ publishing {
 </ul>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="migration-to-1-0-7">Migration to 1.0.7</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="migration-to-1-0-7">Migration to 1.0.7</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -2116,9 +2183,10 @@ as your first choice:</p>
 </div>
 </div>
 </div>
+</div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-04-20 23:28:47 CEST
+Last updated 2016-04-20 23:38:06 CEST
 </div>
 </div>
 </body>
