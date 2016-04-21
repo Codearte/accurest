@@ -557,6 +557,7 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#stub-runner-core">Stub Runner core</a></li>
 <li><a href="#stub-runner-spring">Stub Runner Spring</a></li>
 <li><a href="#stub-runner-spring-cloud">Stub Runner Spring Cloud</a></li>
+<li><a href="#common-properties-for-junit-and-spring">Common properties for JUnit and Spring</a></li>
 </ul>
 </li>
 <li><a href="#migration-guide">Migration Guide</a>
@@ -2159,8 +2160,9 @@ stubrunner.stubs.ids: io.codearte.accurest.stubs:loanIssuance,io.codearte.accure
 <p>You can disable Stub Runner Ribbon support by providing: <code>stubrunner.cloud.ribbon.enabled</code> equal to <code>false</code>
 You can disable Stub Runner support by providing: <code>stubrunner.cloud.enabled</code> equal to <code>false</code></p>
 </div>
-<div class="sect4">
-<h5 id="common-properties-for-junit-and-spring">Common properties for JUnit and Spring</h5>
+</div>
+<div class="sect2">
+<h3 id="common-properties-for-junit-and-spring">Common properties for JUnit and Spring</h3>
 <div class="paragraph">
 <p>Some of the properties that are repetitive can be set using system properties or property sources (for Spring). Here are their names with their default values:</p>
 </div>
@@ -2218,73 +2220,6 @@ You can disable Stub Runner support by providing: <code>stubrunner.cloud.enabled
 </tr>
 </tbody>
 </table>
-</div>
-<div class="sect4">
-<h5 id="stub-runner-spring-cloud-2">Stub Runner Spring Cloud</h5>
-<div class="paragraph">
-<p>If you&#8217;re using Spring Cloud then it&#8217;s enough to add <code>stub-runner-spring-cloud</code> on classpath and automatically a bean of type <code>StubFinder</code> will get registered.</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="common-properties-for-junit-and-spring-2">Common properties for JUnit and Spring</h5>
-<div class="paragraph">
-<p>Some of the properties that are repetitive can be set using system properties or property sources (for Spring). Here are their names with their default values:</p>
-</div>
-<table class="tableblock frame-topbot grid-all" style="width: 60%;">
-<colgroup>
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Property name</th>
-<th class="tableblock halign-left valign-top">Default value</th>
-<th class="tableblock halign-left valign-top">Description</th>
-<th class="tableblock halign-left valign-top"></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">stubrunner.port.range.min</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">10000</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Minimal value of a port for a started WireMock with stubs</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">stubrunner.port.range.max</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">15000</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Minimal value of a port for a started WireMock with stubs</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">stubrunner.stubs.repository.root</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Maven repo url. If blank then will call the local maven repo</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">stubrunner.stubs.classifier</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">stubs</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Default classifier for the stub artifacts</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">stubrunner.work-offline</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If true then will not contact any remote repositories to download stubs</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">stubrunner.stubs</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Comma separated list of Ivy notation of stubs to download</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-</tbody>
-</table>
-</div>
 </div>
 </div>
 </div>
@@ -2350,7 +2285,7 @@ as your first choice:</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-04-21 09:27:05 +02:00
+Last updated 2016-04-21 09:28:38 +02:00
 </div>
 </div>
 </body>
