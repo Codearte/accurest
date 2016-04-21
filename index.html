@@ -549,7 +549,14 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#stub-runner">Stub Runner</a>
 <ul class="sectlevel2">
 <li><a href="#publishing-stubs-as-jars">Publishing stubs as JARs</a></li>
-<li><a href="#using-stub-runner-to-automate-running-stubs">Using Stub Runner to automate running stubs</a></li>
+</ul>
+</li>
+<li><a href="#using-stub-runner-to-automate-running-stubs">Using Stub Runner to automate running stubs</a>
+<ul class="sectlevel2">
+<li><a href="#modules">Modules</a></li>
+<li><a href="#stub-runner-core">Stub Runner core</a></li>
+<li><a href="#stub-runner-spring">Stub Runner Spring</a></li>
+<li><a href="#stub-runner-spring-cloud">Stub Runner Spring Cloud</a></li>
 </ul>
 </li>
 <li><a href="#migration-guide">Migration Guide</a>
@@ -1834,13 +1841,16 @@ publishing {
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="using-stub-runner-to-automate-running-stubs">Using Stub Runner to automate running stubs</h3>
+</div>
+</div>
+<div class="sect1">
+<h2 id="using-stub-runner-to-automate-running-stubs">Using Stub Runner to automate running stubs</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>Stub Runner automates downloading stubs from a Maven repository (that includes also the local Maven repository) and starting the WireMock server for each of those stubs.</p>
 </div>
-<div class="sect3">
-<h4 id="modules">Modules</h4>
+<div class="sect2">
+<h3 id="modules">Modules</h3>
 <div class="paragraph">
 <p>AccuREST comes with a new structure of modules</p>
 </div>
@@ -1853,55 +1863,116 @@ publishing {
     └── stub-runner-spring-cloud</code></pre>
 </div>
 </div>
-<div class="sect4">
-<h5 id="stub-runner-2">Stub Runner</h5>
-<div class="paragraph">
-<p>Contains core logic of Stub Runner. Gives you a main class to run Stub Runner from the command line or from Gradle.</p>
 </div>
+<div class="sect2">
+<h3 id="stub-runner-core">Stub Runner core</h3>
 <div class="paragraph">
-<p>Here you can see a list of options with which you can run Stub Runner:</p>
+<p>Runs stubs for service collaborators. Treating stubs as contracts of services allows to use stub-runner as an implementation of
+<a href="http://martinfowler.com/articles/consumerDrivenContracts.html">Consumer Driven Contracts</a>.</p>
+</div>
+<div class="sect3">
+<h4 id="running-stubs">Running stubs</h4>
+<div class="sect4">
+<h5 id="running-using-main-app">Running using main app</h5>
+<div class="paragraph">
+<p>You can set the following options to the main class:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code>java -jar stub-runner.jar [options...]
- -maxp (--maxPort) N            : Maximum port value to be assigned to the
-                                  Wiremock instance. Defaults to 15000
-                                  (default: 15000)
- -minp (--minPort) N            : Minimal port value to be assigned to the
-                                  Wiremock instance. Defaults to 10000
-                                  (default: 10000)
- -s (--stubs) VAL               : Comma separated list of Ivy representation of
-                                  jars with stubs. Eg. groupid:artifactid1,group
-                                  id2:artifactid2:classifier
- -sr (--stubRepositoryRoot) VAL : Location of a Jar containing server where you
-                                  keep your stubs (e.g. http://nexus.net/content
-                                  /repositories/repository)
- -ss (--stubsSuffix) VAL        : Suffix for the jar containing stubs (e.g.
-                                  'stubs' if the stub jar would have a 'stubs'
-                                  classifier for stubs: foobar-stubs ).
-                                  Defaults to 'stubs' (default: stubs)
- -wo (--workOffline)            : Switch to work offline. Defaults to 'false'
-                                  (default: false)</code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">-maxp (--maxPort) N            : Maximum port value to be assigned to the
+                                 Wiremock instance. Defaults to <span class="integer">15000</span>
+                                 (<span class="keyword">default</span>: <span class="integer">15000</span>)
+-minp (--minPort) N            : Minimal port value to be assigned to the
+                                 Wiremock instance. Defaults to <span class="integer">10000</span>
+                                 (<span class="keyword">default</span>: <span class="integer">10000</span>)
+-s (--stubs) VAL               : Comma separated list of Ivy representation of
+                                 jars with stubs. Eg. groupid:artifactid1,group
+                                 <span class="key">id2</span>:<span class="key">artifactid2</span>:classifier
+-sr (--stubRepositoryRoot) VAL : Location of a Jar containing server where you
+                                 keep your stubs (e.g. http:<span class="comment">//nexus.net/content</span>
+                                 <span class="regexp"><span class="delimiter">/</span><span class="content">repositories</span><span class="delimiter">/</span></span>repository)
+-ss (--stubsSuffix) VAL        : Suffix <span class="keyword">for</span> the jar containing stubs (e.g.
+                                 <span class="string"><span class="delimiter">'</span><span class="content">stubs</span><span class="delimiter">'</span></span> <span class="keyword">if</span> the stub jar would have a <span class="string"><span class="delimiter">'</span><span class="content">stubs</span><span class="delimiter">'</span></span>
+                                 classifier <span class="keyword">for</span> <span class="key">stubs</span>: foobar-stubs ).
+                                 Defaults to <span class="string"><span class="delimiter">'</span><span class="content">stubs</span><span class="delimiter">'</span></span> (<span class="keyword">default</span>: stubs)
+-wo (--workOffline)            : Switch to work offline. Defaults to <span class="string"><span class="delimiter">'</span><span class="content">false</span><span class="delimiter">'</span></span>
+                                 (<span class="keyword">default</span>: <span class="predefined-constant">false</span>)</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>You can either produce a fat-jar and run the app like presented above.</p>
-</div>
-<div class="paragraph">
-<p>You can also configure the stub runner by either passing the full arguments list with the <code>-Pargs</code> like this:</p>
-</div>
-<div class="paragraph">
-<p><code>./gradlew stub-runner-root:stub-runner:run -Pargs="-c pl -minp 10000 -maxp 10005 -s a:b:c,d:e,f:g:h"</code></p>
-</div>
-<div class="paragraph">
-<p>or each parameter separately with a <code>-P</code> prefix and without the hyphen (-) in the name of the param</p>
-</div>
-<div class="paragraph">
-<p><code>./gradlew stub-runner-root:stub-runner:run -Pc=pl -Pminp=10000 -Pmaxp=10005 -Ps=a:b:c,d:e,f:g:h</code></p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="stub-runner-junit-rule">Stub Runner JUnit Rule</h5>
+<h5 id="building-a-fat-jar">Building a Fat Jar</h5>
+<div class="paragraph">
+<p>Just call the following command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">.<span class="regexp"><span class="delimiter">/</span><span class="content">gradlew stub-runner-root:stub-runner:shadowJar -PfatJar</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and inside the <code>build/lib</code> there will be a Fat Jar with classifier <code>fatJar</code> waiting for you to execute. E.g.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">java -jar stub-runner/stub-runner/build/libs/stub-runner-<span class="float">1.0</span><span class="float">.1</span>-SNAPSHOT-fatJar.jar -sr <span class="key">http</span>:<span class="comment">//a.b.com -s a:b:c,d:e,f:g:h</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="stub-runner-configuration">Stub runner configuration</h4>
+<div class="paragraph">
+<p>You can configure the stub runner by either passing the full arguments list with the <code>-Pargs</code> like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">.<span class="regexp"><span class="delimiter">/</span><span class="content">gradlew stub-runner-root:stub-runner:run -Pargs=&quot;-c pl -minp 10000 -maxp 10005 -s a:b:c,d:e,f:g:h&quot;</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>or each parameter separately with a <code>-P</code> prefix and without the hyphen <code>-</code> in the name of the param</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">.<span class="regexp"><span class="delimiter">/</span><span class="content">gradlew stub-runner-root:stub-runner:run -Pc=pl -Pminp=10000 -Pmaxp=10005 -Ps=a:b:c,d:e,f:g:h</span></span></code></pre>
+</div>
+</div>
+<div class="sect4">
+<h5 id="stubs">Stubs</h5>
+<div class="paragraph">
+<p>Stubs are defined in JSON documents, whose syntax is defined in <a href="http://wiremock.org/stubbing.html">WireMock documentation</a></p>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="javascript">{
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">request</span><span class="delimiter">&quot;</span></span>: {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">method</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">GET</span><span class="delimiter">&quot;</span></span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">url</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">/ping</span><span class="delimiter">&quot;</span></span>
+    },
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">response</span><span class="delimiter">&quot;</span></span>: {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">status</span><span class="delimiter">&quot;</span></span>: <span class="integer">200</span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">body</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">pong</span><span class="delimiter">&quot;</span></span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">headers</span><span class="delimiter">&quot;</span></span>: {
+            <span class="key"><span class="delimiter">&quot;</span><span class="content">Content-Type</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">text/plain</span><span class="delimiter">&quot;</span></span>
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the provided JAR file we&#8217;re harvesting all JSON files and try to put them inside running WireMock instance.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="viewing-registered-mappings">Viewing registered mappings</h5>
+<div class="paragraph">
+<p>Every stubbed collaborator exposes list of defined mappings under <code>__/admin/</code> endpoint.
+=== Stub Runner JUnit Rule</p>
+</div>
 <div class="paragraph">
 <p>Stub Runner comes with a JUnit rule thanks to which you can very easily download and run stubs for given group and artifact id:</p>
 </div>
@@ -1923,7 +1994,8 @@ publishing {
 * feed the WireMock server with all JSON files that are valid WireMock definitions</p>
 </div>
 <div class="paragraph">
-<p>Stub Runner uses [Groovy&#8217;s Grape](<a href="http://docs.groovy-lang.org/latest/html/documentation/grape.html" class="bare">http://docs.groovy-lang.org/latest/html/documentation/grape.html</a>) mechanism to download the Maven dependencies. Check their [docs](<a href="http://docs.groovy-lang.org/latest/html/documentation/grape.html" class="bare">http://docs.groovy-lang.org/latest/html/documentation/grape.html</a>) for more information.</p>
+<p>Stub Runner uses <a href="http://docs.groovy-lang.org/latest/html/documentation/grape.html">Groovy&#8217;s Grape</a> mechanism to download the Maven dependencies.
+Check their <a href="http://docs.groovy-lang.org/latest/html/documentation/grape.html">docs</a> for more information.</p>
 </div>
 <div class="paragraph">
 <p>Since the <code>AccurestRule</code> implements the <code>StubFinder</code> it allows you to find the started stubs:</p>
@@ -2013,13 +2085,20 @@ publishing {
 <p>Check the <strong>Common properties for JUnit and Spring</strong> for more information on how to apply global configuration of Stub Runner.</p>
 </div>
 </div>
-<div class="sect4">
-<h5 id="stub-runner-spring">Stub Runner Spring</h5>
+</div>
+</div>
+<div class="sect2">
+<h3 id="stub-runner-spring">Stub Runner Spring</h3>
 <div class="paragraph">
-<p>If you&#8217;re using Spring then you can just import the <code>io.codearte.accurest.stubrunner.spring.StubRunnerConfiguration</code> and a bean of type <code>StubFinder</code> will get registered.</p>
+<p>Sets up Spring configuration of the Stub Runner project.</p>
 </div>
 <div class="paragraph">
-<p>In order to find a URL and port of a given dependency you can autowire the bean in your test and call its methods:</p>
+<p>By providing a list of stubs inside your configuration file the Stub Runner automatically downloads
+and registers in WireMock the selected stubs.</p>
+</div>
+<div class="paragraph">
+<p>If you want to find the URL of your stubbed dependency you can autowire the <code>StubFinder</code> interface and use
+its methods as presented below:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2051,14 +2130,34 @@ publishing {
 </div>
 </div>
 <div class="paragraph">
-<p>Check the <strong>Common properties for JUnit and Spring</strong> for more information on how to apply global configuration of Stub Runner.</p>
+<p>for the following configuration file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">stubrunner.stubs.repository.root: <span class="key">classpath</span>:m2repo
+stubrunner.stubs.ids: io.codearte.accurest.stubs:loanIssuance,io.codearte.accurest.stubs:fraudDetectionServer</code></pre>
 </div>
 </div>
-<div class="sect4">
-<h5 id="stub-runner-spring-cloud">Stub Runner Spring Cloud</h5>
+</div>
+<div class="sect2">
+<h3 id="stub-runner-spring-cloud">Stub Runner Spring Cloud</h3>
 <div class="paragraph">
-<p>If you&#8217;re using Spring Cloud then it&#8217;s enough to add <code>stub-runner-spring-cloud</code> on classpath and automatically a bean of type <code>StubFinder</code> will get registered.</p>
+<p>Registers the stubs in the provided Service Discovery. It&#8217;s enough to add the jar</p>
 </div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest:stub-runner-spring-cloud</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and the Stub Runner autoconfiguration should be picked up.</p>
+</div>
+<div class="paragraph">
+<p>You can match the artifactId of the stub with the name of your app by using the <code>stubrunner.stubs.idsToServiceIds:</code> map.</p>
+</div>
+<div class="paragraph">
+<p>You can disable Stub Runner Ribbon support by providing: <code>stubrunner.cloud.ribbon.enabled</code> equal to <code>false</code>
+You can disable Stub Runner support by providing: <code>stubrunner.cloud.enabled</code> equal to <code>false</code></p>
 </div>
 <div class="sect4">
 <h5 id="common-properties-for-junit-and-spring">Common properties for JUnit and Spring</h5>
@@ -2120,6 +2219,71 @@ publishing {
 </tbody>
 </table>
 </div>
+<div class="sect4">
+<h5 id="stub-runner-spring-cloud-2">Stub Runner Spring Cloud</h5>
+<div class="paragraph">
+<p>If you&#8217;re using Spring Cloud then it&#8217;s enough to add <code>stub-runner-spring-cloud</code> on classpath and automatically a bean of type <code>StubFinder</code> will get registered.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="common-properties-for-junit-and-spring-2">Common properties for JUnit and Spring</h5>
+<div class="paragraph">
+<p>Some of the properties that are repetitive can be set using system properties or property sources (for Spring). Here are their names with their default values:</p>
+</div>
+<table class="tableblock frame-topbot grid-all" style="width: 60%;">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property name</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">stubrunner.port.range.min</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">10000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Minimal value of a port for a started WireMock with stubs</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">stubrunner.port.range.max</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">15000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Minimal value of a port for a started WireMock with stubs</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">stubrunner.stubs.repository.root</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maven repo url. If blank then will call the local maven repo</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">stubrunner.stubs.classifier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">stubs</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default classifier for the stub artifacts</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">stubrunner.work-offline</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If true then will not contact any remote repositories to download stubs</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">stubrunner.stubs</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Comma separated list of Ivy notation of stubs to download</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>
@@ -2186,7 +2350,7 @@ as your first choice:</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-04-20 23:38:06 CEST
+Last updated 2016-04-21 09:27:05 +02:00
 </div>
 </div>
 </body>
