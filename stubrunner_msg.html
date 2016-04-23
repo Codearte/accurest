@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
-<title>Accurest Messaging</title>
+<title>Stub Runner for Messaging</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -514,11 +514,11 @@ table.CodeRay td.code>pre{padding:0}
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#accurest-messaging">Accurest Messaging</a>
+<li><a href="#stub-runner-for-messaging">Stub Runner for Messaging</a>
 <ul class="sectlevel2">
-<li><a href="#integrations">Integrations</a></li>
-<li><a href="#manual-integration">Manual Integration</a></li>
-<li><a href="#publisher-side-test-generation">Publisher side test generation</a></li>
+<li><a href="#dsl">DSL</a></li>
+<li><a href="#stub-triggering">Stub triggering</a></li>
+<li><a href="#stub-runner-messaging-camel">Stub Runner Messaging Camel</a></li>
 </ul>
 </li>
 </ul>
@@ -526,7 +526,7 @@ table.CodeRay td.code>pre{padding:0}
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="accurest-messaging">Accurest Messaging</h2>
+<h2 id="stub-runner-for-messaging">Stub Runner for Messaging</h2>
 <div class="sectionbody">
 <div class="admonitionblock warning">
 <table>
@@ -541,79 +541,274 @@ Feature available since 1.0.7
 </table>
 </div>
 <div class="paragraph">
-<p>Accurest allows you to verify your application that uses messaging as means of communication.
-All of our integrations are working with Spring but you can also set one yourself.</p>
-</div>
-<div class="sect2">
-<h3 id="integrations">Integrations</h3>
-<div class="paragraph">
-<p>You can use one of the three integration configurations:</p>
+<p>Stub Runner has the functionality to run the published stubs in memory. It can integrate with the following frameworks out of the box</p>
 </div>
 <div class="ulist">
 <ul>
-<li>
-<p>Apache Camel</p>
-</li>
 <li>
 <p>Spring Integration</p>
 </li>
 <li>
 <p>Spring Cloud Stream</p>
 </li>
-</ul>
-</div>
-<div class="paragraph">
-<p>If you&#8217;re using Spring Boot, the aforementioned test configurations will be appended automatically.</p>
-</div>
-<div class="paragraph">
-<p>You have to provide as a dependency one of the Accurest Messaging modules. Example for Gradle:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="comment">// for Apache Camel</span>
-testCompile <span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest:accurest-messaging-camel:</span><span class="inline"><span class="inline-delimiter">${</span>accurestVersion<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span>
-<span class="comment">// for Spring Integration</span>
-testCompile <span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest:accurest-messaging-integration:</span><span class="inline"><span class="inline-delimiter">${</span>accurestVersion<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span>
-<span class="comment">// for Spring Cloud Stream</span>
-testCompile <span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest:accurest-messaging-stream:</span><span class="inline"><span class="inline-delimiter">${</span>accurestVersion<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span></code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="manual-integration">Manual Integration</h3>
-<div class="paragraph">
-<p>The <code>accurest-messaging-core</code> module contains 3 main interfaces:</p>
-</div>
-<div class="ulist">
-<ul>
 <li>
-<p>AccurestMessage - describes a message received / sent to a channel / queue / topic etc.</p>
-</li>
-<li>
-<p>AccurestMessageBuilder - describes how to build a message</p>
-</li>
-<li>
-<p>AccurestMessaging - class that allows you to build, send and receive messages</p>
+<p>Apache Camel</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>In the generated test the <code>AccurestMessaging</code> is injected via <code>@Inject</code> annotation thus you can use other injection
-frameworks than Spring.</p>
+<p>It also provides points of entry to integrate with any other solution on the market.</p>
 </div>
+<div class="sect2">
+<h3 id="dsl">DSL</h3>
 <div class="paragraph">
-<p>You have to provide as a dependency the <code>accurest-messaging-core</code> module. Example for Gradle:</p>
+<p>The DSL for messaging looks a little bit different than the one that focuses on HTTP.</p>
+</div>
+<div class="sect3">
+<h4 id="output-triggered-by-a-method">Output triggered by a method</h4>
+<div class="paragraph">
+<p>The output message can be triggered by calling a method (e.g. a Scheduler was started and a message was sent)</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">testCompile <span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest:accurest-messaging-core:</span><span class="inline"><span class="inline-delimiter">${</span>accurestVersion<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">def</span> dsl = GroovyDsl.make {
+        <span class="comment">// Human readable description</span>
+        description <span class="string"><span class="delimiter">'</span><span class="content">Some description</span><span class="delimiter">'</span></span>
+        <span class="comment">// Label by means of which the output message can be triggered</span>
+        label <span class="string"><span class="delimiter">'</span><span class="content">some_label</span><span class="delimiter">'</span></span>
+        <span class="comment">// input to the contract</span>
+        input {
+                <span class="comment">// the contract will be triggered by a method</span>
+                triggeredBy(<span class="string"><span class="delimiter">'</span><span class="content">bookReturnedTriggered()</span><span class="delimiter">'</span></span>)
+        }
+        <span class="comment">// output message of the contract</span>
+        outputMessage {
+                <span class="comment">// destination to which the output message will be sent</span>
+                sentTo(<span class="string"><span class="delimiter">'</span><span class="content">output</span><span class="delimiter">'</span></span>)
+                <span class="comment">// the body of the output message</span>
+                body(<span class="string"><span class="delimiter">'''</span><span class="content">{ &quot;bookName&quot; : &quot;foo&quot; }</span><span class="delimiter">'''</span></span>)
+                <span class="comment">// the headers of the output message</span>
+                headers {
+                        header(<span class="string"><span class="delimiter">'</span><span class="content">BOOK-NAME</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>)
+                }
+        }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this case the output message will be sent to <code>output</code> if a method called <code>bookReturnedTriggered</code> will be executed. In the message <strong>publisher&#8217;s</strong> side
+we will generate a test that will call that method to trigger the message. On the <strong>consumer</strong> side you can use the <code>some_label</code> to trigger the message.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="output-triggered-by-a-message">Output triggered by a message</h4>
+<div class="paragraph">
+<p>The output message can be triggered by receiving a message.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">def</span> dsl = GroovyDsl.make {
+        description <span class="string"><span class="delimiter">'</span><span class="content">Some Description</span><span class="delimiter">'</span></span>
+        label <span class="string"><span class="delimiter">'</span><span class="content">some_label</span><span class="delimiter">'</span></span>
+        <span class="comment">// input is a message</span>
+        input {
+                <span class="comment">// the message was received from this destination</span>
+                messageFrom(<span class="string"><span class="delimiter">'</span><span class="content">input</span><span class="delimiter">'</span></span>)
+                <span class="comment">// has the following body</span>
+                messageBody([
+                        <span class="key">bookName</span>: <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>
+                ])
+                <span class="comment">// and the following headers</span>
+                messageHeaders {
+                        header(<span class="string"><span class="delimiter">'</span><span class="content">sample</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">header</span><span class="delimiter">'</span></span>)
+                }
+        }
+        outputMessage {
+                sentTo(<span class="string"><span class="delimiter">'</span><span class="content">output</span><span class="delimiter">'</span></span>)
+                body([
+                        <span class="key">bookName</span>: <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>
+                ])
+                headers {
+                        header(<span class="string"><span class="delimiter">'</span><span class="content">BOOK-NAME</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>)
+                }
+        }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this case the output message will be sent to <code>output</code> if a proper message will be received on the <code>input</code> destination. In the message <strong>publisher&#8217;s</strong> side
+we will generate a test that will send the input message to the defined destination. On the <strong>consumer</strong> side you can either send a message to the input
+destination or use the <code>some_label</code> to trigger the message.</p>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="publisher-side-test-generation">Publisher side test generation</h3>
+<h3 id="stub-triggering">Stub triggering</h3>
 <div class="paragraph">
-<p>Having the <code>input</code> or <code>outputMessage</code> sections in your DSL will result in creation of tests on the publisher&#8217;s side.</p>
+<p>To trigger a message it&#8217;s enough to use the <code>StubTiggerer</code> interface:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">Unresolved directive <span class="keyword">in</span> stubrunner_msg.adoc - <span class="key">include</span>::..<span class="regexp"><span class="delimiter">/</span><span class="content">..</span><span class="delimiter">/</span></span>stub-runner/src/main/groovy/io/codearte/accurest/stubrunner/StubTriggerer.groovy<span class="type">[]</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For convenience the <code>StubFinder</code> interface extends <code>StubTrigger</code> so it&#8217;s enough to use only one in your tests.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="stub-runner-messaging-camel">Stub Runner Messaging Camel</h3>
+<div class="paragraph">
+<p>Accurest Stub Runner&#8217;s messaging module gives you an easy way to integrate with Apache Camel.
+For the provided artifacts it will automatically download the stubs and register the required
+routes.</p>
+</div>
+<div class="sect3">
+<h4 id="examples">Examples</h4>
+<div class="sect4">
+<h5 id="stubs-structure">Stubs structure</h5>
+<div class="paragraph">
+<p>Let us assume that we have the following Maven repository with a deployed stubs for the
+<code>camelService</code> application.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">└── .m2
+    └── repository
+        └── io
+            └── codearte
+                └── accurest
+                    └── stubs
+                        └── camelService
+                            ├── 0.0.1-SNAPSHOT
+                            │   ├── camelService-0.0.1-SNAPSHOT.pom
+                            │   ├── camelService-0.0.1-SNAPSHOT-stubs.jar
+                            │   └── maven-metadata-local.xml
+                            └── maven-metadata-local.xml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And the stubs contain the following structure:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">├── META-INF
+│   └── MANIFEST.MF
+└── repository
+    ├── accurest
+    │   ├── bookDeleted.groovy
+    │   ├── bookReturned1.groovy
+    │   └── bookReturned2.groovy
+    └── mappings</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s consider the following contracts (let' number it with <strong>1</strong>):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest.dsl.GroovyDsl.make {
+        label <span class="string"><span class="delimiter">'</span><span class="content">return_book_1</span><span class="delimiter">'</span></span>
+        input {
+                triggeredBy(<span class="string"><span class="delimiter">'</span><span class="content">bookReturnedTriggered()</span><span class="delimiter">'</span></span>)
+        }
+        outputMessage {
+                sentTo(<span class="string"><span class="delimiter">'</span><span class="content">jms:output</span><span class="delimiter">'</span></span>)
+                body(<span class="string"><span class="delimiter">'''</span><span class="content">{ &quot;bookName&quot; : &quot;foo&quot; }</span><span class="delimiter">'''</span></span>)
+                headers {
+                        header(<span class="string"><span class="delimiter">'</span><span class="content">BOOK-NAME</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>)
+                }
+        }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and number <strong>2</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest.dsl.GroovyDsl.make {
+        label <span class="string"><span class="delimiter">'</span><span class="content">return_book_2</span><span class="delimiter">'</span></span>
+        input {
+                messageFrom(<span class="string"><span class="delimiter">'</span><span class="content">jms:input</span><span class="delimiter">'</span></span>)
+                messageBody([
+                                <span class="key">bookName</span>: <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>
+                ])
+                messageHeaders {
+                        header(<span class="string"><span class="delimiter">'</span><span class="content">sample</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">header</span><span class="delimiter">'</span></span>)
+                }
+        }
+        outputMessage {
+                sentTo(<span class="string"><span class="delimiter">'</span><span class="content">jms:output</span><span class="delimiter">'</span></span>)
+                body([
+                                <span class="key">bookName</span>: <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>
+                ])
+                headers {
+                        header(<span class="string"><span class="delimiter">'</span><span class="content">BOOK-NAME</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>)
+                }
+        }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="scenario-1-no-input-message">Scenario 1 (no input message)</h5>
+<div class="paragraph">
+<p>So as to trigger a message via the <code>return_book_1</code> label we&#8217;ll use the <code>StubTiggerer</code> interface as follows</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">stubFinder.trigger(<span class="string"><span class="delimiter">'</span><span class="content">return_book_1</span><span class="delimiter">'</span></span>)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Next we&#8217;ll want to listen to the output of the message sent to <code>jms:output</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">Exchange receivedMessage = camelContext.createConsumerTemplate().receive(<span class="string"><span class="delimiter">'</span><span class="content">jms:output</span><span class="delimiter">'</span></span>, <span class="integer">5000</span>)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And the received message would pass the following assertions</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">receivedMessage != <span class="predefined-constant">null</span>
+assertThatBodyContainsBookNameFoo(receivedMessage.in.body)
+receivedMessage.in.headers.get(<span class="string"><span class="delimiter">'</span><span class="content">BOOK-NAME</span><span class="delimiter">'</span></span>) == <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="scenario-2-output-triggered-by-input">Scenario 2 (output triggered by input)</h5>
+<div class="paragraph">
+<p>Since the route is set for you it&#8217;s enough to just send a message to the <code>jms:output</code> destination.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">camelContext.createProducerTemplate().sendBodyAndHeaders(<span class="string"><span class="delimiter">'</span><span class="content">jms:input</span><span class="delimiter">'</span></span>, <span class="keyword">new</span> BookReturned(<span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>), [<span class="key">sample</span>: <span class="string"><span class="delimiter">'</span><span class="content">header</span><span class="delimiter">'</span></span>])</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Next we&#8217;ll want to listen to the output of the message sent to <code>jms:output</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">Exchange receivedMessage = camelContext.createConsumerTemplate().receive(<span class="string"><span class="delimiter">'</span><span class="content">jms:output</span><span class="delimiter">'</span></span>, <span class="integer">5000</span>)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And the received message would pass the following assertions</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">receivedMessage != <span class="predefined-constant">null</span>
+assertThatBodyContainsBookNameFoo(receivedMessage.in.body)
+receivedMessage.in.headers.get(<span class="string"><span class="delimiter">'</span><span class="content">BOOK-NAME</span><span class="delimiter">'</span></span>) == <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span></code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -621,7 +816,7 @@ frameworks than Spring.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-04-23 23:24:32 CEST
+Last updated 2016-04-23 23:01:49 CEST
 </div>
 </div>
 </body>
