@@ -2348,7 +2348,31 @@ destination or use the <code>some_label</code> to trigger the message.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">Unresolved directive <span class="keyword">in</span> stubrunner_msg.adoc - <span class="key">include</span>::..<span class="regexp"><span class="delimiter">/</span><span class="content">..</span><span class="delimiter">/</span></span>stub-runner/src/main/groovy/io/codearte/accurest/stubrunner/StubTriggerer.groovy<span class="type">[]</span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">package</span> io.codearte.accurest.stubrunner
+
+<span class="type">interface</span> StubTriggerer {
+
+        <span class="comment">/**
+         * Triggers an event by a given label for a given {@code groupid:artifactid} notation. You can use only {@code artifactId} too.
+         *
+         * Feature related to messaging.
+         */</span>
+        <span class="type">void</span> trigger(<span class="predefined-type">String</span> ivyNotation, <span class="predefined-type">String</span> labelName)
+
+        <span class="comment">/**
+         * Triggers an event by a given label.
+         *
+         * Feature related to messaging.
+         */</span>
+        <span class="type">void</span> trigger(<span class="predefined-type">String</span> labelName)
+
+        <span class="comment">/**
+         * Triggers all possible events.
+         *
+         * Feature related to messaging.
+         */</span>
+        <span class="type">void</span> trigger()
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
