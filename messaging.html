@@ -519,6 +519,8 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#integrations">Integrations</a></li>
 <li><a href="#manual-integration">Manual Integration</a></li>
 <li><a href="#publisher-side-test-generation">Publisher side test generation</a></li>
+<li><a href="#examples">Examples</a></li>
+<li><a href="#consumer-stub-side-generation">Consumer Stub Side generation</a></li>
 </ul>
 </li>
 </ul>
@@ -595,6 +597,9 @@ testCompile <span class="string"><span class="delimiter">&quot;</span><span clas
 <li>
 <p>AccurestMessaging - class that allows you to build, send and receive messages</p>
 </li>
+<li>
+<p>AccurestFilter - interface to filter out the messages that do not follow the pattern from the DSL</p>
+</li>
 </ul>
 </div>
 <div class="paragraph">
@@ -613,7 +618,288 @@ frameworks than Spring.</p>
 <div class="sect2">
 <h3 id="publisher-side-test-generation">Publisher side test generation</h3>
 <div class="paragraph">
-<p>Having the <code>input</code> or <code>outputMessage</code> sections in your DSL will result in creation of tests on the publisher&#8217;s side.</p>
+<p>Having the <code>input</code> or <code>outputMessage</code> sections in your DSL will result in creation of tests on the publisher&#8217;s side. By default
+JUnit tests will be created, however there is also a possibility to create Spock tests.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="examples">Examples</h3>
+<div class="paragraph">
+<p>There are 3 main scenarios that we should take into consideration:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Scenario 1: there is no input message that produces an output one. The output message is triggered by a component
+inside the application (e.g. scheduler)</p>
+</li>
+<li>
+<p>Scenario 2: the input message triggers an output message</p>
+</li>
+<li>
+<p>Scenarion 3: the input message is consumed and there is no output message</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="scenario-1-no-input-message">Scenario 1 (no input message)</h4>
+<div class="paragraph">
+<p>For the given contract:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">                        <span class="keyword">def</span> contractDsl = GroovyDsl.make {
+                                label <span class="string"><span class="delimiter">'</span><span class="content">some_label</span><span class="delimiter">'</span></span>
+                                input {
+                                        triggeredBy(<span class="string"><span class="delimiter">'</span><span class="content">bookReturnedTriggered()</span><span class="delimiter">'</span></span>)
+                                }
+                                outputMessage {
+                                        sentTo(<span class="string"><span class="delimiter">'</span><span class="content">activemq:output</span><span class="delimiter">'</span></span>)
+                                        body(<span class="string"><span class="delimiter">'''</span><span class="content">{ &quot;bookName&quot; : &quot;foo&quot; }</span><span class="delimiter">'''</span></span>)
+                                        headers {
+                                                header(<span class="string"><span class="delimiter">'</span><span class="content">BOOK-NAME</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>)
+                                        }
+                                }
+                        }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The following JUnit test will be created:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">                                        <span class="string"><span class="delimiter">'''</span><span class="content">
+                                                                                // when:
+                                                                                         bookReturnedTriggered();
+
+                                                                                // then:
+                                                                                         AccurestMessage response = accurestMessaging.receiveMessage(&quot;activemq:output&quot;);
+                                                                                         assertThat(response.getHeader(&quot;BOOK-NAME&quot;)).isEqualTo(&quot;foo&quot;);
+                                                                                // and:
+                                                                                         DocumentContext parsedJson = JsonPath.parse(accurestObjectMapper.writeValueAsString(response.getPayload()));
+                                                                                         assertThatJson(parsedJson).field(&quot;bookName&quot;).isEqualTo(&quot;foo&quot;);
+                                                                                        </span><span class="delimiter">'''</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And the following Spock test would be created:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">                                        <span class="string"><span class="delimiter">'''</span><span class="content">
+                                                                                when:
+                                                                                         bookReturnedTriggered()
+
+                                                                                then:
+                                                                                         def response = accurestMessaging.receiveMessage('activemq:output')
+                                                                                         response.getHeader('BOOK-NAME')  == 'foo'
+                                                                                and:
+                                                                                         DocumentContext parsedJson = JsonPath.parse(accurestObjectMapper.writeValueAsString(response.payload))
+                                                                                         assertThatJson(parsedJson).field(&quot;bookName&quot;).isEqualTo(&quot;foo&quot;)
+                                                                                        </span><span class="delimiter">'''</span></span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="scenario-2-output-triggered-by-input">Scenario 2 (output triggered by input)</h4>
+<div class="paragraph">
+<p>For the given contract:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">                        <span class="keyword">def</span> contractDsl = GroovyDsl.make {
+                                label <span class="string"><span class="delimiter">'</span><span class="content">some_label</span><span class="delimiter">'</span></span>
+                                input {
+                                        messageFrom(<span class="string"><span class="delimiter">'</span><span class="content">jms:input</span><span class="delimiter">'</span></span>)
+                                        messageBody([
+                                                        <span class="key">bookName</span>: <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>
+                                        ])
+                                        messageHeaders {
+                                                header(<span class="string"><span class="delimiter">'</span><span class="content">sample</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">header</span><span class="delimiter">'</span></span>)
+                                        }
+                                }
+                                outputMessage {
+                                        sentTo(<span class="string"><span class="delimiter">'</span><span class="content">jms:output</span><span class="delimiter">'</span></span>)
+                                        body([
+                                                        <span class="key">bookName</span>: <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>
+                                        ])
+                                        headers {
+                                                header(<span class="string"><span class="delimiter">'</span><span class="content">BOOK-NAME</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>)
+                                        }
+                                }
+                        }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The following JUnit test will be created:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">                                        <span class="string"><span class="delimiter">'''</span><span class="content">
+                                                                                        // given:
+                                                                                                 AccurestMessage inputMessage = accurestMessaging.create(
+                                                                                                        &quot;{</span><span class="char">\\</span><span class="content">&quot;bookName</span><span class="char">\\</span><span class="content">&quot;:</span><span class="char">\\</span><span class="content">&quot;foo</span><span class="char">\\</span><span class="content">&quot;}&quot;
+                                                                                                , headers()
+                                                                                                        .header(&quot;sample&quot;, &quot;header&quot;));
+
+                                                                                                // when:
+                                                                                                 accurestMessaging.send(inputMessage, &quot;jms:input&quot;);
+
+                                                                                                // then:
+                                                                                                 AccurestMessage response = accurestMessaging.receiveMessage(&quot;jms:output&quot;);
+                                                                                                 assertThat(response.getHeader(&quot;BOOK-NAME&quot;)).isEqualTo(&quot;foo&quot;);
+                                                                                                // and:
+                                                                                                 DocumentContext parsedJson = JsonPath.parse(accurestObjectMapper.writeValueAsString(response.getPayload()));
+                                                                                                 assertThatJson(parsedJson).field(&quot;bookName&quot;).isEqualTo(&quot;foo&quot;);
+
+                                                                                                </span><span class="delimiter">'''</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And the following Spock test would be created:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">                                        <span class="string"><span class="delimiter">'''</span><span class="content">
+                                                                                        given:
+                                                                                                 def inputMessage = accurestMessaging.create(
+                                                                                                        </span><span class="char">\'</span><span class="char">\'</span><span class="char">\'</span><span class="content">{&quot;bookName&quot;:&quot;foo&quot;}</span><span class="char">\'</span><span class="char">\'</span><span class="char">\'</span><span class="content">,
+                                                                                                        ['sample': 'header']
+                                                                                                )
+
+                                                                                        when:
+                                                                                                 accurestMessaging.send(inputMessage, 'jms:input')
+
+                                                                                        then:
+                                                                                                 def response = accurestMessaging.receiveMessage('jms:output')
+                                                                                                 response.getHeader('BOOK-NAME')  == 'foo'
+                                                                                        and:
+                                                                                                 DocumentContext parsedJson = JsonPath.parse(accurestObjectMapper.writeValueAsString(response.payload))
+                                                                                                 assertThatJson(parsedJson).field(&quot;bookName&quot;).isEqualTo(&quot;foo&quot;)
+                                                                                                </span><span class="delimiter">'''</span></span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="scenario-3-no-output-message">Scenario 3 (no output message)</h4>
+<div class="paragraph">
+<p>For the given contract:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">                        <span class="keyword">def</span> contractDsl = GroovyDsl.make {
+                                label <span class="string"><span class="delimiter">'</span><span class="content">some_label</span><span class="delimiter">'</span></span>
+                                input {
+                                        messageFrom(<span class="string"><span class="delimiter">'</span><span class="content">jms:delete</span><span class="delimiter">'</span></span>)
+                                        messageBody([
+                                                        <span class="key">bookName</span>: <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>
+                                        ])
+                                        messageHeaders {
+                                                header(<span class="string"><span class="delimiter">'</span><span class="content">sample</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">header</span><span class="delimiter">'</span></span>)
+                                        }
+                                        assertThat(<span class="string"><span class="delimiter">'</span><span class="content">bookWasDeleted()</span><span class="delimiter">'</span></span>)
+                                }
+                        }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The following JUnit test will be created:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">                                        <span class="string"><span class="delimiter">'''</span><span class="content">
+                                                                                        // given:
+                                                                                         AccurestMessage inputMessage = accurestMessaging.create(
+                                                                                                &quot;{</span><span class="char">\\</span><span class="content">&quot;bookName</span><span class="char">\\</span><span class="content">&quot;:</span><span class="char">\\</span><span class="content">&quot;foo</span><span class="char">\\</span><span class="content">&quot;}&quot;
+                                                                                        , headers()
+                                                                                                .header(&quot;sample&quot;, &quot;header&quot;));
+
+                                                                                        // when:
+                                                                                         accurestMessaging.send(inputMessage, &quot;jms:delete&quot;);
+
+                                                                                        // then:
+                                                                                         bookWasDeleted();
+                                                                                                </span><span class="delimiter">'''</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And the following Spock test would be created:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">                                        <span class="string"><span class="delimiter">'''</span><span class="content">
+                                                                                        given:
+                                                                                                 def inputMessage = accurestMessaging.create(
+                                                                                                        </span><span class="char">\'</span><span class="char">\'</span><span class="char">\'</span><span class="content">{&quot;bookName&quot;:&quot;foo&quot;}</span><span class="char">\'</span><span class="char">\'</span><span class="char">\'</span><span class="content">,
+                                                                                                        ['sample': 'header']
+                                                                                                )
+
+                                                                                        when:
+                                                                                                 accurestMessaging.send(inputMessage, 'jms:delete')
+
+                                                                                        then:
+                                                                                                 noExceptionThrown()
+                                                                                                 bookWasDeleted()
+                                                                                                </span><span class="delimiter">'''</span></span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="consumer-stub-side-generation">Consumer Stub Side generation</h3>
+<div class="paragraph">
+<p>Unlike the HTTP part - in Messaging we need to publish the Groovy DSL inside the JAR with a stub. Then it&#8217;s parsed on the consumer side
+and proper stubbed routes are created.</p>
+</div>
+<div class="paragraph">
+<p>For more infromation please consult the Stub Runner Messaging sections.</p>
+</div>
+<div class="sect3">
+<h4 id="gradle-setup">Gradle Setup</h4>
+<div class="paragraph">
+<p>Example of Accurest Gradle setup:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">ext {
+        contractsDir = file(<span class="string"><span class="delimiter">&quot;</span><span class="content">mappings</span><span class="delimiter">&quot;</span></span>)
+        stubsOutputDirRoot = file(<span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>project.buildDir<span class="inline-delimiter">}</span></span><span class="content">/production/</span><span class="inline"><span class="inline-delimiter">${</span>project.name<span class="inline-delimiter">}</span></span><span class="content">-stubs/</span><span class="delimiter">&quot;</span></span>)
+        wireMockStubsOutputDir = file(<span class="keyword">new</span> <span class="predefined-type">File</span>(stubsOutputDirRoot, <span class="string"><span class="delimiter">'</span><span class="content">repository/mappings/</span><span class="delimiter">'</span></span>))
+        contractsOutputDir = file(<span class="keyword">new</span> <span class="predefined-type">File</span>(stubsOutputDirRoot, <span class="string"><span class="delimiter">'</span><span class="content">repository/accurest/</span><span class="delimiter">'</span></span>))
+}
+
+task copyContracts(<span class="key">type</span>: Copy) {
+        from contractsDir
+        include <span class="string"><span class="delimiter">'</span><span class="content">**/*.groovy</span><span class="delimiter">'</span></span>
+        into contractsOutputDir
+}
+
+task stubsJar(<span class="key">type</span>: Jar, <span class="key">dependsOn</span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">generateWireMockClientStubs</span><span class="delimiter">&quot;</span></span>, copyContracts]) {
+        baseName = <span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>project.name<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span>
+        classifier = <span class="string"><span class="delimiter">&quot;</span><span class="content">stubs</span><span class="delimiter">&quot;</span></span>
+        from stubsOutputDirRoot
+}
+
+artifacts {
+        archives stubsJar
+}
+
+publishing {
+        publications {
+                stubs(MavenPublication) {
+                        artifactId <span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>project.name<span class="inline-delimiter">}</span></span><span class="content">-stubs</span><span class="delimiter">&quot;</span></span>
+                        artifact stubsJar
+                }
+        }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="maven-setup">Maven Setup</h4>
+<div class="paragraph">
+<p>Example of Maven can be found in the [AccuREST Maven Plugin README](<a href="https://github.com/Codearte/accurest-maven-plugin/=publishing-wiremock-stubs-projectf-stubsjar" class="bare">https://github.com/Codearte/accurest-maven-plugin/=publishing-wiremock-stubs-projectf-stubsjar</a>)</p>
+</div>
 </div>
 </div>
 </div>
@@ -621,7 +907,7 @@ frameworks than Spring.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-04-23 23:24:32 CEST
+Last updated 2016-04-24 08:52:32 CEST
 </div>
 </div>
 </body>

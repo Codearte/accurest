@@ -530,6 +530,8 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#integrations">Integrations</a></li>
 <li><a href="#manual-integration">Manual Integration</a></li>
 <li><a href="#publisher-side-test-generation">Publisher side test generation</a></li>
+<li><a href="#examples">Examples</a></li>
+<li><a href="#consumer-stub-side-generation">Consumer Stub Side generation</a></li>
 </ul>
 </li>
 <li><a href="#contract-dsl">Contract DSL</a>
@@ -545,7 +547,7 @@ table.CodeRay td.code>pre{padding:0}
 </li>
 <li><a href="#client-side">Client Side</a></li>
 <li><a href="#server-side">Server Side</a></li>
-<li><a href="#examples">Examples</a></li>
+<li><a href="#examples-2">Examples</a></li>
 <li><a href="#scenarios">Scenarios</a></li>
 <li><a href="#stub-runner-for-http">Stub Runner for HTTP</a>
 <ul class="sectlevel2">
@@ -562,6 +564,8 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#dsl">DSL</a></li>
 <li><a href="#stub-triggering">Stub triggering</a></li>
 <li><a href="#stub-runner-messaging-camel">Stub Runner Messaging Camel</a></li>
+<li><a href="#stub-runner-messaging-integration">Stub Runner Messaging Integration</a></li>
+<li><a href="#stub-runner-messaging-stream">Stub Runner Messaging Stream</a></li>
 </ul>
 </li>
 <li><a href="#migration-guide">Migration Guide</a>
@@ -1141,6 +1145,9 @@ testCompile <span class="string"><span class="delimiter">&quot;</span><span clas
 <li>
 <p>AccurestMessaging - class that allows you to build, send and receive messages</p>
 </li>
+<li>
+<p>AccurestFilter - interface to filter out the messages that do not follow the pattern from the DSL</p>
+</li>
 </ul>
 </div>
 <div class="paragraph">
@@ -1159,7 +1166,288 @@ frameworks than Spring.</p>
 <div class="sect2">
 <h3 id="publisher-side-test-generation">Publisher side test generation</h3>
 <div class="paragraph">
-<p>Having the <code>input</code> or <code>outputMessage</code> sections in your DSL will result in creation of tests on the publisher&#8217;s side.</p>
+<p>Having the <code>input</code> or <code>outputMessage</code> sections in your DSL will result in creation of tests on the publisher&#8217;s side. By default
+JUnit tests will be created, however there is also a possibility to create Spock tests.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="examples">Examples</h3>
+<div class="paragraph">
+<p>There are 3 main scenarios that we should take into consideration:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Scenario 1: there is no input message that produces an output one. The output message is triggered by a component
+inside the application (e.g. scheduler)</p>
+</li>
+<li>
+<p>Scenario 2: the input message triggers an output message</p>
+</li>
+<li>
+<p>Scenarion 3: the input message is consumed and there is no output message</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="scenario-1-no-input-message">Scenario 1 (no input message)</h4>
+<div class="paragraph">
+<p>For the given contract:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">                        <span class="keyword">def</span> contractDsl = GroovyDsl.make {
+                                label <span class="string"><span class="delimiter">'</span><span class="content">some_label</span><span class="delimiter">'</span></span>
+                                input {
+                                        triggeredBy(<span class="string"><span class="delimiter">'</span><span class="content">bookReturnedTriggered()</span><span class="delimiter">'</span></span>)
+                                }
+                                outputMessage {
+                                        sentTo(<span class="string"><span class="delimiter">'</span><span class="content">activemq:output</span><span class="delimiter">'</span></span>)
+                                        body(<span class="string"><span class="delimiter">'''</span><span class="content">{ &quot;bookName&quot; : &quot;foo&quot; }</span><span class="delimiter">'''</span></span>)
+                                        headers {
+                                                header(<span class="string"><span class="delimiter">'</span><span class="content">BOOK-NAME</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>)
+                                        }
+                                }
+                        }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The following JUnit test will be created:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">                                        <span class="string"><span class="delimiter">'''</span><span class="content">
+                                                                                // when:
+                                                                                         bookReturnedTriggered();
+
+                                                                                // then:
+                                                                                         AccurestMessage response = accurestMessaging.receiveMessage(&quot;activemq:output&quot;);
+                                                                                         assertThat(response.getHeader(&quot;BOOK-NAME&quot;)).isEqualTo(&quot;foo&quot;);
+                                                                                // and:
+                                                                                         DocumentContext parsedJson = JsonPath.parse(accurestObjectMapper.writeValueAsString(response.getPayload()));
+                                                                                         assertThatJson(parsedJson).field(&quot;bookName&quot;).isEqualTo(&quot;foo&quot;);
+                                                                                        </span><span class="delimiter">'''</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And the following Spock test would be created:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">                                        <span class="string"><span class="delimiter">'''</span><span class="content">
+                                                                                when:
+                                                                                         bookReturnedTriggered()
+
+                                                                                then:
+                                                                                         def response = accurestMessaging.receiveMessage('activemq:output')
+                                                                                         response.getHeader('BOOK-NAME')  == 'foo'
+                                                                                and:
+                                                                                         DocumentContext parsedJson = JsonPath.parse(accurestObjectMapper.writeValueAsString(response.payload))
+                                                                                         assertThatJson(parsedJson).field(&quot;bookName&quot;).isEqualTo(&quot;foo&quot;)
+                                                                                        </span><span class="delimiter">'''</span></span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="scenario-2-output-triggered-by-input">Scenario 2 (output triggered by input)</h4>
+<div class="paragraph">
+<p>For the given contract:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">                        <span class="keyword">def</span> contractDsl = GroovyDsl.make {
+                                label <span class="string"><span class="delimiter">'</span><span class="content">some_label</span><span class="delimiter">'</span></span>
+                                input {
+                                        messageFrom(<span class="string"><span class="delimiter">'</span><span class="content">jms:input</span><span class="delimiter">'</span></span>)
+                                        messageBody([
+                                                        <span class="key">bookName</span>: <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>
+                                        ])
+                                        messageHeaders {
+                                                header(<span class="string"><span class="delimiter">'</span><span class="content">sample</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">header</span><span class="delimiter">'</span></span>)
+                                        }
+                                }
+                                outputMessage {
+                                        sentTo(<span class="string"><span class="delimiter">'</span><span class="content">jms:output</span><span class="delimiter">'</span></span>)
+                                        body([
+                                                        <span class="key">bookName</span>: <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>
+                                        ])
+                                        headers {
+                                                header(<span class="string"><span class="delimiter">'</span><span class="content">BOOK-NAME</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>)
+                                        }
+                                }
+                        }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The following JUnit test will be created:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">                                        <span class="string"><span class="delimiter">'''</span><span class="content">
+                                                                                        // given:
+                                                                                                 AccurestMessage inputMessage = accurestMessaging.create(
+                                                                                                        &quot;{</span><span class="char">\\</span><span class="content">&quot;bookName</span><span class="char">\\</span><span class="content">&quot;:</span><span class="char">\\</span><span class="content">&quot;foo</span><span class="char">\\</span><span class="content">&quot;}&quot;
+                                                                                                , headers()
+                                                                                                        .header(&quot;sample&quot;, &quot;header&quot;));
+
+                                                                                                // when:
+                                                                                                 accurestMessaging.send(inputMessage, &quot;jms:input&quot;);
+
+                                                                                                // then:
+                                                                                                 AccurestMessage response = accurestMessaging.receiveMessage(&quot;jms:output&quot;);
+                                                                                                 assertThat(response.getHeader(&quot;BOOK-NAME&quot;)).isEqualTo(&quot;foo&quot;);
+                                                                                                // and:
+                                                                                                 DocumentContext parsedJson = JsonPath.parse(accurestObjectMapper.writeValueAsString(response.getPayload()));
+                                                                                                 assertThatJson(parsedJson).field(&quot;bookName&quot;).isEqualTo(&quot;foo&quot;);
+
+                                                                                                </span><span class="delimiter">'''</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And the following Spock test would be created:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">                                        <span class="string"><span class="delimiter">'''</span><span class="content">
+                                                                                        given:
+                                                                                                 def inputMessage = accurestMessaging.create(
+                                                                                                        </span><span class="char">\'</span><span class="char">\'</span><span class="char">\'</span><span class="content">{&quot;bookName&quot;:&quot;foo&quot;}</span><span class="char">\'</span><span class="char">\'</span><span class="char">\'</span><span class="content">,
+                                                                                                        ['sample': 'header']
+                                                                                                )
+
+                                                                                        when:
+                                                                                                 accurestMessaging.send(inputMessage, 'jms:input')
+
+                                                                                        then:
+                                                                                                 def response = accurestMessaging.receiveMessage('jms:output')
+                                                                                                 response.getHeader('BOOK-NAME')  == 'foo'
+                                                                                        and:
+                                                                                                 DocumentContext parsedJson = JsonPath.parse(accurestObjectMapper.writeValueAsString(response.payload))
+                                                                                                 assertThatJson(parsedJson).field(&quot;bookName&quot;).isEqualTo(&quot;foo&quot;)
+                                                                                                </span><span class="delimiter">'''</span></span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="scenario-3-no-output-message">Scenario 3 (no output message)</h4>
+<div class="paragraph">
+<p>For the given contract:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">                        <span class="keyword">def</span> contractDsl = GroovyDsl.make {
+                                label <span class="string"><span class="delimiter">'</span><span class="content">some_label</span><span class="delimiter">'</span></span>
+                                input {
+                                        messageFrom(<span class="string"><span class="delimiter">'</span><span class="content">jms:delete</span><span class="delimiter">'</span></span>)
+                                        messageBody([
+                                                        <span class="key">bookName</span>: <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>
+                                        ])
+                                        messageHeaders {
+                                                header(<span class="string"><span class="delimiter">'</span><span class="content">sample</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">header</span><span class="delimiter">'</span></span>)
+                                        }
+                                        assertThat(<span class="string"><span class="delimiter">'</span><span class="content">bookWasDeleted()</span><span class="delimiter">'</span></span>)
+                                }
+                        }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The following JUnit test will be created:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">                                        <span class="string"><span class="delimiter">'''</span><span class="content">
+                                                                                        // given:
+                                                                                         AccurestMessage inputMessage = accurestMessaging.create(
+                                                                                                &quot;{</span><span class="char">\\</span><span class="content">&quot;bookName</span><span class="char">\\</span><span class="content">&quot;:</span><span class="char">\\</span><span class="content">&quot;foo</span><span class="char">\\</span><span class="content">&quot;}&quot;
+                                                                                        , headers()
+                                                                                                .header(&quot;sample&quot;, &quot;header&quot;));
+
+                                                                                        // when:
+                                                                                         accurestMessaging.send(inputMessage, &quot;jms:delete&quot;);
+
+                                                                                        // then:
+                                                                                         bookWasDeleted();
+                                                                                                </span><span class="delimiter">'''</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And the following Spock test would be created:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">                                        <span class="string"><span class="delimiter">'''</span><span class="content">
+                                                                                        given:
+                                                                                                 def inputMessage = accurestMessaging.create(
+                                                                                                        </span><span class="char">\'</span><span class="char">\'</span><span class="char">\'</span><span class="content">{&quot;bookName&quot;:&quot;foo&quot;}</span><span class="char">\'</span><span class="char">\'</span><span class="char">\'</span><span class="content">,
+                                                                                                        ['sample': 'header']
+                                                                                                )
+
+                                                                                        when:
+                                                                                                 accurestMessaging.send(inputMessage, 'jms:delete')
+
+                                                                                        then:
+                                                                                                 noExceptionThrown()
+                                                                                                 bookWasDeleted()
+                                                                                                </span><span class="delimiter">'''</span></span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="consumer-stub-side-generation">Consumer Stub Side generation</h3>
+<div class="paragraph">
+<p>Unlike the HTTP part - in Messaging we need to publish the Groovy DSL inside the JAR with a stub. Then it&#8217;s parsed on the consumer side
+and proper stubbed routes are created.</p>
+</div>
+<div class="paragraph">
+<p>For more infromation please consult the Stub Runner Messaging sections.</p>
+</div>
+<div class="sect3">
+<h4 id="gradle-setup">Gradle Setup</h4>
+<div class="paragraph">
+<p>Example of Accurest Gradle setup:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">ext {
+        contractsDir = file(<span class="string"><span class="delimiter">&quot;</span><span class="content">mappings</span><span class="delimiter">&quot;</span></span>)
+        stubsOutputDirRoot = file(<span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>project.buildDir<span class="inline-delimiter">}</span></span><span class="content">/production/</span><span class="inline"><span class="inline-delimiter">${</span>project.name<span class="inline-delimiter">}</span></span><span class="content">-stubs/</span><span class="delimiter">&quot;</span></span>)
+        wireMockStubsOutputDir = file(<span class="keyword">new</span> <span class="predefined-type">File</span>(stubsOutputDirRoot, <span class="string"><span class="delimiter">'</span><span class="content">repository/mappings/</span><span class="delimiter">'</span></span>))
+        contractsOutputDir = file(<span class="keyword">new</span> <span class="predefined-type">File</span>(stubsOutputDirRoot, <span class="string"><span class="delimiter">'</span><span class="content">repository/accurest/</span><span class="delimiter">'</span></span>))
+}
+
+task copyContracts(<span class="key">type</span>: Copy) {
+        from contractsDir
+        include <span class="string"><span class="delimiter">'</span><span class="content">**/*.groovy</span><span class="delimiter">'</span></span>
+        into contractsOutputDir
+}
+
+task stubsJar(<span class="key">type</span>: Jar, <span class="key">dependsOn</span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">generateWireMockClientStubs</span><span class="delimiter">&quot;</span></span>, copyContracts]) {
+        baseName = <span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>project.name<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span>
+        classifier = <span class="string"><span class="delimiter">&quot;</span><span class="content">stubs</span><span class="delimiter">&quot;</span></span>
+        from stubsOutputDirRoot
+}
+
+artifacts {
+        archives stubsJar
+}
+
+publishing {
+        publications {
+                stubs(MavenPublication) {
+                        artifactId <span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>project.name<span class="inline-delimiter">}</span></span><span class="content">-stubs</span><span class="delimiter">&quot;</span></span>
+                        artifact stubsJar
+                }
+        }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="maven-setup">Maven Setup</h4>
+<div class="paragraph">
+<p>Example of Maven can be found in the [AccuREST Maven Plugin README](<a href="https://github.com/Codearte/accurest-maven-plugin/=publishing-wiremock-stubs-projectf-stubsjar" class="bare">https://github.com/Codearte/accurest-maven-plugin/=publishing-wiremock-stubs-projectf-stubsjar</a>)</p>
+</div>
 </div>
 </div>
 </div>
@@ -1711,7 +1999,7 @@ for response verification.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="examples">Examples</h2>
+<h2 id="examples-2">Examples</h2>
 <div class="sectionbody">
 <div class="listingblock">
 <div class="content">
@@ -2387,7 +2675,18 @@ For the provided artifacts it will automatically download the stubs and register
 routes.</p>
 </div>
 <div class="sect3">
-<h4 id="examples-2">Examples</h4>
+<h4 id="adding-it-to-the-project">Adding it to the project</h4>
+<div class="paragraph">
+<p>To use it you have to add the following dependency to your project (example for Gradle):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">testCompile <span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest:stub-runner-messaging-camel:</span><span class="inline"><span class="inline-delimiter">${</span>accurestVersion<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="examples-3">Examples</h4>
 <div class="sect4">
 <h5 id="stubs-structure">Stubs structure</h5>
 <div class="paragraph">
@@ -2475,7 +2774,7 @@ routes.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="scenario-1-no-input-message">Scenario 1 (no input message)</h5>
+<h5 id="scenario-1-no-input-message-2">Scenario 1 (no input message)</h5>
 <div class="paragraph">
 <p>So as to trigger a message via the <code>return_book_1</code> label we&#8217;ll use the <code>StubTiggerer</code> interface as follows</p>
 </div>
@@ -2504,7 +2803,7 @@ receivedMessage.in.headers.get(<span class="string"><span class="delimiter">'</s
 </div>
 </div>
 <div class="sect4">
-<h5 id="scenario-2-output-triggered-by-input">Scenario 2 (output triggered by input)</h5>
+<h5 id="scenario-2-output-triggered-by-input-2">Scenario 2 (output triggered by input)</h5>
 <div class="paragraph">
 <p>Since the route is set for you it&#8217;s enough to just send a message to the <code>jms:output</code> destination.</p>
 </div>
@@ -2529,6 +2828,478 @@ receivedMessage.in.headers.get(<span class="string"><span class="delimiter">'</s
 <pre class="CodeRay highlight"><code data-lang="groovy">receivedMessage != <span class="predefined-constant">null</span>
 assertThatBodyContainsBookNameFoo(receivedMessage.in.body)
 receivedMessage.in.headers.get(<span class="string"><span class="delimiter">'</span><span class="content">BOOK-NAME</span><span class="delimiter">'</span></span>) == <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="custom-triggers">Custom triggers</h5>
+<div class="paragraph">
+<p><code>StubTrigger</code> gives you the following options to trigger a message:</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="trigger-by-label">Trigger by label</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">stubFinder.trigger(<span class="string"><span class="delimiter">'</span><span class="content">return_book_1</span><span class="delimiter">'</span></span>)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="trigger-by-group-and-artifact-ids">Trigger by group and artifact ids</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">stubFinder.trigger(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:camelService</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">return_book_1</span><span class="delimiter">'</span></span>)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="trigger-by-artifact-ids">Trigger by artifact ids</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">stubFinder.trigger(<span class="string"><span class="delimiter">'</span><span class="content">camelService</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">return_book_1</span><span class="delimiter">'</span></span>)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="trigger-all-messages">Trigger all messages</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">stubFinder.trigger()</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="stub-runner-messaging-integration">Stub Runner Messaging Integration</h3>
+<div class="paragraph">
+<p>Accurest Stub Runner&#8217;s messaging module gives you an easy way to integrate with Spring Integration.
+For the provided artifacts it will automatically download the stubs and register the required
+routes.</p>
+</div>
+<div class="sect3">
+<h4 id="adding-it-to-the-project-2">Adding it to the project</h4>
+<div class="paragraph">
+<p>To use it you have to add the following dependency to your project (example for Gradle):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">testCompile <span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest:stub-runner-messaging-integration:</span><span class="inline"><span class="inline-delimiter">${</span>accurestVersion<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="examples-4">Examples</h4>
+<div class="sect4">
+<h5 id="stubs-structure-2">Stubs structure</h5>
+<div class="paragraph">
+<p>Let us assume that we have the following Maven repository with a deployed stubs for the
+<code>integrationService</code> application.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">└── .m2
+    └── repository
+        └── io
+            └── codearte
+                └── accurest
+                    └── stubs
+                        └── integrationService
+                            ├── 0.0.1-SNAPSHOT
+                            │   ├── integrationService-0.0.1-SNAPSHOT.pom
+                            │   ├── integrationService-0.0.1-SNAPSHOT-stubs.jar
+                            │   └── maven-metadata-local.xml
+                            └── maven-metadata-local.xml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And the stubs contain the following structure:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">├── META-INF
+│   └── MANIFEST.MF
+└── repository
+    ├── accurest
+    │   ├── bookDeleted.groovy
+    │   ├── bookReturned1.groovy
+    │   └── bookReturned2.groovy
+    └── mappings</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s consider the following contracts (let' number it with <strong>1</strong>):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest.dsl.GroovyDsl.make {
+        label <span class="string"><span class="delimiter">'</span><span class="content">return_book_1</span><span class="delimiter">'</span></span>
+        input {
+                triggeredBy(<span class="string"><span class="delimiter">'</span><span class="content">bookReturnedTriggered()</span><span class="delimiter">'</span></span>)
+        }
+        outputMessage {
+                sentTo(<span class="string"><span class="delimiter">'</span><span class="content">jms:output</span><span class="delimiter">'</span></span>)
+                body(<span class="string"><span class="delimiter">'''</span><span class="content">{ &quot;bookName&quot; : &quot;foo&quot; }</span><span class="delimiter">'''</span></span>)
+                headers {
+                        header(<span class="string"><span class="delimiter">'</span><span class="content">BOOK-NAME</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>)
+                }
+        }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and number <strong>2</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest.dsl.GroovyDsl.make {
+        label <span class="string"><span class="delimiter">'</span><span class="content">return_book_2</span><span class="delimiter">'</span></span>
+        input {
+                messageFrom(<span class="string"><span class="delimiter">'</span><span class="content">jms:input</span><span class="delimiter">'</span></span>)
+                messageBody([
+                                <span class="key">bookName</span>: <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>
+                ])
+                messageHeaders {
+                        header(<span class="string"><span class="delimiter">'</span><span class="content">sample</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">header</span><span class="delimiter">'</span></span>)
+                }
+        }
+        outputMessage {
+                sentTo(<span class="string"><span class="delimiter">'</span><span class="content">jms:output</span><span class="delimiter">'</span></span>)
+                body([
+                                <span class="key">bookName</span>: <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>
+                ])
+                headers {
+                        header(<span class="string"><span class="delimiter">'</span><span class="content">BOOK-NAME</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>)
+                }
+        }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and the following Spring Integration Route:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="tag">&lt;beans:beans</span> <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.springframework.org/schema/integration</span><span class="delimiter">&quot;</span></span>
+                         <span class="attribute-name">xmlns:xsi</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema-instance</span><span class="delimiter">&quot;</span></span>
+                         <span class="attribute-name">xmlns:beans</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.springframework.org/schema/beans</span><span class="delimiter">&quot;</span></span>
+                         <span class="attribute-name">xsi:schemaLocation</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.springframework.org/schema/beans</span>
+                        <span class="content">http://www.springframework.org/schema/beans/spring-beans.xsd</span>
+                        <span class="content">http://www.springframework.org/schema/integration</span>
+                        <span class="content">http://www.springframework.org/schema/integration/spring-integration.xsd</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+
+
+        <span class="comment">&lt;!-- REQUIRED FOR TESTING --&gt;</span>
+        <span class="tag">&lt;bridge</span> <span class="attribute-name">input-channel</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">output</span><span class="delimiter">&quot;</span></span>
+                        <span class="attribute-name">output-channel</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">outputTest</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+
+        <span class="tag">&lt;channel</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">outputTest</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+                <span class="tag">&lt;queue</span><span class="tag">/&gt;</span>
+        <span class="tag">&lt;/channel&gt;</span>
+
+<span class="tag">&lt;/beans:beans&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="scenario-1-no-input-message-3">Scenario 1 (no input message)</h5>
+<div class="paragraph">
+<p>So as to trigger a message via the <code>return_book_1</code> label we&#8217;ll use the <code>StubTiggerer</code> interface as follows</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">stubFinder.trigger(<span class="string"><span class="delimiter">'</span><span class="content">return_book_1</span><span class="delimiter">'</span></span>)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Next we&#8217;ll want to listen to the output of the message sent to <code>output</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">AccurestMessage receivedMessage = messaging.receiveMessage(<span class="string"><span class="delimiter">'</span><span class="content">outputTest</span><span class="delimiter">'</span></span>)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And the received message would pass the following assertions</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">receivedMessage != <span class="predefined-constant">null</span>
+assertJsons(receivedMessage.payload)
+receivedMessage.headers.get(<span class="string"><span class="delimiter">'</span><span class="content">BOOK-NAME</span><span class="delimiter">'</span></span>) == <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="scenario-2-output-triggered-by-input-3">Scenario 2 (output triggered by input)</h5>
+<div class="paragraph">
+<p>Since the route is set for you it&#8217;s enough to just send a message to the <code>output</code> destination.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">messaging.send(<span class="keyword">new</span> BookReturned(<span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>), [<span class="key">sample</span>: <span class="string"><span class="delimiter">'</span><span class="content">header</span><span class="delimiter">'</span></span>], <span class="string"><span class="delimiter">'</span><span class="content">input</span><span class="delimiter">'</span></span>)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Next we&#8217;ll want to listen to the output of the message sent to <code>output</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">AccurestMessage receivedMessage = messaging.receiveMessage(<span class="string"><span class="delimiter">'</span><span class="content">outputTest</span><span class="delimiter">'</span></span>)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And the received message would pass the following assertions</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">receivedMessage != <span class="predefined-constant">null</span>
+assertJsons(receivedMessage.payload)
+receivedMessage.headers.get(<span class="string"><span class="delimiter">'</span><span class="content">BOOK-NAME</span><span class="delimiter">'</span></span>) == <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="custom-triggers-2">Custom triggers</h5>
+<div class="paragraph">
+<p><code>StubTrigger</code> gives you the following options to trigger a message:</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="trigger-by-label-2">Trigger by label</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">stubFinder.trigger(<span class="string"><span class="delimiter">'</span><span class="content">return_book_1</span><span class="delimiter">'</span></span>)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="trigger-by-group-and-artifact-ids-2">Trigger by group and artifact ids</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">stubFinder.trigger(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:integrationService</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">return_book_1</span><span class="delimiter">'</span></span>)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="trigger-by-artifact-ids-2">Trigger by artifact ids</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">stubFinder.trigger(<span class="string"><span class="delimiter">'</span><span class="content">integrationService</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">return_book_1</span><span class="delimiter">'</span></span>)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="trigger-all-messages-2">Trigger all messages</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">stubFinder.trigger()</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="stub-runner-messaging-stream">Stub Runner Messaging Stream</h3>
+<div class="paragraph">
+<p>Accurest Stub Runner&#8217;s messaging module gives you an easy way to integrate with Spring Stream.
+For the provided artifacts it will automatically download the stubs and register the required
+routes.</p>
+</div>
+<div class="sect3">
+<h4 id="adding-it-to-the-project-3">Adding it to the project</h4>
+<div class="paragraph">
+<p>To use it you have to add the following dependency to your project (example for Gradle):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">testCompile <span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest:stub-runner-messaging-stream:</span><span class="inline"><span class="inline-delimiter">${</span>accurestVersion<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="examples-5">Examples</h4>
+<div class="sect4">
+<h5 id="stubs-structure-3">Stubs structure</h5>
+<div class="paragraph">
+<p>Let us assume that we have the following Maven repository with a deployed stubs for the
+<code>streamService</code> application.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">└── .m2
+    └── repository
+        └── io
+            └── codearte
+                └── accurest
+                    └── stubs
+                        └── streamService
+                            ├── 0.0.1-SNAPSHOT
+                            │   ├── streamService-0.0.1-SNAPSHOT.pom
+                            │   ├── streamService-0.0.1-SNAPSHOT-stubs.jar
+                            │   └── maven-metadata-local.xml
+                            └── maven-metadata-local.xml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And the stubs contain the following structure:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">├── META-INF
+│   └── MANIFEST.MF
+└── repository
+    ├── accurest
+    │   ├── bookDeleted.groovy
+    │   ├── bookReturned1.groovy
+    │   └── bookReturned2.groovy
+    └── mappings</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s consider the following contracts (let' number it with <strong>1</strong>):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest.dsl.GroovyDsl.make {
+        label <span class="string"><span class="delimiter">'</span><span class="content">return_book_1</span><span class="delimiter">'</span></span>
+        input {
+                triggeredBy(<span class="string"><span class="delimiter">'</span><span class="content">bookReturnedTriggered()</span><span class="delimiter">'</span></span>)
+        }
+        outputMessage {
+                sentTo(<span class="string"><span class="delimiter">'</span><span class="content">jms:output</span><span class="delimiter">'</span></span>)
+                body(<span class="string"><span class="delimiter">'''</span><span class="content">{ &quot;bookName&quot; : &quot;foo&quot; }</span><span class="delimiter">'''</span></span>)
+                headers {
+                        header(<span class="string"><span class="delimiter">'</span><span class="content">BOOK-NAME</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>)
+                }
+        }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and number <strong>2</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest.dsl.GroovyDsl.make {
+        label <span class="string"><span class="delimiter">'</span><span class="content">return_book_2</span><span class="delimiter">'</span></span>
+        input {
+                messageFrom(<span class="string"><span class="delimiter">'</span><span class="content">jms:input</span><span class="delimiter">'</span></span>)
+                messageBody([
+                                <span class="key">bookName</span>: <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>
+                ])
+                messageHeaders {
+                        header(<span class="string"><span class="delimiter">'</span><span class="content">sample</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">header</span><span class="delimiter">'</span></span>)
+                }
+        }
+        outputMessage {
+                sentTo(<span class="string"><span class="delimiter">'</span><span class="content">jms:output</span><span class="delimiter">'</span></span>)
+                body([
+                                <span class="key">bookName</span>: <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>
+                ])
+                headers {
+                        header(<span class="string"><span class="delimiter">'</span><span class="content">BOOK-NAME</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>)
+                }
+        }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="scenario-1-no-input-message-4">Scenario 1 (no input message)</h5>
+<div class="paragraph">
+<p>So as to trigger a message via the <code>return_book_1</code> label we&#8217;ll use the <code>StubTiggerer</code> interface as follows</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">stubFinder.trigger(<span class="string"><span class="delimiter">'</span><span class="content">return_book_1</span><span class="delimiter">'</span></span>)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Next we&#8217;ll want to listen to the output of the message sent to <code>output</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">AccurestMessage receivedMessage = messaging.receiveMessage(<span class="string"><span class="delimiter">'</span><span class="content">output</span><span class="delimiter">'</span></span>)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And the received message would pass the following assertions</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">receivedMessage != <span class="predefined-constant">null</span>
+assertJsons(receivedMessage.payload)
+receivedMessage.headers.get(<span class="string"><span class="delimiter">'</span><span class="content">BOOK-NAME</span><span class="delimiter">'</span></span>) == <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="scenario-2-output-triggered-by-input-4">Scenario 2 (output triggered by input)</h5>
+<div class="paragraph">
+<p>Since the route is set for you it&#8217;s enough to just send a message to the <code>output</code> destination.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">messaging.send(<span class="keyword">new</span> BookReturned(<span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>), [<span class="key">sample</span>: <span class="string"><span class="delimiter">'</span><span class="content">header</span><span class="delimiter">'</span></span>], <span class="string"><span class="delimiter">'</span><span class="content">input</span><span class="delimiter">'</span></span>)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Next we&#8217;ll want to listen to the output of the message sent to <code>output</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">AccurestMessage receivedMessage = messaging.receiveMessage(<span class="string"><span class="delimiter">'</span><span class="content">output</span><span class="delimiter">'</span></span>)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And the received message would pass the following assertions</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">receivedMessage != <span class="predefined-constant">null</span>
+assertJsons(receivedMessage.payload)
+receivedMessage.headers.get(<span class="string"><span class="delimiter">'</span><span class="content">BOOK-NAME</span><span class="delimiter">'</span></span>) == <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="custom-triggers-3">Custom triggers</h5>
+<div class="paragraph">
+<p><code>StubTrigger</code> gives you the following options to trigger a message:</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="trigger-by-label-3">Trigger by label</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">stubFinder.trigger(<span class="string"><span class="delimiter">'</span><span class="content">return_book_1</span><span class="delimiter">'</span></span>)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="trigger-by-group-and-artifact-ids-3">Trigger by group and artifact ids</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">stubFinder.trigger(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:streamService</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">return_book_1</span><span class="delimiter">'</span></span>)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="trigger-by-artifact-ids-3">Trigger by artifact ids</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">stubFinder.trigger(<span class="string"><span class="delimiter">'</span><span class="content">streamService</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">return_book_1</span><span class="delimiter">'</span></span>)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="trigger-all-messages-3">Trigger all messages</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">stubFinder.trigger()</code></pre>
 </div>
 </div>
 </div>
