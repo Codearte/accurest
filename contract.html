@@ -516,7 +516,7 @@ table.CodeRay td.code>pre{padding:0}
 <ul class="sectlevel1">
 <li><a href="#contract-dsl">Contract DSL</a>
 <ul class="sectlevel2">
-<li><a href="#top-level-elements">Top-Level Elements</a></li>
+<li><a href="#http-top-level-elements">HTTP Top-Level Elements</a></li>
 <li><a href="#request">Request</a></li>
 <li><a href="#response">Response</a></li>
 <li><a href="#regular-expressions">Regular expressions</a></li>
@@ -533,7 +533,9 @@ table.CodeRay td.code>pre{padding:0}
 <h2 id="contract-dsl">Contract DSL</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Contract DSL in Accurest is written in Groovy, but don&#8217;t be alarmed if you didn&#8217;t use Groovy before. Knowledge of the language is not really needed as our DSL uses only a tiny subset of it (namely literals, method calls and closures). What&#8217;s more, Accurest&#8217;s DSL is designed to be programmer-readable without any knowledge of the DSL itself.</p>
+<p>Contract DSL in Accurest is written in Groovy, but don&#8217;t be alarmed if you didn&#8217;t use Groovy before. Knowledge of the language is not really needed as our DSL uses only
+a tiny subset of it (namely literals, method calls and closures). What&#8217;s more, Accurest&#8217;s DSL is designed to be programmer-readable without any knowledge of the DSL itself -
+ it&#8217;s statically typed.</p>
 </div>
 <div class="paragraph">
 <p>Let&#8217;s look at full example of a contract definition.</p>
@@ -541,26 +543,46 @@ table.CodeRay td.code>pre{padding:0}
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest.dsl.GroovyDsl.make {
-    request {
-        method <span class="string"><span class="delimiter">'</span><span class="content">POST</span><span class="delimiter">'</span></span>
-        urlPath(<span class="string"><span class="delimiter">'</span><span class="content">/users</span><span class="delimiter">'</span></span>) {
-            queryParameters {
-                parameter <span class="string"><span class="delimiter">'</span><span class="content">limit</span><span class="delimiter">'</span></span>: <span class="integer">100</span>
-                parameter <span class="string"><span class="delimiter">'</span><span class="content">offset</span><span class="delimiter">'</span></span>: containing(<span class="string"><span class="delimiter">&quot;</span><span class="content">1</span><span class="delimiter">&quot;</span></span>)
-                parameter <span class="string"><span class="delimiter">'</span><span class="content">filter</span><span class="delimiter">'</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">email</span><span class="delimiter">&quot;</span></span>
-            }
+        request {
+                method <span class="string"><span class="delimiter">'</span><span class="content">PUT</span><span class="delimiter">'</span></span>
+                url <span class="string"><span class="delimiter">'</span><span class="content">/api/12</span><span class="delimiter">'</span></span>
+                headers {
+                        header <span class="string"><span class="delimiter">'</span><span class="content">Content-Type</span><span class="delimiter">'</span></span>: <span class="string"><span class="delimiter">'</span><span class="content">application/vnd.com.ofg.twitter-places-analyzer.v1+json</span><span class="delimiter">'</span></span>
+                }
+                body <span class="string"><span class="delimiter">'''</span><span class="content">\
+</span><span class="content">                [{
+                        &quot;created_at&quot;: &quot;Sat Jul 26 09:38:57 +0000 2014&quot;,
+                        &quot;id&quot;: 492967299297845248,
+                        &quot;id_str&quot;: &quot;492967299297845248&quot;,
+                        &quot;text&quot;: &quot;Gonna see you at Warsaw&quot;,
+                        &quot;place&quot;:
+                        {
+                                &quot;attributes&quot;:{},
+                                &quot;bounding_box&quot;:
+                                {
+                                        &quot;coordinates&quot;:
+                                                [[
+                                                        [-77.119759,38.791645],
+                                                        [-76.909393,38.791645],
+                                                        [-76.909393,38.995548],
+                                                        [-77.119759,38.995548]
+                                                ]],
+                                        &quot;type&quot;:&quot;Polygon&quot;
+                                },
+                                &quot;country&quot;:&quot;United States&quot;,
+                                &quot;country_code&quot;:&quot;US&quot;,
+                                &quot;full_name&quot;:&quot;Washington, DC&quot;,
+                                &quot;id&quot;:&quot;01fbe706f872cb32&quot;,
+                                &quot;name&quot;:&quot;Washington&quot;,
+                                &quot;place_type&quot;:&quot;city&quot;,
+                                &quot;url&quot;: &quot;http://api.twitter.com/1/geo/id/01fbe706f872cb32.json&quot;
+                        }
+                }]
+        </span><span class="delimiter">'''</span></span>
         }
-        headers {
-            header <span class="string"><span class="delimiter">'</span><span class="content">Content-Type</span><span class="delimiter">'</span></span>: <span class="string"><span class="delimiter">'</span><span class="content">application/json</span><span class="delimiter">'</span></span>
+        response {
+                status <span class="integer">200</span>
         }
-        body <span class="string"><span class="delimiter">'''</span><span class="content">{ &quot;login&quot; : &quot;john&quot;, &quot;name&quot;: &quot;John The Contract&quot; }</span><span class="delimiter">'''</span></span>
-    }
-    response {
-        status <span class="integer">200</span>
-        headers {
-            header <span class="string"><span class="delimiter">'</span><span class="content">Location</span><span class="delimiter">'</span></span>: <span class="string"><span class="delimiter">'</span><span class="content">/users/john</span><span class="delimiter">'</span></span>
-        }
-    }
 }</code></pre>
 </div>
 </div>
@@ -575,31 +597,31 @@ table.CodeRay td.code>pre{padding:0}
 </blockquote>
 </div>
 <div class="sect2">
-<h3 id="top-level-elements">Top-Level Elements</h3>
+<h3 id="http-top-level-elements">HTTP Top-Level Elements</h3>
 <div class="paragraph">
 <p>Following methods can be called in the top-level closure of a contract definition. Request and response are mandatory, priority is optional.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest.dsl.GroovyDsl.make {
-    <span class="comment">// Definition of HTTP request part of the contract</span>
-    <span class="comment">// (this can be a valid request or invalid depending</span>
-    <span class="comment">// on type of contract being specified).</span>
-    request {
-        ...
-    }
+        <span class="comment">// Definition of HTTP request part of the contract</span>
+        <span class="comment">// (this can be a valid request or invalid depending</span>
+        <span class="comment">// on type of contract being specified).</span>
+        request {
+                <span class="comment">//...</span>
+        }
 
-    <span class="comment">// Definition of HTTP response part of the contract</span>
-    <span class="comment">// (a service implementing this contract should respond</span>
-    <span class="comment">// with following response after receiving request</span>
-    <span class="comment">// specified in &quot;request&quot; part above).</span>
-    response {
-        ...
-    }
+        <span class="comment">// Definition of HTTP response part of the contract</span>
+        <span class="comment">// (a service implementing this contract should respond</span>
+        <span class="comment">// with following response after receiving request</span>
+        <span class="comment">// specified in &quot;request&quot; part above).</span>
+        response {
+                <span class="comment">//...</span>
+        }
 
-    <span class="comment">// Contract priority, which can be used for overriding</span>
-    <span class="comment">// contracts (1 is highest). Priority is optional.</span>
-    priority <span class="integer">1</span>
+        <span class="comment">// Contract priority, which can be used for overriding</span>
+        <span class="comment">// contracts (1 is highest). Priority is optional.</span>
+        priority <span class="integer">1</span>
 }</code></pre>
 </div>
 </div>
@@ -612,17 +634,17 @@ table.CodeRay td.code>pre{padding:0}
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest.dsl.GroovyDsl.make {
-    request {
-        <span class="comment">// HTTP request method (GET/POST/PUT/DELETE).</span>
-        method <span class="string"><span class="delimiter">'</span><span class="content">GET</span><span class="delimiter">'</span></span>
+        request {
+                <span class="comment">// HTTP request method (GET/POST/PUT/DELETE).</span>
+                method <span class="string"><span class="delimiter">'</span><span class="content">GET</span><span class="delimiter">'</span></span>
 
-        <span class="comment">// Path component of request URL is specified as follows.</span>
-        urlPath(<span class="string"><span class="delimiter">'</span><span class="content">/users</span><span class="delimiter">'</span></span>)
-    }
+                <span class="comment">// Path component of request URL is specified as follows.</span>
+                urlPath(<span class="string"><span class="delimiter">'</span><span class="content">/users</span><span class="delimiter">'</span></span>)
+        }
 
-    response {
-        ...
-    }
+        response {
+                <span class="comment">//...</span>
+        }
 }</code></pre>
 </div>
 </div>
@@ -632,16 +654,16 @@ table.CodeRay td.code>pre{padding:0}
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest.dsl.GroovyDsl.make {
-    request {
-        method <span class="string"><span class="delimiter">'</span><span class="content">GET</span><span class="delimiter">'</span></span>
+        request {
+                method <span class="string"><span class="delimiter">'</span><span class="content">GET</span><span class="delimiter">'</span></span>
 
-        <span class="comment">// Specifying `url` and `urlPath` in one contract is illegal.</span>
-        url(<span class="string"><span class="delimiter">'</span><span class="content">http://localhost:8888/users</span><span class="delimiter">'</span></span>)
-    }
+                <span class="comment">// Specifying `url` and `urlPath` in one contract is illegal.</span>
+                url(<span class="string"><span class="delimiter">'</span><span class="content">http://localhost:8888/users</span><span class="delimiter">'</span></span>)
+        }
 
-    response {
-        ...
-    }
+        response {
+                <span class="comment">//...</span>
+        }
 }</code></pre>
 </div>
 </div>
@@ -651,45 +673,45 @@ table.CodeRay td.code>pre{padding:0}
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest.dsl.GroovyDsl.make {
-    request {
-        ...
+        request {
+                <span class="comment">//...</span>
 
-        urlPath(<span class="string"><span class="delimiter">'</span><span class="content">/users</span><span class="delimiter">'</span></span>) {
+                urlPath(<span class="string"><span class="delimiter">'</span><span class="content">/users</span><span class="delimiter">'</span></span>) {
 
-            <span class="comment">// Each parameter is specified in form</span>
-            <span class="comment">// `'paramName' : paramValue` where parameter value</span>
-            <span class="comment">// may be a simple literal or one of matcher functions,</span>
-            <span class="comment">// all of which are used in this example.</span>
-            queryParameters {
+                        <span class="comment">// Each parameter is specified in form</span>
+                        <span class="comment">// `'paramName' : paramValue` where parameter value</span>
+                        <span class="comment">// may be a simple literal or one of matcher functions,</span>
+                        <span class="comment">// all of which are used in this example.</span>
+                        queryParameters {
 
-                <span class="comment">// If a simple literal is used as value</span>
-                <span class="comment">// default matcher function is used (equalTo)</span>
-                parameter <span class="string"><span class="delimiter">'</span><span class="content">limit</span><span class="delimiter">'</span></span>: <span class="integer">100</span>
+                                <span class="comment">// If a simple literal is used as value</span>
+                                <span class="comment">// default matcher function is used (equalTo)</span>
+                                parameter <span class="string"><span class="delimiter">'</span><span class="content">limit</span><span class="delimiter">'</span></span>: <span class="integer">100</span>
 
-                <span class="comment">// `equalTo` function simply compares passed value</span>
-                <span class="comment">// using identity operator (==).</span>
-                parameter <span class="string"><span class="delimiter">'</span><span class="content">filter</span><span class="delimiter">'</span></span>: equalTo(<span class="string"><span class="delimiter">&quot;</span><span class="content">email</span><span class="delimiter">&quot;</span></span>)
+                                <span class="comment">// `equalTo` function simply compares passed value</span>
+                                <span class="comment">// using identity operator (==).</span>
+                                parameter <span class="string"><span class="delimiter">'</span><span class="content">filter</span><span class="delimiter">'</span></span>: equalTo(<span class="string"><span class="delimiter">&quot;</span><span class="content">email</span><span class="delimiter">&quot;</span></span>)
 
-                <span class="comment">// `containing` function matches strings</span>
-                <span class="comment">// that contains passed substring.</span>
-                parameter <span class="string"><span class="delimiter">'</span><span class="content">gender</span><span class="delimiter">'</span></span>: containing(<span class="string"><span class="delimiter">&quot;</span><span class="content">[mf]</span><span class="delimiter">&quot;</span></span>)
+                                <span class="comment">// `containing` function matches strings</span>
+                                <span class="comment">// that contains passed substring.</span>
+                                parameter <span class="string"><span class="delimiter">'</span><span class="content">gender</span><span class="delimiter">'</span></span>: value(stub(containing(<span class="string"><span class="delimiter">&quot;</span><span class="content">[mf]</span><span class="delimiter">&quot;</span></span>)), server(<span class="string"><span class="delimiter">'</span><span class="content">mf</span><span class="delimiter">'</span></span>))
 
-                <span class="comment">// `matching` function tests parameter</span>
-                <span class="comment">// against passed regular expression.</span>
-                parameter <span class="string"><span class="delimiter">'</span><span class="content">offset</span><span class="delimiter">'</span></span>: matching(<span class="string"><span class="delimiter">&quot;</span><span class="content">[0-9]+</span><span class="delimiter">&quot;</span></span>)
+                                <span class="comment">// `matching` function tests parameter</span>
+                                <span class="comment">// against passed regular expression.</span>
+                                parameter <span class="string"><span class="delimiter">'</span><span class="content">offset</span><span class="delimiter">'</span></span>: value(stub(matching(<span class="string"><span class="delimiter">&quot;</span><span class="content">[0-9]+</span><span class="delimiter">&quot;</span></span>)), server(<span class="integer">123</span>))
 
-                <span class="comment">// `notMatching` functions tests if parameter</span>
-                <span class="comment">// does not match passed regular expression.</span>
-                parameter <span class="string"><span class="delimiter">'</span><span class="content">loginStartsWith</span><span class="delimiter">'</span></span>: notMatching(<span class="string"><span class="delimiter">&quot;</span><span class="content">.{0,2}</span><span class="delimiter">&quot;</span></span>)
-            }
+                                <span class="comment">// `notMatching` functions tests if parameter</span>
+                                <span class="comment">// does not match passed regular expression.</span>
+                                parameter <span class="string"><span class="delimiter">'</span><span class="content">loginStartsWith</span><span class="delimiter">'</span></span>: value(stub(notMatching(<span class="string"><span class="delimiter">&quot;</span><span class="content">.{0,2}</span><span class="delimiter">&quot;</span></span>)), server(<span class="integer">3</span>))
+                        }
+                }
+
+                <span class="comment">//...</span>
         }
 
-        ...
-    }
-
-    response {
-        ...
-    }
+        response {
+                <span class="comment">//...</span>
+        }
 }</code></pre>
 </div>
 </div>
@@ -699,20 +721,20 @@ table.CodeRay td.code>pre{padding:0}
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest.dsl.GroovyDsl.make {
-    request {
-        ...
+        request {
+                <span class="comment">//...</span>
 
-        <span class="comment">// Each header is added in form `'Header-Name' : 'Header-Value'`.</span>
-        headers {
-            header <span class="string"><span class="delimiter">'</span><span class="content">Content-Type</span><span class="delimiter">'</span></span>: <span class="string"><span class="delimiter">'</span><span class="content">application/json</span><span class="delimiter">'</span></span>
+                <span class="comment">// Each header is added in form `'Header-Name' : 'Header-Value'`.</span>
+                headers {
+                        header <span class="string"><span class="delimiter">'</span><span class="content">Content-Type</span><span class="delimiter">'</span></span>: <span class="string"><span class="delimiter">'</span><span class="content">application/json</span><span class="delimiter">'</span></span>
+                }
+
+                <span class="comment">//...</span>
         }
 
-        ...
-    }
-
-    response {
-        ...
-    }
+        response {
+                <span class="comment">//...</span>
+        }
 }</code></pre>
 </div>
 </div>
@@ -722,17 +744,17 @@ table.CodeRay td.code>pre{padding:0}
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest.dsl.GroovyDsl.make {
-    request {
-        ...
+        request {
+                <span class="comment">//...</span>
 
-        <span class="comment">// JSON and XML formats of request body are supported.</span>
-        <span class="comment">// Format will be determined from a header or body's content.</span>
-        body <span class="string"><span class="delimiter">'''</span><span class="content">{ &quot;login&quot; : &quot;john&quot;, &quot;name&quot;: &quot;John The Contract&quot; }</span><span class="delimiter">'''</span></span>
-    }
+                <span class="comment">// JSON and XML formats of request body are supported.</span>
+                <span class="comment">// Format will be determined from a header or body's content.</span>
+                body <span class="string"><span class="delimiter">'''</span><span class="content">{ &quot;login&quot; : &quot;john&quot;, &quot;name&quot;: &quot;John The Contract&quot; }</span><span class="delimiter">'''</span></span>
+        }
 
-    response {
-        ...
-    }
+        response {
+                <span class="comment">//...</span>
+        }
 }</code></pre>
 </div>
 </div>
@@ -742,18 +764,18 @@ table.CodeRay td.code>pre{padding:0}
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest.dsl.GroovyDsl.make {
-    request {
-        ...
+        request {
+                <span class="comment">//...</span>
 
-        <span class="comment">// In this case body will be formatted as XML.</span>
-        body equalToXml(
-          <span class="string"><span class="delimiter">'''</span><span class="content">&lt;user&gt;&lt;login&gt;john&lt;/login&gt;&lt;name&gt;John The Contract&lt;/name&gt;&lt;/user&gt;</span><span class="delimiter">'''</span></span>
-        )
-    }
+                <span class="comment">// In this case body will be formatted as XML.</span>
+                body equalToXml(
+                                <span class="string"><span class="delimiter">'''</span><span class="content">&lt;user&gt;&lt;login&gt;john&lt;/login&gt;&lt;name&gt;John The Contract&lt;/name&gt;&lt;/user&gt;</span><span class="delimiter">'''</span></span>
+                )
+        }
 
-    response {
-        ...
-    }
+        response {
+                <span class="comment">//...</span>
+        }
 }</code></pre>
 </div>
 </div>
@@ -766,14 +788,14 @@ table.CodeRay td.code>pre{padding:0}
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest.dsl.GroovyDsl.make {
-    request {
-      ...
-    }
-    response {
-        <span class="comment">// Status code sent by the server</span>
-        <span class="comment">// in response to request specified above.</span>
-        status <span class="integer">200</span>
-    }
+        request {
+                <span class="comment">//...</span>
+        }
+        response {
+                <span class="comment">// Status code sent by the server</span>
+                <span class="comment">// in response to request specified above.</span>
+                status <span class="integer">200</span>
+        }
 }</code></pre>
 </div>
 </div>
@@ -784,41 +806,41 @@ table.CodeRay td.code>pre{padding:0}
 <div class="sect2">
 <h3 id="regular-expressions">Regular expressions</h3>
 <div class="paragraph">
-<p>You can use regular expressions to write your requests in Contract DSL. It is particularly useful when you want to indicate that a given response should be provided for requests that follow a given pattern. Also, you can use it when you need to use patterns and not exact values both for your test and your server side tests.</p>
+<p>You can use regular expressions to write your requests in Contract DSL. It is particularly useful when you want to indicate that a given response
+should be provided for requests that follow a given pattern. Also, you can use it when you need to use patterns and not exact values both
+for your test and your server side tests.</p>
 </div>
-<div class="literalblock">
-<div class="content">
-<pre>Please see the example below:</pre>
-</div>
+<div class="paragraph">
+<p>Please see the example below:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest.dsl.GroovyDsl groovyDsl == GroovyDsl.make {
-    request {
-        method(<span class="string"><span class="delimiter">'</span><span class="content">GET</span><span class="delimiter">'</span></span>)
-        url <span class="error">$</span>(client(~<span class="regexp"><span class="delimiter">/</span><span class="char">\/</span><span class="content">[0-9]{2}</span><span class="delimiter">/</span></span>), server(<span class="string"><span class="delimiter">'</span><span class="content">/12</span><span class="delimiter">'</span></span>))
-    }
-    response {
-        status <span class="integer">200</span>
-        body(
-                <span class="key">id</span>: value(
-                        client(<span class="string"><span class="delimiter">'</span><span class="content">123</span><span class="delimiter">'</span></span>),
-                        server(regex(<span class="string"><span class="delimiter">'</span><span class="content">[0-9]+</span><span class="delimiter">'</span></span>))
-                ),
-                <span class="key">surname</span>: <span class="error">$</span>(
-                        client(<span class="string"><span class="delimiter">'</span><span class="content">Kowalsky</span><span class="delimiter">'</span></span>),
-                        server(<span class="string"><span class="delimiter">'</span><span class="content">Lewandowski</span><span class="delimiter">'</span></span>)
-                ),
-                <span class="key">name</span>: <span class="string"><span class="delimiter">'</span><span class="content">Jan</span><span class="delimiter">'</span></span>,
-                <span class="key">created</span>: <span class="error">$</span>(client(<span class="string"><span class="delimiter">'</span><span class="content">2014-02-02 12:23:43</span><span class="delimiter">'</span></span>), server({ currentDate(<span class="local-variable">it</span>) }))
-                <span class="key">correlationId</span>: value(client(<span class="string"><span class="delimiter">'</span><span class="content">5d1f9fef-e0dc-4f3d-a7e4-72d2220dd827</span><span class="delimiter">'</span></span>),
-                        server(regex(<span class="string"><span class="delimiter">'</span><span class="content">[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}</span><span class="delimiter">'</span></span>)
-                        )
-        )
-        headers {
-            header <span class="string"><span class="delimiter">'</span><span class="content">Content-Type</span><span class="delimiter">'</span></span>: <span class="string"><span class="delimiter">'</span><span class="content">text/plain</span><span class="delimiter">'</span></span>
+<pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest.dsl.GroovyDsl.make {
+        request {
+                method(<span class="string"><span class="delimiter">'</span><span class="content">GET</span><span class="delimiter">'</span></span>)
+                url <span class="error">$</span>(client(~<span class="regexp"><span class="delimiter">/</span><span class="char">\/</span><span class="content">[0-9]{2}</span><span class="delimiter">/</span></span>), server(<span class="string"><span class="delimiter">'</span><span class="content">/12</span><span class="delimiter">'</span></span>))
         }
-    }
+        response {
+                status <span class="integer">200</span>
+                body(
+                                <span class="key">id</span>: value(
+                                                client(<span class="string"><span class="delimiter">'</span><span class="content">123</span><span class="delimiter">'</span></span>),
+                                                server(regex(<span class="string"><span class="delimiter">'</span><span class="content">[0-9]+</span><span class="delimiter">'</span></span>))
+                                ),
+                                <span class="key">surname</span>: <span class="error">$</span>(
+                                                client(<span class="string"><span class="delimiter">'</span><span class="content">Kowalsky</span><span class="delimiter">'</span></span>),
+                                                server(<span class="string"><span class="delimiter">'</span><span class="content">Lewandowski</span><span class="delimiter">'</span></span>)
+                                ),
+                                <span class="key">name</span>: <span class="string"><span class="delimiter">'</span><span class="content">Jan</span><span class="delimiter">'</span></span>,
+                                <span class="key">created</span>: <span class="error">$</span>(client(<span class="string"><span class="delimiter">'</span><span class="content">2014-02-02 12:23:43</span><span class="delimiter">'</span></span>), server(execute(<span class="string"><span class="delimiter">'</span><span class="content">currentDate(it)</span><span class="delimiter">'</span></span>))),
+                                <span class="key">correlationId</span>: value(client(<span class="string"><span class="delimiter">'</span><span class="content">5d1f9fef-e0dc-4f3d-a7e4-72d2220dd827</span><span class="delimiter">'</span></span>),
+                                                server(regex(<span class="string"><span class="delimiter">'</span><span class="content">[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}</span><span class="delimiter">'</span></span>))
+                                )
+                )
+                headers {
+                        header <span class="string"><span class="delimiter">'</span><span class="content">Content-Type</span><span class="delimiter">'</span></span>: <span class="string"><span class="delimiter">'</span><span class="content">text/plain</span><span class="delimiter">'</span></span>
+                }
+        }
 }</code></pre>
 </div>
 </div>
@@ -844,28 +866,28 @@ table.CodeRay td.code>pre{padding:0}
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest.dsl.GroovyDsl.make {
-    priority <span class="integer">1</span>
-    request {
-        method <span class="string"><span class="delimiter">'</span><span class="content">POST</span><span class="delimiter">'</span></span>
-        url <span class="string"><span class="delimiter">'</span><span class="content">/users/password</span><span class="delimiter">'</span></span>
-        headers {
-            header <span class="string"><span class="delimiter">'</span><span class="content">Content-Type</span><span class="delimiter">'</span></span>: <span class="string"><span class="delimiter">'</span><span class="content">application/json</span><span class="delimiter">'</span></span>
+        priority <span class="integer">1</span>
+        request {
+                method <span class="string"><span class="delimiter">'</span><span class="content">POST</span><span class="delimiter">'</span></span>
+                url <span class="string"><span class="delimiter">'</span><span class="content">/users/password</span><span class="delimiter">'</span></span>
+                headers {
+                        header <span class="string"><span class="delimiter">'</span><span class="content">Content-Type</span><span class="delimiter">'</span></span>: <span class="string"><span class="delimiter">'</span><span class="content">application/json</span><span class="delimiter">'</span></span>
+                }
+                body(
+                                <span class="key">email</span>: <span class="error">$</span>(stub(optional(regex(email()))), test(<span class="string"><span class="delimiter">'</span><span class="content">abc@abc.com</span><span class="delimiter">'</span></span>)),
+                                <span class="key">callback_url</span>: <span class="error">$</span>(stub(regex(hostname())), test(<span class="string"><span class="delimiter">'</span><span class="content">http://partners.com</span><span class="delimiter">'</span></span>))
+                )
         }
-        body(
-                <span class="key">email</span>: <span class="error">$</span>(stub(optional(regex(email()))), test(<span class="string"><span class="delimiter">'</span><span class="content">abc@abc.com</span><span class="delimiter">'</span></span>)),
-                <span class="key">callback_url</span>: <span class="error">$</span>(stub(regex(hostname())), test(<span class="string"><span class="delimiter">'</span><span class="content">http://partners.com</span><span class="delimiter">'</span></span>))
-        )
-    }
-    response {
-        status <span class="integer">404</span>
-        headers {
-            header <span class="string"><span class="delimiter">'</span><span class="content">Content-Type</span><span class="delimiter">'</span></span>: <span class="string"><span class="delimiter">'</span><span class="content">application/json</span><span class="delimiter">'</span></span>
+        response {
+                status <span class="integer">404</span>
+                headers {
+                        header <span class="string"><span class="delimiter">'</span><span class="content">Content-Type</span><span class="delimiter">'</span></span>: <span class="string"><span class="delimiter">'</span><span class="content">application/json</span><span class="delimiter">'</span></span>
+                }
+                body(
+                                <span class="key">code</span>: value(stub(<span class="string"><span class="delimiter">&quot;</span><span class="content">123123</span><span class="delimiter">&quot;</span></span>), test(optional(<span class="string"><span class="delimiter">&quot;</span><span class="content">123123</span><span class="delimiter">&quot;</span></span>))),
+                                <span class="key">message</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">User not found by email == [</span><span class="inline"><span class="inline-delimiter">${</span>value(test(regex(email())), stub(<span class="string"><span class="delimiter">'</span><span class="content">not.existing@user.com</span><span class="delimiter">'</span></span>))<span class="inline-delimiter">}</span></span><span class="content">]</span><span class="delimiter">&quot;</span></span>
+                )
         }
-        body(
-                <span class="key">code</span>: value(stub(<span class="string"><span class="delimiter">&quot;</span><span class="content">123123</span><span class="delimiter">&quot;</span></span>), test(optional(<span class="string"><span class="delimiter">&quot;</span><span class="content">123123</span><span class="delimiter">&quot;</span></span>))),
-                <span class="key">message</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">User not found by email == [</span><span class="inline"><span class="inline-delimiter">${</span>value(test(regex(email())), stub(<span class="string"><span class="delimiter">'</span><span class="content">not.existing@user.com</span><span class="delimiter">'</span></span>))<span class="inline-delimiter">}</span></span><span class="content">]</span><span class="delimiter">&quot;</span></span>
-        )
-    }
 }</code></pre>
 </div>
 </div>
@@ -873,26 +895,28 @@ table.CodeRay td.code>pre{padding:0}
 <p>By wrapping a part of the body with the <code>optional()</code> method you are in fact creating a regular expression that should be present 0 or more times.</p>
 </div>
 <div class="paragraph">
-<p>That way for the example above the following test would be generated:</p>
+<p>That way for the example above the following test would be generated if you pick Spock:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="key">given</span>:
- <span class="keyword">def</span> request == given()
-   .header(<span class="string"><span class="delimiter">'</span><span class="content">Content-Type</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">application/json</span><span class="delimiter">'</span></span>)
-   .body(<span class="string"><span class="delimiter">'</span><span class="content">{&quot;email&quot;:&quot;abc@abc.com&quot;,&quot;callback_url&quot;:&quot;http://partners.com&quot;}</span><span class="delimiter">'</span></span>)
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="string"><span class="delimiter">&quot;&quot;&quot;</span><span class="content">
+given:
+ def request = given()
+   .header('Content-Type', 'application/json')
+   .body('''{&quot;email&quot;:&quot;abc@abc.com&quot;,&quot;callback_url&quot;:&quot;http://partners.com&quot;}''')
 
-<span class="key">when</span>:
- <span class="keyword">def</span> response == given().spec(request)
-   .post(<span class="string"><span class="delimiter">&quot;</span><span class="content">/users/password</span><span class="delimiter">&quot;</span></span>)
+when:
+ def response = given().spec(request)
+   .post(&quot;/users/password&quot;)
 
-<span class="key">then</span>:
- response.statusCode === <span class="integer">404</span>
- response.header(<span class="string"><span class="delimiter">'</span><span class="content">Content-Type</span><span class="delimiter">'</span></span>)  === <span class="string"><span class="delimiter">'</span><span class="content">application/json</span><span class="delimiter">'</span></span>
-<span class="key">and</span>:
- DocumentContext parsedJson == JsonPath.parse(response.body.asString())
- !parsedJson.read(<span class="string"><span class="delimiter">'''</span><span class="content">$[?(@.code =~ /(123123)?/)]</span><span class="delimiter">'''</span></span>, JSONArray).empty
- !parsedJson.read(<span class="string"><span class="delimiter">'''</span><span class="content">$[?(@.message =~ /User not found by email == </span><span class="char">\\</span><span class="content">[[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+</span><span class="char">\\</span><span class="content">.[a-zA-Z]{2,4}</span><span class="char">\\</span><span class="content">]/)]</span><span class="delimiter">'''</span></span>, JSONArray).empty</code></pre>
+then:
+ response.statusCode == 404
+ response.header('Content-Type')  == 'application/json'
+and:
+ DocumentContext parsedJson = JsonPath.parse(response.body.asString())
+ assertThatJson(parsedJson).field(&quot;message&quot;).matches(&quot;User not found by email == </span><span class="char">\\</span><span class="char">\\</span><span class="char">\\</span><span class="char">\\</span><span class="content">[[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+</span><span class="char">\\</span><span class="char">\\</span><span class="char">\\</span><span class="char">\\</span><span class="content">.[a-zA-Z]{2,4}</span><span class="char">\\</span><span class="char">\\</span><span class="char">\\</span><span class="char">\\</span><span class="content">]&quot;)
+ assertThatJson(parsedJson).field(&quot;code&quot;).matches(&quot;(123123)?&quot;)
+</span><span class="delimiter">&quot;&quot;&quot;</span></span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -900,62 +924,65 @@ table.CodeRay td.code>pre{padding:0}
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="javascript">{
-  <span class="key"><span class="delimiter">&quot;</span><span class="content">request</span><span class="delimiter">&quot;</span></span> : {
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">url</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">/users/password</span><span class="delimiter">&quot;</span></span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">method</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">POST</span><span class="delimiter">&quot;</span></span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">bodyPatterns</span><span class="delimiter">&quot;</span></span> : [ {
-      <span class="key"><span class="delimiter">&quot;</span><span class="content">matchesJsonPath</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">$[?(@.callback_url =~ /((http[s]?|ftp):</span><span class="char">\\</span><span class="content">/)</span><span class="char">\\</span><span class="content">/?([^:</span><span class="char">\\</span><span class="content">/</span><span class="char">\\</span><span class="content">s]+)(:[0-9]{1,5})?/)]</span><span class="delimiter">&quot;</span></span>
+<pre class="CodeRay highlight"><code data-lang="javascript"><span class="string"><span class="delimiter">'</span><span class="delimiter">'</span></span><span class="string"><span class="delimiter">'</span><span class="content">
+{
+  &quot;request&quot; : {
+    &quot;url&quot; : &quot;/users/password&quot;,
+    &quot;method&quot; : &quot;POST&quot;,
+    &quot;bodyPatterns&quot; : [ {
+      &quot;matchesJsonPath&quot; : &quot;$[?(@.email =~ /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+</span><span class="char">\\</span><span class="char">\\</span><span class="content">.[a-zA-Z]{2,4})?/)]&quot;
     }, {
-      <span class="key"><span class="delimiter">&quot;</span><span class="content">matchesJsonPath</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">$[?(@.email =~ /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+</span><span class="char">\\</span><span class="content">.[a-zA-Z]{2,4})?/)]</span><span class="delimiter">&quot;</span></span>
+      &quot;matchesJsonPath&quot; : &quot;$[?(@.callback_url =~ /((http[s]?|ftp):</span><span class="char">\\</span><span class="char">\\</span><span class="content">/)</span><span class="char">\\</span><span class="char">\\</span><span class="content">/?([^:</span><span class="char">\\</span><span class="char">\\</span><span class="content">/</span><span class="char">\\</span><span class="char">\\</span><span class="content">s]+)(:[0-9]{1,5})?/)]&quot;
     } ],
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">headers</span><span class="delimiter">&quot;</span></span> : {
-      <span class="key"><span class="delimiter">&quot;</span><span class="content">Content-Type</span><span class="delimiter">&quot;</span></span> : {
-        <span class="key"><span class="delimiter">&quot;</span><span class="content">equalTo</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">application/json</span><span class="delimiter">&quot;</span></span>
+    &quot;headers&quot; : {
+      &quot;Content-Type&quot; : {
+        &quot;equalTo&quot; : &quot;application/json&quot;
       }
     }
   },
-  <span class="key"><span class="delimiter">&quot;</span><span class="content">response</span><span class="delimiter">&quot;</span></span> : {
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">status</span><span class="delimiter">&quot;</span></span> : <span class="integer">404</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">body</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">{</span><span class="char">\&quot;</span><span class="content">code</span><span class="char">\&quot;</span><span class="content">:</span><span class="char">\&quot;</span><span class="content">123123</span><span class="char">\&quot;</span><span class="content">,</span><span class="char">\&quot;</span><span class="content">message</span><span class="char">\&quot;</span><span class="content">:</span><span class="char">\&quot;</span><span class="content">User not found by email == [not.existing@user.com]</span><span class="char">\&quot;</span><span class="content">}</span><span class="delimiter">&quot;</span></span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">headers</span><span class="delimiter">&quot;</span></span> : {
-      <span class="key"><span class="delimiter">&quot;</span><span class="content">Content-Type</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">application/json</span><span class="delimiter">&quot;</span></span>
+  &quot;response&quot; : {
+    &quot;status&quot; : 404,
+    &quot;body&quot; : &quot;{</span><span class="char">\\</span><span class="content">&quot;code</span><span class="char">\\</span><span class="content">&quot;:</span><span class="char">\\</span><span class="content">&quot;123123</span><span class="char">\\</span><span class="content">&quot;,</span><span class="char">\\</span><span class="content">&quot;message</span><span class="char">\\</span><span class="content">&quot;:</span><span class="char">\\</span><span class="content">&quot;User not found by email == [not.existing@user.com]</span><span class="char">\\</span><span class="content">&quot;}&quot;,
+    &quot;headers&quot; : {
+      &quot;Content-Type&quot; : &quot;application/json&quot;
     }
   },
-  <span class="key"><span class="delimiter">&quot;</span><span class="content">priority</span><span class="delimiter">&quot;</span></span> : <span class="integer">1</span>
-}</code></pre>
+  &quot;priority&quot; : 1
+}
+</span><span class="delimiter">'</span></span><span class="string"><span class="delimiter">'</span><span class="delimiter">'</span></span></code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="executing-custom-methods-on-server-side">Executing custom methods on server side</h3>
 <div class="paragraph">
-<p>It is also possible to define a method call to be executed on the server side during the test. Such a method can be added to the class defined as "baseClassForTests" in the configuration. Please see the examples below:</p>
+<p>It is also possible to define a method call to be executed on the server side during the test. Such a method can be added to the class defined as "baseClassForTests"
+in the configuration. Please see the examples below:</p>
 </div>
 <div class="sect3">
 <h4 id="groovy-dsl">Groovy DSL</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest.dsl.GroovyDsl.make {
-    request {
-        method <span class="string"><span class="delimiter">'</span><span class="content">PUT</span><span class="delimiter">'</span></span>
-        url <span class="error">$</span>(client(regex(<span class="string"><span class="delimiter">'</span><span class="content">^/api/[0-9]{2}$</span><span class="delimiter">'</span></span>)), server(<span class="string"><span class="delimiter">'</span><span class="content">/api/12</span><span class="delimiter">'</span></span>))
-        headers {
-            header <span class="string"><span class="delimiter">'</span><span class="content">Content-Type</span><span class="delimiter">'</span></span>: <span class="string"><span class="delimiter">'</span><span class="content">application/json</span><span class="delimiter">'</span></span>
+        request {
+                method <span class="string"><span class="delimiter">'</span><span class="content">PUT</span><span class="delimiter">'</span></span>
+                url <span class="error">$</span>(client(regex(<span class="string"><span class="delimiter">'</span><span class="content">^/api/[0-9]{2}$</span><span class="delimiter">'</span></span>)), server(<span class="string"><span class="delimiter">'</span><span class="content">/api/12</span><span class="delimiter">'</span></span>))
+                headers {
+                        header <span class="string"><span class="delimiter">'</span><span class="content">Content-Type</span><span class="delimiter">'</span></span>: <span class="string"><span class="delimiter">'</span><span class="content">application/json</span><span class="delimiter">'</span></span>
+                }
+                body <span class="string"><span class="delimiter">'''</span><span class="content">\
+</span><span class="content">                                [{
+                                        &quot;text&quot;: &quot;Gonna see you at Warsaw&quot;
+                                }]
+                        </span><span class="delimiter">'''</span></span>
         }
-        body <span class="string"><span class="delimiter">'''</span><span class="content">\
-</span><span class="content">    [{
-        &quot;text&quot;: &quot;Gonna see you at Warsaw&quot;
-    }]
-</span><span class="delimiter">'''</span></span>
-    }
-    response {
-        body (
-             <span class="key">path</span>: <span class="error">$</span>(client(<span class="string"><span class="delimiter">'</span><span class="content">/api/12</span><span class="delimiter">'</span></span>), server(regex(<span class="string"><span class="delimiter">'</span><span class="content">^/api/[0-9]{2}$</span><span class="delimiter">'</span></span>))),
-             <span class="key">correlationId</span>: <span class="error">$</span>(client(<span class="string"><span class="delimiter">'</span><span class="content">1223456</span><span class="delimiter">'</span></span>), server(execute(<span class="string"><span class="delimiter">'</span><span class="content">isProperCorrelationId($it)</span><span class="delimiter">'</span></span>)))
-        )
-        status <span class="integer">200</span>
-    }
+        response {
+                body (
+                                <span class="key">path</span>: <span class="error">$</span>(client(<span class="string"><span class="delimiter">'</span><span class="content">/api/12</span><span class="delimiter">'</span></span>), server(regex(<span class="string"><span class="delimiter">'</span><span class="content">^/api/[0-9]{2}$</span><span class="delimiter">'</span></span>))),
+                                <span class="key">correlationId</span>: <span class="error">$</span>(client(<span class="string"><span class="delimiter">'</span><span class="content">1223456</span><span class="delimiter">'</span></span>), server(execute(<span class="string"><span class="delimiter">'</span><span class="content">isProperCorrelationId($it)</span><span class="delimiter">'</span></span>)))
+                )
+                status <span class="integer">200</span>
+        }
 }</code></pre>
 </div>
 </div>
@@ -966,13 +993,18 @@ table.CodeRay td.code>pre{padding:0}
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy"><span class="directive">abstract</span> <span class="type">class</span> <span class="class">BaseMockMvcSpec</span> <span class="directive">extends</span> Specification {
 
-    <span class="keyword">def</span> <span class="function">setup</span>() {
-        RestAssuredMockMvc.standaloneSetup(<span class="keyword">new</span> PairIdController())
-    }
+        <span class="keyword">def</span> <span class="function">setup</span>() {
+                RestAssuredMockMvc.standaloneSetup(<span class="keyword">new</span> PairIdController())
+        }
 
-    <span class="type">void</span> isProperCorrelationId(<span class="predefined-type">Integer</span> correlationId) {
-        <span class="keyword">assert</span> correlationId === <span class="integer">123456</span>
-    }
+        <span class="type">void</span> isProperCorrelationId(<span class="predefined-type">Integer</span> correlationId) {
+                <span class="keyword">assert</span> correlationId == <span class="integer">123456</span>
+        }
+
+        <span class="type">void</span> isEmpty(<span class="predefined-type">String</span> value) {
+                <span class="keyword">assert</span> value == <span class="predefined-constant">null</span>
+        }
+
 }</code></pre>
 </div>
 </div>
@@ -999,45 +1031,30 @@ table.CodeRay td.code>pre{padding:0}
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="type">class</span> <span class="class">FraudDetectionServiceSpec</span> <span class="directive">extends</span> MvcSpec {
+<pre class="CodeRay highlight"><code data-lang="groovy">        <span class="string"><span class="delimiter">'''</span><span class="content">
+ // when:
+  Response response = webTarget
+    .path(&quot;/users&quot;)
+    .queryParam(&quot;limit&quot;, &quot;10&quot;)
+    .queryParam(&quot;offset&quot;, &quot;20&quot;)
+    .queryParam(&quot;filter&quot;, &quot;email&quot;)
+    .queryParam(&quot;sort&quot;, &quot;name&quot;)
+    .queryParam(&quot;search&quot;, &quot;55&quot;)
+    .queryParam(&quot;age&quot;, &quot;99&quot;)
+    .queryParam(&quot;name&quot;, &quot;Denis.Stepanov&quot;)
+    .queryParam(&quot;email&quot;, &quot;bob@email.com&quot;)
+    .request()
+    .method(&quot;GET&quot;);
 
-        <span class="keyword">def</span> <span class="function">shouldMarkClientAsNotFraud</span>() {
-                <span class="key">when</span>:
-                        <span class="keyword">def</span> response == webTarget
-                                        .path(<span class="string"><span class="delimiter">'</span><span class="content">/fraudcheck</span><span class="delimiter">'</span></span>)
-                                        .request()
-                                        .method(<span class="string"><span class="delimiter">'</span><span class="content">put</span><span class="delimiter">'</span></span>, entity(<span class="string"><span class="delimiter">'</span><span class="content">{&quot;clientPesel&quot;:&quot;1234567890&quot;,&quot;loanAmount&quot;:123.123}</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">application/vnd.fraud.v1+json</span><span class="delimiter">'</span></span>))
+  String responseAsString = response.readEntity(String.class);
 
-                        <span class="predefined-type">String</span> responseAsString == response.readEntity(<span class="predefined-type">String</span>)
-
-                <span class="key">then</span>:
-                        response.status === <span class="integer">200</span>
-                        response.getHeaderString(<span class="string"><span class="delimiter">'</span><span class="content">Content-Type</span><span class="delimiter">'</span></span>) === <span class="string"><span class="delimiter">'</span><span class="content">application/vnd.fraud.v1+json</span><span class="delimiter">'</span></span>
-                <span class="key">and</span>:
-                        <span class="keyword">def</span> responseBody == <span class="keyword">new</span> JsonSlurper().parseText(responseAsString)
-                        responseBody.fraudCheckStatus === <span class="string"><span class="delimiter">&quot;</span><span class="content">OK</span><span class="delimiter">&quot;</span></span>
-                        assertThatRejectionReasonIsNull(responseBody.rejectionReason)
-        }
-
-        <span class="keyword">def</span> <span class="function">shouldMarkClientAsFraud</span>() {
-                <span class="key">when</span>:
-                        <span class="keyword">def</span> response == webTarget
-                                        .path(<span class="string"><span class="delimiter">'</span><span class="content">/fraudcheck</span><span class="delimiter">'</span></span>)
-                                        .request()
-                                        .method(<span class="string"><span class="delimiter">'</span><span class="content">put</span><span class="delimiter">'</span></span>, entity(<span class="string"><span class="delimiter">'</span><span class="content">{&quot;clientPesel&quot;:&quot;1234567890&quot;,&quot;loanAmount&quot;:99999}</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">application/vnd.fraud.v1+json</span><span class="delimiter">'</span></span>))
-
-                        <span class="predefined-type">String</span> responseAsString == response.readEntity(<span class="predefined-type">String</span>)
-
-                <span class="key">then</span>:
-                        response.status === <span class="integer">200</span>
-                        response.getHeaderString(<span class="string"><span class="delimiter">'</span><span class="content">Content-Type</span><span class="delimiter">'</span></span>) === <span class="string"><span class="delimiter">'</span><span class="content">application/vnd.fraud.v1+json</span><span class="delimiter">'</span></span>
-                <span class="key">and</span>:
-                        <span class="keyword">def</span> responseBody == <span class="keyword">new</span> JsonSlurper().parseText(responseAsString)
-                        responseBody.fraudCheckStatus ==~ java.util.regex.Pattern.compile(<span class="string"><span class="delimiter">'</span><span class="content">[A-Z]{5}</span><span class="delimiter">'</span></span>)
-                        responseBody.rejectionReason === <span class="string"><span class="delimiter">&quot;</span><span class="content">Amount too high</span><span class="delimiter">&quot;</span></span>
-        }
-
-}</code></pre>
+ // then:
+  assertThat(response.getStatus()).isEqualTo(200);
+ // and:
+  DocumentContext parsedJson = JsonPath.parse(responseAsString);
+  assertThatJson(parsedJson).field(&quot;property1&quot;).isEqualTo(&quot;a&quot;);
+  assertThatJson(parsedJson).field(&quot;property2&quot;).isEqualTo(&quot;b&quot;);
+</span><span class="delimiter">'''</span></span></code></pre>
 </div>
 </div>
 </div>
@@ -1046,7 +1063,7 @@ table.CodeRay td.code>pre{padding:0}
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-04-24 18:31:36 CEST
+Last updated 2016-04-24 21:09:44 CEST
 </div>
 </div>
 </body>
