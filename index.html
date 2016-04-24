@@ -636,30 +636,68 @@ Test code must still be written by hand, test data is produced by Accurest.</p>
 <p><strong>Deploy all microservices and perform end to end tests</strong></p>
 </div>
 <div class="paragraph">
-<p>Advantages:
-- simulates production
-- tests real communication between services</p>
+<p>Advantages:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>simulates production</p>
+</li>
+<li>
+<p>tests real communication between services</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
-<p>Disadvantages:
-- to test one microservice we would have to deploy 6 microservices, a couple of databases etc.
-- the environment where the tests would be conducted would be locked for a single suite of tests (i.e. nobody else would be able to run the tests in the meantime).
-- long to run
-- very late feedback
-- extremely hard to debug</p>
+<p>Disadvantages:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>to test one microservice we would have to deploy 6 microservices, a couple of databases etc.</p>
+</li>
+<li>
+<p>the environment where the tests would be conducted would be locked for a single suite of tests (i.e. nobody else would be able to run the tests in the meantime).</p>
+</li>
+<li>
+<p>long to run</p>
+</li>
+<li>
+<p>very late feedback</p>
+</li>
+<li>
+<p>extremely hard to debug</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p><strong>Mock other microservices in unit / integration tests</strong></p>
 </div>
 <div class="paragraph">
-<p>Advantages:
-- very fast feedback
-- no infrastructure requirements</p>
+<p>Advantages:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>very fast feedback</p>
+</li>
+<li>
+<p>no infrastructure requirements</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
-<p>Disadvantages:
-- the implementor of the service creates stubs thus they might have nothing to do with the reality
-- you can go to production with passing tests and failing production</p>
+<p>Disadvantages:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the implementor of the service creates stubs thus they might have nothing to do with the reality</p>
+</li>
+<li>
+<p>you can go to production with passing tests and failing production</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p>To solve the aforementioned issues Accurest with Stub Runner were created. Their main idea is to give you very fast feedback, without the need
