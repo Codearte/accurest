@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
-<title>Accurest HTTP</title>
+<title>Introduction</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -514,11 +514,12 @@ table.CodeRay td.code>pre{padding:0}
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#accurest-http">Accurest HTTP</a>
+<li><a href="#introduction">Introduction</a>
 <ul class="sectlevel2">
-<li><a href="#gradle-project">Gradle Project</a></li>
-<li><a href="#using-in-your-maven-project">Using in your Maven project</a></li>
-<li><a href="#scenarios">Scenarios</a></li>
+<li><a href="#why">Why?</a></li>
+<li><a href="#client-side">Client Side</a></li>
+<li><a href="#server-side">Server Side</a></li>
+<li><a href="#examples">Examples</a></li>
 </ul>
 </li>
 </ul>
@@ -526,473 +527,121 @@ table.CodeRay td.code>pre{padding:0}
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="accurest-http">Accurest HTTP</h2>
+<h2 id="introduction">Introduction</h2>
 <div class="sectionbody">
-<div class="sect2">
-<h3 id="gradle-project">Gradle Project</h3>
-<div class="sect3">
-<h4 id="prerequisites">Prerequisites</h4>
 <div class="paragraph">
-<p>In order to use Accurest with Wiremock you have to use gradle or maven plugin.</p>
+<p>Just to make long story short - Accurest is a tool that enables Consumer Driven Contract (CDC) development of JVM-based applications. It is shipped with <em>REST Contract Definition Language</em> (DSL). Contract definitions are used by Accurest to produce following resources:</p>
 </div>
-<div class="sect4">
-<h5 id="add-gradle-plugin">Add gradle plugin</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">buildscript {
-        repositories {
-                mavenCentral()
-        }
-        dependencies {
-                classpath <span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest:accurest-gradle-plugin:1.0.6</span><span class="delimiter">'</span></span>
-        }
-}
-
-apply <span class="key">plugin</span>: <span class="string"><span class="delimiter">'</span><span class="content">groovy</span><span class="delimiter">'</span></span>
-apply <span class="key">plugin</span>: <span class="string"><span class="delimiter">'</span><span class="content">accurest</span><span class="delimiter">'</span></span>
-
-dependencies {
-        testCompile(<span class="string"><span class="delimiter">'</span><span class="content">org.codehaus.groovy:groovy-all:2.4.6</span><span class="delimiter">'</span></span>)
-        testCompile <span class="string"><span class="delimiter">'</span><span class="content">org.spockframework:spock-core:1.0-groovy-2.4</span><span class="delimiter">'</span></span>
-        testCompile <span class="string"><span class="delimiter">'</span><span class="content">com.jayway.restassured:spring-mock-mvc:2.9.0</span><span class="delimiter">'</span></span> <span class="comment">// needed if you're going to use Spring MockMvc</span>
-}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="add-maven-plugin">Add maven plugin</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
-    <span class="tag">&lt;groupId&gt;</span>io.codearte.accurest<span class="tag">&lt;/groupId&gt;</span>
-    <span class="tag">&lt;artifactId&gt;</span>accurest-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;executions&gt;</span>
-        <span class="tag">&lt;execution&gt;</span>
-            <span class="tag">&lt;goals&gt;</span>
-                <span class="tag">&lt;goal&gt;</span>convert<span class="tag">&lt;/goal&gt;</span>
-                <span class="tag">&lt;goal&gt;</span>generateStubs<span class="tag">&lt;/goal&gt;</span>
-                <span class="tag">&lt;goal&gt;</span>generateTests<span class="tag">&lt;/goal&gt;</span>
-            <span class="tag">&lt;/goals&gt;</span>
-        <span class="tag">&lt;/execution&gt;</span>
-    <span class="tag">&lt;/executions&gt;</span>
-<span class="tag">&lt;/plugin&gt;</span></code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Read more: <a href="https://github.com/Codearte/accurest-maven-plugin">accurest-maven-plugin</a></p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="add-stubs">Add stubs</h5>
-<div class="paragraph">
-<p>By default Accurest is looking for stubs in src/test/resources/stubs directory.
-Directory containing stub definitions is treated as a class name, and each stub definition is treated as a single test.
-We assume that it contains at least one directory which will be used as test class name. If there is more than one level of nested directories all except the last one will be used as package name.
-So with following structure</p>
-</div>
-<div class="paragraph">
-<p>src/test/resources/stubs/myservice/shouldCreateUser.groovy
-src/test/resources/stubs/myservice/shouldReturnUser.groovy</p>
-</div>
-<div class="paragraph">
-<p>Accurest will create test class <code>defaultBasePackage.MyService</code> with two methods
- - shouldCreateUser()
- - shouldReturnUser()</p>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="run-plugin">Run plugin</h4>
-<div class="paragraph">
-<p>Plugin registers itself to be invoked before <code>check</code> task. You have nothing to do as long as you want it to be part of your build process. If you just want to generate tests please invoke <code>generateAccurest</code> task.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="configure-plugin">Configure plugin</h4>
-<div class="paragraph">
-<p>To change default configuration just add <code>accurest</code> snippet to your Gradle config</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">accurest {
-        testMode == <span class="string"><span class="delimiter">'</span><span class="content">MockMvc</span><span class="delimiter">'</span></span>
-        baseClassForTests == <span class="string"><span class="delimiter">'</span><span class="content">org.mycompany.tests</span><span class="delimiter">'</span></span>
-        generatedTestSourcesDir == project.file(<span class="string"><span class="delimiter">'</span><span class="content">src/accurest</span><span class="delimiter">'</span></span>)
-}</code></pre>
-</div>
-</div>
-<div class="sect4">
-<h5 id="configuration-options">Configuration options</h5>
 <div class="ulist">
 <ul>
 <li>
-<p><strong>testMode</strong> - defines mode for acceptance tests. By default MockMvc which is based on Spring&#8217;s MockMvc. It can also be changed to <strong>JaxRsClient</strong> or to <strong>Explicit</strong> for real HTTP calls.</p>
+<p>JSON stub definitions to be used by Wiremock when doing integration testing on the client code (<em>client tests</em>). Test code must still be written by hand, test data is produced by Accurest.</p>
 </li>
 <li>
-<p><strong>imports</strong> - array with imports that should be included in generated tests (for example ['org.myorg.Matchers']). By default empty array []</p>
+<p>Acceptance tests (in Spock) used to verify if server-side implementation of the API is compliant with the contract (<em>server tests</em>). Full test is generated by Accurest.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Accurest moves TDD to the level of software architecture.</p>
+</div>
+<div class="sect2">
+<h3 id="why">Why?</h3>
+<div class="paragraph">
+<p>The main purposes of Accurest are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>to ensure that WireMock stubs (used when developing the client) are doing exactly what actual server-side implementation will do,</p>
 </li>
 <li>
-<p><strong>staticImports</strong> - array with static imports that should be included in generated tests(for example ['org.myorg.Matchers.*']). By default empty array []</p>
+<p>to promote ATDD method and Microservices architectural style,</p>
 </li>
 <li>
-<p><strong>basePackageForTests</strong> - specifies base package for all generated tests. By default set to io.codearte.accurest.tests</p>
+<p>to provide a way to publish changes in contracts that are immediately visible on both sides,</p>
 </li>
 <li>
-<p><strong>baseClassForTests</strong> - base class for generated tests. By default <code>spock.lang.Specification</code></p>
-</li>
-<li>
-<p><strong>ruleClassForTests</strong> - specifies Rule which should be added to generated test classes.</p>
-</li>
-<li>
-<p><strong>ignoredFiles</strong> - Ant matcher allowing defining stub files for which processing should be skipped. By default empty array []</p>
-</li>
-<li>
-<p><strong>contractsDslDir</strong> - directory containing contracts written using the GroovyDSL. By default <code>$rootDir/src/test/accurest</code></p>
-</li>
-<li>
-<p><strong>generatedTestSourcesDir</strong> - test source directory where tests generated from Groovy DSL should be placed. By default <code>$buildDir/generated-test-sources/accurest</code></p>
-</li>
-<li>
-<p><strong>stubsOutputDir</strong> - dir where the generated Wiremock stubs from Groovy DSL should be placed</p>
-</li>
-<li>
-<p><strong>targetFramework</strong> - the target test framework to be used; currently Spock and JUnit are supported with Spock being the default framework</p>
+<p>to generate boilerplate test code used on the server side.</p>
 </li>
 </ul>
 </div>
 </div>
-<div class="sect4">
-<h5 id="base-class-for-tests">Base class for tests</h5>
-<div class="literalblock">
-<div class="content">
-<pre>When using Accurest in default MockMvc you need to create a base specification for all generated acceptance tests. In this class you need to point to endpoint which should be verified.</pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">package</span> org.mycompany.tests
-
-<span class="keyword">import</span> <span class="include">org.mycompany.ExampleSpringController</span>
-<span class="keyword">import</span> <span class="include">com.jayway.restassured.module.mockmvc.RestAssuredMockMvc</span>
-<span class="keyword">import</span> <span class="include">spock.lang.Specification</span>
-
-<span class="type">class</span>  <span class="class">MvcSpec</span> <span class="directive">extends</span> Specification {
-  <span class="keyword">def</span> <span class="function">setup</span>() {
-   RestAssuredMockMvc.standaloneSetup(<span class="keyword">new</span> ExampleSpringController())
-  }
-}</code></pre>
-</div>
+<div class="sect2">
+<h3 id="client-side">Client Side</h3>
+<div class="paragraph">
+<p>During the tests you want to have a Wiremock instance up and running that simulates the service Y.
+You would like to feed that instance with a proper stub definition. That stub definition would need
+to be valid from the Wiremock&#8217;s perspective but should also be reusable on the server side.</p>
 </div>
 <div class="paragraph">
-<p>In case of using <code>Explicit</code> mode, you can use base class to initialize the whole tested app similarly as in regular integration tests. In case of <code>JAXRSCLIENT</code> mode this base class should also contain <code>protected WebTarget webTarget</code> field, right now the only option to test JAX-RS API is to start a web server.</p>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="invoking-generated-tests">Invoking generated tests</h4>
-<div class="paragraph">
-<p>To ensure that provider side is complaint with defined contracts, you need to invoke:
-<code>./gradlew generateAccurest test</code></p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="accurest-on-consumer-side">Accurest on consumer side</h4>
-<div class="paragraph">
-<p>In consumer service you need to configure Accurest plugin in exactly the same way as in case of provider. You need to copy contracts stored in src/test/resources/stubs and generate Wiremock json stubs using: <code>./gradlew generateWireMockClientStubs</code> command. Note that <code>stubsOutputDir</code> option has to be set for stub generation to work.</p>
-</div>
-<div class="paragraph">
-<p>When present, json stubs can be used in consumer automated tests.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="annotation">@ContextConfiguration</span>(loader == SpringApplicationContextLoader, classes == Application)
-<span class="type">class</span> <span class="class">LoanApplicationServiceSpec</span> <span class="directive">extends</span> Specification {
-
- <span class="annotation">@ClassRule</span>
- <span class="annotation">@Shared</span>
- WireMockClassRule wireMockRule == <span class="keyword">new</span> WireMockClassRule()
-
- <span class="annotation">@Autowired</span>
- LoanApplicationService sut
-
- <span class="keyword">def</span> <span class="string"><span class="delimiter">'</span><span class="content">should successfully apply for loan</span><span class="delimiter">'</span></span>() {
-   <span class="key">given</span>:
-         LoanApplication application =
-                        <span class="keyword">new</span> LoanApplication(<span class="key">client</span>: <span class="keyword">new</span> Client(<span class="key">pesel</span>: <span class="string"><span class="delimiter">'</span><span class="content">12345678901</span><span class="delimiter">'</span></span>), <span class="key">amount</span>: <span class="float">123.123</span>)
-   <span class="key">when</span>:
-        LoanApplicationResult loanApplication == sut.loanApplication(application)
-   <span class="key">then</span>:
-        loanApplication.loanApplicationStatus === LoanApplicationStatus.LOAN_APPLIED
-        loanApplication.rejectionReason === <span class="predefined-constant">null</span>
- }
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Underneath LoanApplication makes a call to FraudDetection service. This request is handled by Wiremock server configured using stubs generated by Accurest.</p>
-</div>
+<p><em>Summing it up:</em> On this side, in the stub definition, you can use patterns for request stubbing and you need exact
+values for responses.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="using-in-your-maven-project">Using in your Maven project</h3>
-<div class="sect3">
-<h4 id="add-maven-plugin-2">Add maven plugin</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
-    <span class="tag">&lt;groupId&gt;</span>io.codearte.accurest<span class="tag">&lt;/groupId&gt;</span>
-    <span class="tag">&lt;artifactId&gt;</span>accurest-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;executions&gt;</span>
-        <span class="tag">&lt;execution&gt;</span>
-            <span class="tag">&lt;goals&gt;</span>
-                <span class="tag">&lt;goal&gt;</span>convert<span class="tag">&lt;/goal&gt;</span>
-                <span class="tag">&lt;goal&gt;</span>generateStubs<span class="tag">&lt;/goal&gt;</span>
-                <span class="tag">&lt;goal&gt;</span>generateTests<span class="tag">&lt;/goal&gt;</span>
-            <span class="tag">&lt;/goals&gt;</span>
-        <span class="tag">&lt;/execution&gt;</span>
-    <span class="tag">&lt;/executions&gt;</span>
-<span class="tag">&lt;/plugin&gt;</span></code></pre>
-</div>
+<h3 id="server-side">Server Side</h3>
+<div class="paragraph">
+<p>Being a service Y since you are developing your stub, you need to be sure that it&#8217;s actually resembling your
+concrete implementation. You can&#8217;t have a situation where your stub acts in one way and your application on
+production behaves in a different way.</p>
 </div>
 <div class="paragraph">
-<p>Read more: [accurest-maven-plugin](<a href="https://github.com/Codearte/accurest-maven-plugin" class="bare">https://github.com/Codearte/accurest-maven-plugin</a>)</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="add-stubs-2">Add stubs</h4>
-<div class="paragraph">
-<p>By default Accurest is looking for stubs in <code>src/test/accurest</code> directory.
-Directory containing stub definitions is treated as a class name, and each stub definition is treated as a single test.
-We assume that it contains at least one directory which will be used as test class name. If there is more than one level of nested directories all except the last one will be used as package name.
-So with following structure</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">src/test/accurest/myservice/shouldCreateUser.groovy
-src/test/accurest/myservice/shouldReturnUser.groovy</code></pre>
-</div>
+<p>That&#8217;s why from the provided stub acceptance tests will be generated that will ensure
+that your application behaves in the same way as you define in your stub.</p>
 </div>
 <div class="paragraph">
-<p>Accurest will create test class <code>defaultBasePackage.MyService</code> with two methods
- - <code>shouldCreateUser()</code>
- - <code>shouldReturnUser()</code></p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="run-plugin-2">Run plugin</h4>
-<div class="paragraph">
-<p>Plugin goal <code>generateTests</code> is assigned to be invoked in phase <code>generate-test-sources</code>. You have nothing to do as long as you want it to be part of your build process. If you just want to generate tests please invoke <code>generateTests</code> goal.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="configure-plugin-2">Configure plugin</h4>
-<div class="paragraph">
-<p>To change default configuration just add <code>configuration</code> section to plugin definition or <code>execution</code> definition.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
-    <span class="tag">&lt;groupId&gt;</span>io.codearte.accurest<span class="tag">&lt;/groupId&gt;</span>
-    <span class="tag">&lt;artifactId&gt;</span>accurest-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;executions&gt;</span>
-        <span class="tag">&lt;execution&gt;</span>
-            <span class="tag">&lt;goals&gt;</span>
-                <span class="tag">&lt;goal&gt;</span>convert<span class="tag">&lt;/goal&gt;</span>
-                <span class="tag">&lt;goal&gt;</span>generateStubs<span class="tag">&lt;/goal&gt;</span>
-                <span class="tag">&lt;goal&gt;</span>generateTests<span class="tag">&lt;/goal&gt;</span>
-            <span class="tag">&lt;/goals&gt;</span>
-        <span class="tag">&lt;/execution&gt;</span>
-    <span class="tag">&lt;/executions&gt;</span>
-    <span class="tag">&lt;configuration&gt;</span>
-        <span class="tag">&lt;basePackageForTests&gt;</span>com.ofg.twitter.place<span class="tag">&lt;/basePackageForTests&gt;</span>
-        <span class="tag">&lt;baseClassForTests&gt;</span>com.ofg.twitter.place.BaseMockMvcSpec<span class="tag">&lt;/baseClassForTests&gt;</span>
-    <span class="tag">&lt;/configuration&gt;</span>
-<span class="tag">&lt;/plugin&gt;</span></code></pre>
-</div>
-</div>
-<div class="sect4">
-<h5 id="configuration-options-2">Configuration options</h5>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>testMode</strong> - defines mode for acceptance tests. By default <code>MockMvc</code> which is based on Spring&#8217;s MockMvc. It can also be changed to <code>JaxRsClient</code> or to <code>Explicit</code> for real HTTP calls.</p>
-</li>
-<li>
-<p><strong>basePackageForTests</strong> - specifies base package for all generated tests. By default set to <code>io.codearte.accurest.tests</code>.</p>
-</li>
-<li>
-<p><strong>ruleClassForTests</strong> - specifies Rule which should be added to generated test classes.</p>
-</li>
-<li>
-<p><strong>baseClassForTests</strong> - base class for generated tests. By default <code>spock.lang.Specification</code>.</p>
-</li>
-<li>
-<p><strong>contractsDir</strong> - directory containing contracts written using the GroovyDSL. By default <code>/src/test/accurest</code>.</p>
-</li>
-<li>
-<p><strong>generatedTestSourcesDir</strong> - test source directory where tests generated from Groovy DSL should be placed. By default <code>target/generated-test-sources/accurest</code>.</p>
-</li>
-<li>
-<p><strong>mappingsDir</strong> - dir where the generated Wiremock stubs from Groovy DSL should be placed.</p>
-</li>
-<li>
-<p><strong>testFramework</strong> - the target test framework to be used; currently Spock and JUnit are supported with Spock being the default framework</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect4">
-<h5 id="base-class-for-tests-2">Base class for tests</h5>
-<div class="literalblock">
-<div class="content">
-<pre>When using Accurest in default MockMvc you need to create a base specification for all generated acceptance tests. In this class you need to point to endpoint which should be verified.</pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">package</span> org.mycompany.tests
-
-<span class="keyword">import</span> <span class="include">org.mycompany.ExampleSpringController</span>
-<span class="keyword">import</span> <span class="include">com.jayway.restassured.module.mockmvc.RestAssuredMockMvc</span>
-<span class="keyword">import</span> <span class="include">spock.lang.Specification</span>
-
-<span class="type">class</span>  <span class="class">MvcSpec</span> <span class="directive">extends</span> Specification {
-  <span class="keyword">def</span> <span class="function">setup</span>() {
-   RestAssuredMockMvc.standaloneSetup(<span class="keyword">new</span> ExampleSpringController())
-  }
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>In case of using <code>Explicit</code> mode, you can use base class to initialize the whole tested app similarly as in regular integration tests. In case of <code>JAXRSCLIENT</code> mode this base class should also contain <code>protected WebTarget webTarget</code> field, right now the only option to test JAX-RS API is to start a web server.</p>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="invoking-generated-tests-2">Invoking generated tests</h4>
-<div class="paragraph">
-<p>Accurest Maven Plugins generates verification code into directory <code>/generated-test-sources/accurest</code> and attach this directory to <code>testCompile</code> goal.</p>
-</div>
-<div class="paragraph">
-<p>For Groovy Spock code use:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
-        <span class="tag">&lt;groupId&gt;</span>org.codehaus.gmavenplus<span class="tag">&lt;/groupId&gt;</span>
-        <span class="tag">&lt;artifactId&gt;</span>gmavenplus-plugin<span class="tag">&lt;/artifactId&gt;</span>
-        <span class="tag">&lt;version&gt;</span>1.5<span class="tag">&lt;/version&gt;</span>
-        <span class="tag">&lt;executions&gt;</span>
-                <span class="tag">&lt;execution&gt;</span>
-                        <span class="tag">&lt;goals&gt;</span>
-                                <span class="tag">&lt;goal&gt;</span>testCompile<span class="tag">&lt;/goal&gt;</span>
-                        <span class="tag">&lt;/goals&gt;</span>
-                <span class="tag">&lt;/execution&gt;</span>
-        <span class="tag">&lt;/executions&gt;</span>
-        <span class="tag">&lt;configuration&gt;</span>
-                <span class="tag">&lt;testSources&gt;</span>
-                        <span class="tag">&lt;testSource&gt;</span>
-                                <span class="tag">&lt;directory&gt;</span>${project.basedir}/src/test/groovy<span class="tag">&lt;/directory&gt;</span>
-                                <span class="tag">&lt;includes&gt;</span>
-                                        <span class="tag">&lt;include&gt;</span>**/*.groovy<span class="tag">&lt;/include&gt;</span>
-                                <span class="tag">&lt;/includes&gt;</span>
-                        <span class="tag">&lt;/testSource&gt;</span>
-                        <span class="tag">&lt;testSource&gt;</span>
-                                <span class="tag">&lt;directory&gt;</span>${project.build.directory}/generated-test-sources/accurest<span class="tag">&lt;/directory&gt;</span>
-                                <span class="tag">&lt;includes&gt;</span>
-                                        <span class="tag">&lt;include&gt;</span>**/*.groovy<span class="tag">&lt;/include&gt;</span>
-                                <span class="tag">&lt;/includes&gt;</span>
-                        <span class="tag">&lt;/testSource&gt;</span>
-                <span class="tag">&lt;/testSources&gt;</span>
-        <span class="tag">&lt;/configuration&gt;</span>
-<span class="tag">&lt;/plugin&gt;</span></code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>To ensure that provider side is complaint with defined contracts, you need to invoke <code>mvn generateTest test</code></p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="accurest-on-consumer-side-2">Accurest on consumer side</h4>
-<div class="paragraph">
-<p>In consumer service you need to configure Accurest plugin in exactly the same way as in case of provider. You need to copy contracts stored in <code>src/test/accurest</code> and generate Wiremock json stubs using: <code>mvn generateStubs</code> command. By default generated WireMock mapping is stored in directory <code>target/mappings</code>. Your project should create from this generated mappings additional artifact with classifier <code>stubs</code> for easy deploy to maven repository.</p>
-</div>
-<div class="paragraph">
-<p>Sample configuration:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
-    <span class="tag">&lt;groupId&gt;</span>io.codearte.accurest<span class="tag">&lt;/groupId&gt;</span>
-    <span class="tag">&lt;artifactId&gt;</span>accurest-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>${accurest.version}<span class="tag">&lt;/version&gt;</span>
-    <span class="tag">&lt;executions&gt;</span>
-        <span class="tag">&lt;execution&gt;</span>
-            <span class="tag">&lt;goals&gt;</span>
-                <span class="tag">&lt;goal&gt;</span>convert<span class="tag">&lt;/goal&gt;</span>
-                <span class="tag">&lt;goal&gt;</span>generateStubs<span class="tag">&lt;/goal&gt;</span>
-            <span class="tag">&lt;/goals&gt;</span>
-        <span class="tag">&lt;/execution&gt;</span>
-    <span class="tag">&lt;/executions&gt;</span>
-<span class="tag">&lt;/plugin&gt;</span></code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>When present, json stubs can be used in consumer automated tests.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="annotation">@ContextConfiguration</span>(loader == SpringApplicationContextLoader, classes == Application)
-<span class="type">class</span> <span class="class">LoanApplicationServiceSpec</span> <span class="directive">extends</span> Specification {
-
- <span class="annotation">@ClassRule</span>
- <span class="annotation">@Shared</span>
- WireMockClassRule wireMockRule == <span class="keyword">new</span> WireMockClassRule()
-
- <span class="annotation">@Autowired</span>
- LoanApplicationService sut
-
- <span class="keyword">def</span> <span class="string"><span class="delimiter">'</span><span class="content">should successfully apply for loan</span><span class="delimiter">'</span></span>() {
-   <span class="key">given</span>:
-         LoanApplication application =
-                        <span class="keyword">new</span> LoanApplication(<span class="key">client</span>: <span class="keyword">new</span> Client(<span class="key">pesel</span>: <span class="string"><span class="delimiter">'</span><span class="content">12345678901</span><span class="delimiter">'</span></span>), <span class="key">amount</span>: <span class="float">123.123</span>)
-   <span class="key">when</span>:
-        LoanApplicationResult loanApplication == sut.loanApplication(application)
-   <span class="key">then</span>:
-        loanApplication.loanApplicationStatus === LoanApplicationStatus.LOAN_APPLIED
-        loanApplication.rejectionReason === <span class="predefined-constant">null</span>
- }
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Underneath LoanApplication makes a call to FraudDetection service. This request is handled by Wiremock server configured using stubs generated by Accurest.</p>
-</div>
+<p><em>Summing it up:</em> On this side, in the stub definition, you need exact values as request and can use patterns/methods
+for response verification.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="scenarios">Scenarios</h3>
-<div class="paragraph">
-<p>It&#8217;s possible to handle scenarios with Accurest. All you need to do is to stick to proper naming convention while creating your contracts. The convention requires to include order number followed by the underscore.</p>
-</div>
+<h3 id="examples">Examples</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code>my_contracts_dir\
-  scenario1\
-    1_login.groovy
-    2_showCart.groovy
-    3_logout.groovy</code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest.dsl.GroovyDsl.make {
+    request {
+        method <span class="string"><span class="delimiter">'</span><span class="content">PUT</span><span class="delimiter">'</span></span>
+        url <span class="string"><span class="delimiter">'</span><span class="content">/api/12</span><span class="delimiter">'</span></span>
+        headers {
+            header <span class="string"><span class="delimiter">'</span><span class="content">Content-Type</span><span class="delimiter">'</span></span>: <span class="string"><span class="delimiter">'</span><span class="content">application/vnd.com.ofg.twitter-places-analyzer.v1+json</span><span class="delimiter">'</span></span>
+        }
+        body <span class="string"><span class="delimiter">'''</span><span class="content">\
+</span><span class="content">    [{
+        &quot;created_at&quot;: &quot;Sat Jul 26 09:38:57 +0000 2014&quot;,
+        &quot;id&quot;: 492967299297845248,
+        &quot;id_str&quot;: &quot;492967299297845248&quot;,
+        &quot;text&quot;: &quot;Gonna see you at Warsaw&quot;,
+        &quot;place&quot;:
+        {
+            &quot;attributes&quot;:{},
+            &quot;bounding_box&quot;:
+            {
+                &quot;coordinates&quot;:
+                    [[
+                        [-77.119759,38.791645],
+                        [-76.909393,38.791645],
+                        [-76.909393,38.995548],
+                        [-77.119759,38.995548]
+                    ]],
+                &quot;type&quot;:&quot;Polygon&quot;
+            },
+            &quot;country&quot;:&quot;United States&quot;,
+            &quot;country_code&quot;:&quot;US&quot;,
+            &quot;full_name&quot;:&quot;Washington, DC&quot;,
+            &quot;id&quot;:&quot;01fbe706f872cb32&quot;,
+            &quot;name&quot;:&quot;Washington&quot;,
+            &quot;place_type&quot;:&quot;city&quot;,
+            &quot;url&quot;: &quot;http://api.twitter.com/1/geo/id/01fbe706f872cb32.json&quot;
+        }
+    }]
+</span><span class="delimiter">'''</span></span>
+    }
+    response {
+        status <span class="integer">200</span>
+    }
+}</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>Such tree will cause Accurest generating Wiremock&#8217;s scenario with name <code>scenario1</code> and three steps:
- - login marked as <code>Started</code> pointing to:
- - showCart marked as <code>Step1</code> pointing to:
- - logout marked as <code>Step2</code> which will close the scenario.
-More details about Wiremock scenarios can be found under [<a href="http://wiremock.org/stateful-behaviour.html" class="bare">http://wiremock.org/stateful-behaviour.html</a>](<a href="http://wiremock.org/stateful-behaviour.html" class="bare">http://wiremock.org/stateful-behaviour.html</a>)</p>
-</div>
-<div class="paragraph">
-<p>Accurest will also generate tests with guaranteed order of execution.</p>
 </div>
 </div>
 </div>
@@ -1000,7 +649,7 @@ More details about Wiremock scenarios can be found under [<a href="http://wiremo
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-04-24 18:34:59 CEST
+Last updated 2016-04-24 18:35:49 CEST
 </div>
 </div>
 </body>

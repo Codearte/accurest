@@ -1085,40 +1085,13 @@ receivedMessage.headers.get(<span class="string"><span class="delimiter">'</span
 </div>
 </div>
 <div class="sect4">
-<h5 id="custom-triggers">Custom triggers</h5>
+<h5 id="scenario-3-input-with-no-output-2">Scenario 3 (input with no output)</h5>
 <div class="paragraph">
-<p><code>StubTrigger</code> gives you the following options to trigger a message:</p>
+<p>Since the route is set for you it&#8217;s enough to just send a message to the <code>input</code> destination.</p>
 </div>
-</div>
-<div class="sect4">
-<h5 id="trigger-by-label-2">Trigger by label</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">stubFinder.trigger(<span class="string"><span class="delimiter">'</span><span class="content">return_book_1</span><span class="delimiter">'</span></span>)</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="trigger-by-group-and-artifact-ids-2">Trigger by group and artifact ids</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">stubFinder.trigger(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:integrationService</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">return_book_1</span><span class="delimiter">'</span></span>)</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="trigger-by-artifact-ids-2">Trigger by artifact ids</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">stubFinder.trigger(<span class="string"><span class="delimiter">'</span><span class="content">integrationService</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">return_book_1</span><span class="delimiter">'</span></span>)</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="trigger-all-messages-2">Trigger all messages</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">stubFinder.trigger()</code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">messaging.send(<span class="keyword">new</span> BookReturned(<span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>), [<span class="key">sample</span>: <span class="string"><span class="delimiter">'</span><span class="content">header</span><span class="delimiter">'</span></span>], <span class="string"><span class="delimiter">'</span><span class="content">delete</span><span class="delimiter">'</span></span>)</code></pre>
 </div>
 </div>
 </div>
@@ -1289,40 +1262,13 @@ receivedMessage.headers.get(<span class="string"><span class="delimiter">'</span
 </div>
 </div>
 <div class="sect4">
-<h5 id="custom-triggers-2">Custom triggers</h5>
+<h5 id="scenario-3-input-with-no-output-3">Scenario 3 (input with no output)</h5>
 <div class="paragraph">
-<p><code>StubTrigger</code> gives you the following options to trigger a message:</p>
+<p>Since the route is set for you it&#8217;s enough to just send a message to the <code>output</code> destination.</p>
 </div>
-</div>
-<div class="sect4">
-<h5 id="trigger-by-label-3">Trigger by label</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">stubFinder.trigger(<span class="string"><span class="delimiter">'</span><span class="content">return_book_1</span><span class="delimiter">'</span></span>)</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="trigger-by-group-and-artifact-ids-3">Trigger by group and artifact ids</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">stubFinder.trigger(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:streamService</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">return_book_1</span><span class="delimiter">'</span></span>)</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="trigger-by-artifact-ids-3">Trigger by artifact ids</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">stubFinder.trigger(<span class="string"><span class="delimiter">'</span><span class="content">streamService</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">return_book_1</span><span class="delimiter">'</span></span>)</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="trigger-all-messages-3">Trigger all messages</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">stubFinder.trigger()</code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">messaging.send(<span class="keyword">new</span> BookReturned(<span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>), [<span class="key">sample</span>: <span class="string"><span class="delimiter">'</span><span class="content">header</span><span class="delimiter">'</span></span>], <span class="string"><span class="delimiter">'</span><span class="content">delete</span><span class="delimiter">'</span></span>)</code></pre>
 </div>
 </div>
 </div>
