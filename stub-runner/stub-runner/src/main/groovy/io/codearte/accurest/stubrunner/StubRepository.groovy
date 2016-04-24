@@ -4,8 +4,7 @@ import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import groovy.util.logging.Slf4j
 import io.codearte.accurest.dsl.GroovyDsl
-import org.codehaus.groovy.control.CompilerConfiguration
-
+import io.codearte.accurest.util.GroovyShellBuilder
 /**
  * Wraps the folder with WireMock mappings.
  */
@@ -69,7 +68,7 @@ class StubRepository {
 			if (isAccurestDescriptor(file)) {
 				try {
 					mappingDescriptors <<
-							((new GroovyShell(delegate.class.classLoader, new Binding(), new CompilerConfiguration(sourceEncoding:'UTF-8')).evaluate(file)) as GroovyDsl)
+							(GroovyDsl) GroovyShellBuilder.build(delegate.class.classLoader).evaluate(file)
 				} catch (Exception e) {
 					log.warn("Exception occurred while trying to parse file [$file]", e)
 				}
