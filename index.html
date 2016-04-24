@@ -1322,6 +1322,18 @@ in the configuration. Please see the examples below:</p>
 </div>
 <div class="sect2">
 <h3 id="messaging-top-level-elements">Messaging Top-Level Elements</h3>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Feature available since 1.0.7
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
 <p>The DSL for messaging looks a little bit different than the one that focuses on HTTP.</p>
 </div>
@@ -2354,6 +2366,10 @@ publishing {
 <p>Runs stubs for service collaborators. Treating stubs as contracts of services allows to use stub-runner as an implementation of
 <a href="http://martinfowler.com/articles/consumerDrivenContracts.html">Consumer Driven Contracts</a>.</p>
 </div>
+<div class="paragraph">
+<p>Stub Runner allows you to automatically download the stubs of the provided dependencies, start WireMock servers for them and feed them with proper stub definitions.
+For messaging, special stub routes are defined.</p>
+</div>
 <div class="sect3">
 <h4 id="running-stubs">Running stubs</h4>
 <div class="sect4">
@@ -2423,7 +2439,7 @@ publishing {
 </div>
 </div>
 <div class="sect4">
-<h5 id="stubs">Stubs</h5>
+<h5 id="http-stubs">HTTP Stubs</h5>
 <div class="paragraph">
 <p>Stubs are defined in JSON documents, whose syntax is defined in <a href="http://wiremock.org/stubbing.html">WireMock documentation</a></p>
 </div>
@@ -2447,14 +2463,17 @@ publishing {
 }</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>In the provided JAR file we&#8217;re harvesting all JSON files and try to put them inside running WireMock instance.</p>
-</div>
 </div>
 <div class="sect4">
 <h5 id="viewing-registered-mappings">Viewing registered mappings</h5>
 <div class="paragraph">
-<p>Every stubbed collaborator exposes list of defined mappings under <code>__/admin/</code> endpoint.
+<p>Every stubbed collaborator exposes list of defined mappings under <code>__/admin/</code> endpoint.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="messaging-stubs">Messaging Stubs</h5>
+<div class="paragraph">
+<p>Depending on the provided Stub Runner dependency and the DSL the messaging routes are automatically set up.
 === Stub Runner JUnit Rule</p>
 </div>
 <div class="paragraph">
@@ -2462,11 +2481,7 @@ publishing {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@ClassRule</span> <span class="directive">public</span> <span class="directive">static</span> AccurestRule rule == <span class="keyword">new</span> AccurestRule()
-                        .repoRoot(<span class="string"><span class="delimiter">&quot;</span><span class="content">http://your.repo.com</span><span class="delimiter">&quot;</span></span>)
-                        .downloadStub(<span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">loanIssuance</span><span class="delimiter">&quot;</span></span>)
-                        .downloadStub(<span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest.stubs:fraudDetectionServer</span><span class="delimiter">&quot;</span></span>)
-                        .downloadStub(<span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte:stub1</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte:stub2:classifier</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte:stub3</span><span class="delimiter">&quot;</span></span>);</code></pre>
+<pre class="CodeRay highlight"><code data-lang="java"></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2486,7 +2501,11 @@ Check their <a href="http://docs.groovy-lang.org/latest/html/documentation/grape
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="type">interface</span> StubFinder {
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">package</span> io.codearte.accurest.stubrunner
+
+<span class="keyword">import</span> <span class="include">io.codearte.accurest.dsl.GroovyDsl</span>
+
+<span class="type">interface</span> StubFinder <span class="directive">extends</span> StubTriggerer {
         <span class="comment">/**
          * For the given groupId and artifactId tries to find the matching
          * URL of the running stub.
@@ -2509,6 +2528,11 @@ Check their <a href="http://docs.groovy-lang.org/latest/html/documentation/grape
          * Returns all running stubs
          */</span>
         RunningStubs findAllRunningStubs()
+
+        <span class="comment">/**
+         * Returns the list of Accurest contracts
+         */</span>
+        <span class="predefined-type">Map</span>&lt;StubConfiguration, <span class="predefined-type">Collection</span>&lt;GroovyDsl&gt;&gt; getAccurestContracts()
 }</code></pre>
 </div>
 </div>
@@ -2517,25 +2541,7 @@ Check their <a href="http://docs.groovy-lang.org/latest/html/documentation/grape
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="annotation">@ClassRule</span> <span class="annotation">@Shared</span> AccurestRule rule == <span class="keyword">new</span> AccurestRule()
-                        .repoRoot(<span class="string"><span class="delimiter">'</span><span class="content">http://your.repo.com</span><span class="delimiter">'</span></span>)
-                        .downloadStub(<span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">loanIssuance</span><span class="delimiter">&quot;</span></span>)
-                        .downloadStub(<span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest.stubs:fraudDetectionServer</span><span class="delimiter">&quot;</span></span>)
-
-        <span class="keyword">def</span> <span class="string"><span class="delimiter">'</span><span class="content">should start WireMock servers</span><span class="delimiter">'</span></span>() {
-                <span class="key">expect</span>: <span class="string"><span class="delimiter">'</span><span class="content">WireMocks are running</span><span class="delimiter">'</span></span>
-                        rule.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>) !== <span class="predefined-constant">null</span>
-                        rule.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>) !== <span class="predefined-constant">null</span>
-                        rule.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>) === rule.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>)
-                        rule.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:fraudDetectionServer</span><span class="delimiter">'</span></span>) !== <span class="predefined-constant">null</span>
-                <span class="key">and</span>:
-                        rule.findAllRunningStubs().isPresent(<span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>)
-                        rule.findAllRunningStubs().isPresent(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">fraudDetectionServer</span><span class="delimiter">'</span></span>)
-                        rule.findAllRunningStubs().isPresent(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:fraudDetectionServer</span><span class="delimiter">'</span></span>)
-                <span class="key">and</span>: <span class="string"><span class="delimiter">'</span><span class="content">Stubs were registered</span><span class="delimiter">'</span></span>
-                        <span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>rule.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>).toString()<span class="inline-delimiter">}</span></span><span class="content">/name</span><span class="delimiter">&quot;</span></span>.toURL().text === <span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>
-                        <span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>rule.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">fraudDetectionServer</span><span class="delimiter">'</span></span>).toString()<span class="inline-delimiter">}</span></span><span class="content">/name</span><span class="delimiter">&quot;</span></span>.toURL().text === <span class="string"><span class="delimiter">'</span><span class="content">fraudDetectionServer</span><span class="delimiter">'</span></span>
-        }</code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">Unresolved directive <span class="keyword">in</span> -junit/README.adoc - <span class="key">include</span>::src/test/groovy/io/codearte/accurest/stubrunner/junit/AccurestRuleSpec.java[tags=classrule]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2543,26 +2549,7 @@ Check their <a href="http://docs.groovy-lang.org/latest/html/documentation/grape
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@ClassRule</span> <span class="directive">public</span> <span class="directive">static</span> AccurestRule rule == <span class="keyword">new</span> AccurestRule()
-                        .repoRoot(<span class="string"><span class="delimiter">&quot;</span><span class="content">http://your.repo.com</span><span class="delimiter">&quot;</span></span>)
-                        .downloadStub(<span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">loanIssuance</span><span class="delimiter">&quot;</span></span>)
-                        .downloadStub(<span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest.stubs:fraudDetectionServer</span><span class="delimiter">&quot;</span></span>);
-
-        <span class="annotation">@Test</span>
-        <span class="directive">public</span> <span class="type">void</span> should_start_wiremock_servers() <span class="directive">throws</span> <span class="exception">Exception</span> {
-                <span class="comment">// expect: 'WireMocks are running'</span>
-                        then(rule.findStubUrl(<span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">loanIssuance</span><span class="delimiter">&quot;</span></span>)).isNotNull();
-                        then(rule.findStubUrl(<span class="string"><span class="delimiter">&quot;</span><span class="content">loanIssuance</span><span class="delimiter">&quot;</span></span>)).isNotNull();
-                        then(rule.findStubUrl(<span class="string"><span class="delimiter">&quot;</span><span class="content">loanIssuance</span><span class="delimiter">&quot;</span></span>)).isEqualTo(rule.findStubUrl(<span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">loanIssuance</span><span class="delimiter">&quot;</span></span>));
-                        then(rule.findStubUrl(<span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest.stubs:fraudDetectionServer</span><span class="delimiter">&quot;</span></span>)).isNotNull();
-                <span class="comment">// and:</span>
-                        then(rule.findAllRunningStubs().isPresent(<span class="string"><span class="delimiter">&quot;</span><span class="content">loanIssuance</span><span class="delimiter">&quot;</span></span>)).isTrue();
-                        then(rule.findAllRunningStubs().isPresent(<span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">fraudDetectionServer</span><span class="delimiter">&quot;</span></span>)).isTrue();
-                        then(rule.findAllRunningStubs().isPresent(<span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest.stubs:fraudDetectionServer</span><span class="delimiter">&quot;</span></span>)).isTrue();
-                <span class="comment">// and: 'Stubs were registered'</span>
-                        then(httpGet(rule.findStubUrl(<span class="string"><span class="delimiter">&quot;</span><span class="content">loanIssuance</span><span class="delimiter">&quot;</span></span>).toString() + <span class="string"><span class="delimiter">&quot;</span><span class="content">/name</span><span class="delimiter">&quot;</span></span>)).isEqualTo(<span class="string"><span class="delimiter">&quot;</span><span class="content">loanIssuance</span><span class="delimiter">&quot;</span></span>);
-                        then(httpGet(rule.findStubUrl(<span class="string"><span class="delimiter">&quot;</span><span class="content">fraudDetectionServer</span><span class="delimiter">&quot;</span></span>).toString() + <span class="string"><span class="delimiter">&quot;</span><span class="content">/name</span><span class="delimiter">&quot;</span></span>)).isEqualTo(<span class="string"><span class="delimiter">&quot;</span><span class="content">fraudDetectionServer</span><span class="delimiter">&quot;</span></span>);
-        }</code></pre>
+<pre class="CodeRay highlight"><code data-lang="java"></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2586,24 +2573,24 @@ its methods as presented below:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="annotation">@ContextConfiguration</span>(classes == Config, loader == SpringApplicationContextLoader)
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="annotation">@ContextConfiguration</span>(classes = Config, loader = SpringApplicationContextLoader)
 <span class="type">class</span> <span class="class">StubRunnerConfigurationSpec</span> <span class="directive">extends</span> Specification {
 
         <span class="annotation">@Autowired</span> StubFinder stubFinder
 
         <span class="keyword">def</span> <span class="string"><span class="delimiter">'</span><span class="content">should start WireMock servers</span><span class="delimiter">'</span></span>() {
                 <span class="key">expect</span>: <span class="string"><span class="delimiter">'</span><span class="content">WireMocks are running</span><span class="delimiter">'</span></span>
-                        stubFinder.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>) !== <span class="predefined-constant">null</span>
-                        stubFinder.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>) !== <span class="predefined-constant">null</span>
-                        stubFinder.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>) === stubFinder.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>)
-                        stubFinder.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:fraudDetectionServer</span><span class="delimiter">'</span></span>) !== <span class="predefined-constant">null</span>
+                        stubFinder.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>) != <span class="predefined-constant">null</span>
+                        stubFinder.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>) != <span class="predefined-constant">null</span>
+                        stubFinder.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>) == stubFinder.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>)
+                        stubFinder.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:fraudDetectionServer</span><span class="delimiter">'</span></span>) != <span class="predefined-constant">null</span>
                 <span class="key">and</span>:
                         stubFinder.findAllRunningStubs().isPresent(<span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>)
                         stubFinder.findAllRunningStubs().isPresent(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">fraudDetectionServer</span><span class="delimiter">'</span></span>)
                         stubFinder.findAllRunningStubs().isPresent(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:fraudDetectionServer</span><span class="delimiter">'</span></span>)
                 <span class="key">and</span>: <span class="string"><span class="delimiter">'</span><span class="content">Stubs were registered</span><span class="delimiter">'</span></span>
-                        <span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>stubFinder.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>).toString()<span class="inline-delimiter">}</span></span><span class="content">/name</span><span class="delimiter">&quot;</span></span>.toURL().text === <span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>
-                        <span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>stubFinder.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">fraudDetectionServer</span><span class="delimiter">'</span></span>).toString()<span class="inline-delimiter">}</span></span><span class="content">/name</span><span class="delimiter">&quot;</span></span>.toURL().text === <span class="string"><span class="delimiter">'</span><span class="content">fraudDetectionServer</span><span class="delimiter">'</span></span>
+                        <span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>stubFinder.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>).toString()<span class="inline-delimiter">}</span></span><span class="content">/name</span><span class="delimiter">&quot;</span></span>.toURL().text == <span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>
+                        <span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>stubFinder.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">fraudDetectionServer</span><span class="delimiter">'</span></span>).toString()<span class="inline-delimiter">}</span></span><span class="content">/name</span><span class="delimiter">&quot;</span></span>.toURL().text == <span class="string"><span class="delimiter">'</span><span class="content">fraudDetectionServer</span><span class="delimiter">'</span></span>
         }
 
         <span class="annotation">@Configuration</span>
@@ -2618,8 +2605,7 @@ its methods as presented below:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">stubrunner.stubs.repository.root: <span class="key">classpath</span>:m2repo
-stubrunner.stubs.ids: io.codearte.accurest.stubs:loanIssuance,io.codearte.accurest.stubs:fraudDetectionServer</code></pre>
+<pre class="CodeRay highlight"><code data-lang="yml"></code></pre>
 </div>
 </div>
 </div>
@@ -2636,12 +2622,13 @@ stubrunner.stubs.ids: io.codearte.accurest.stubs:loanIssuance,io.codearte.accure
 <div class="paragraph">
 <p>and the Stub Runner autoconfiguration should be picked up.</p>
 </div>
+<div class="sect3">
+<h4 id="additional-configuration">Additional Configuration</h4>
 <div class="paragraph">
-<p>You can match the artifactId of the stub with the name of your app by using the <code>stubrunner.stubs.idsToServiceIds:</code> map.</p>
-</div>
-<div class="paragraph">
-<p>You can disable Stub Runner Ribbon support by providing: <code>stubrunner.cloud.ribbon.enabled</code> equal to <code>false</code>
+<p>You can match the artifactId of the stub with the name of your app by using the <code>stubrunner.stubs.idsToServiceIds:</code> map.
+You can disable Stub Runner Ribbon support by providing: <code>stubrunner.cloud.ribbon.enabled</code> equal to <code>false</code>
 You can disable Stub Runner support by providing: <code>stubrunner.cloud.enabled</code> equal to <code>false</code></p>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -3434,7 +3421,7 @@ as your first choice:</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-04-24 21:18:14 CEST
+Last updated 2016-04-24 21:57:46 CEST
 </div>
 </div>
 </body>
