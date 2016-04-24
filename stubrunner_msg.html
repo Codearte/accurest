@@ -681,6 +681,41 @@ destination or use the <code>some_label</code> to trigger the message.</p>
 <div class="paragraph">
 <p>For convenience the <code>StubFinder</code> interface extends <code>StubTrigger</code> so it&#8217;s enough to use only one in your tests.</p>
 </div>
+<div class="paragraph">
+<p><code>StubTrigger</code> gives you the following options to trigger a message:</p>
+</div>
+<div class="sect4">
+<h5 id="trigger-by-label">Trigger by label</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">stubFinder.trigger(<span class="string"><span class="delimiter">'</span><span class="content">return_book_1</span><span class="delimiter">'</span></span>)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="trigger-by-group-and-artifact-ids">Trigger by group and artifact ids</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">stubFinder.trigger(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:camelService</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">return_book_1</span><span class="delimiter">'</span></span>)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="trigger-by-artifact-ids">Trigger by artifact ids</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">stubFinder.trigger(<span class="string"><span class="delimiter">'</span><span class="content">camelService</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">return_book_1</span><span class="delimiter">'</span></span>)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="trigger-all-messages">Trigger all messages</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">stubFinder.trigger()</code></pre>
+</div>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="stub-runner-messaging-camel">Stub Runner Messaging Camel</h3>
@@ -847,40 +882,13 @@ receivedMessage.in.headers.get(<span class="string"><span class="delimiter">'</s
 </div>
 </div>
 <div class="sect4">
-<h5 id="custom-triggers">Custom triggers</h5>
+<h5 id="scenario-3-input-with-no-output">Scenario 3 (input with no output)</h5>
 <div class="paragraph">
-<p><code>StubTrigger</code> gives you the following options to trigger a message:</p>
+<p>Since the route is set for you it&#8217;s enough to just send a message to the <code>jms:output</code> destination.</p>
 </div>
-</div>
-<div class="sect4">
-<h5 id="trigger-by-label">Trigger by label</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">stubFinder.trigger(<span class="string"><span class="delimiter">'</span><span class="content">return_book_1</span><span class="delimiter">'</span></span>)</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="trigger-by-group-and-artifact-ids">Trigger by group and artifact ids</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">stubFinder.trigger(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:camelService</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">return_book_1</span><span class="delimiter">'</span></span>)</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="trigger-by-artifact-ids">Trigger by artifact ids</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">stubFinder.trigger(<span class="string"><span class="delimiter">'</span><span class="content">camelService</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">return_book_1</span><span class="delimiter">'</span></span>)</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="trigger-all-messages">Trigger all messages</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">stubFinder.trigger()</code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">camelContext.createProducerTemplate().sendBodyAndHeaders(<span class="string"><span class="delimiter">'</span><span class="content">jms:delete</span><span class="delimiter">'</span></span>, <span class="keyword">new</span> BookReturned(<span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>), [<span class="key">sample</span>: <span class="string"><span class="delimiter">'</span><span class="content">header</span><span class="delimiter">'</span></span>])</code></pre>
 </div>
 </div>
 </div>
@@ -1077,7 +1085,7 @@ receivedMessage.headers.get(<span class="string"><span class="delimiter">'</span
 </div>
 </div>
 <div class="sect4">
-<h5 id="custom-triggers-2">Custom triggers</h5>
+<h5 id="custom-triggers">Custom triggers</h5>
 <div class="paragraph">
 <p><code>StubTrigger</code> gives you the following options to trigger a message:</p>
 </div>
@@ -1281,7 +1289,7 @@ receivedMessage.headers.get(<span class="string"><span class="delimiter">'</span
 </div>
 </div>
 <div class="sect4">
-<h5 id="custom-triggers-3">Custom triggers</h5>
+<h5 id="custom-triggers-2">Custom triggers</h5>
 <div class="paragraph">
 <p><code>StubTrigger</code> gives you the following options to trigger a message:</p>
 </div>
@@ -1325,7 +1333,7 @@ receivedMessage.headers.get(<span class="string"><span class="delimiter">'</span
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-04-24 08:58:14 CEST
+Last updated 2016-04-24 11:49:01 CEST
 </div>
 </div>
 </body>
