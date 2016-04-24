@@ -516,7 +516,6 @@ table.CodeRay td.code>pre{padding:0}
 <ul class="sectlevel1">
 <li><a href="#stub-runner-for-messaging">Stub Runner for Messaging</a>
 <ul class="sectlevel2">
-<li><a href="#dsl">DSL</a></li>
 <li><a href="#stub-triggering">Stub triggering</a></li>
 <li><a href="#stub-runner-messaging-camel">Stub Runner Messaging Camel</a></li>
 <li><a href="#stub-runner-messaging-integration">Stub Runner Messaging Integration</a></li>
@@ -560,89 +559,6 @@ Feature available since 1.0.7
 </div>
 <div class="paragraph">
 <p>It also provides points of entry to integrate with any other solution on the market.</p>
-</div>
-<div class="sect2">
-<h3 id="dsl">DSL</h3>
-<div class="paragraph">
-<p>The DSL for messaging looks a little bit different than the one that focuses on HTTP.</p>
-</div>
-<div class="sect3">
-<h4 id="output-triggered-by-a-method">Output triggered by a method</h4>
-<div class="paragraph">
-<p>The output message can be triggered by calling a method (e.g. a Scheduler was started and a message was sent)</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">def</span> dsl = GroovyDsl.make {
-        <span class="comment">// Human readable description</span>
-        description <span class="string"><span class="delimiter">'</span><span class="content">Some description</span><span class="delimiter">'</span></span>
-        <span class="comment">// Label by means of which the output message can be triggered</span>
-        label <span class="string"><span class="delimiter">'</span><span class="content">some_label</span><span class="delimiter">'</span></span>
-        <span class="comment">// input to the contract</span>
-        input {
-                <span class="comment">// the contract will be triggered by a method</span>
-                triggeredBy(<span class="string"><span class="delimiter">'</span><span class="content">bookReturnedTriggered()</span><span class="delimiter">'</span></span>)
-        }
-        <span class="comment">// output message of the contract</span>
-        outputMessage {
-                <span class="comment">// destination to which the output message will be sent</span>
-                sentTo(<span class="string"><span class="delimiter">'</span><span class="content">output</span><span class="delimiter">'</span></span>)
-                <span class="comment">// the body of the output message</span>
-                body(<span class="string"><span class="delimiter">'''</span><span class="content">{ &quot;bookName&quot; : &quot;foo&quot; }</span><span class="delimiter">'''</span></span>)
-                <span class="comment">// the headers of the output message</span>
-                headers {
-                        header(<span class="string"><span class="delimiter">'</span><span class="content">BOOK-NAME</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>)
-                }
-        }
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>In this case the output message will be sent to <code>output</code> if a method called <code>bookReturnedTriggered</code> will be executed. In the message <strong>publisher&#8217;s</strong> side
-we will generate a test that will call that method to trigger the message. On the <strong>consumer</strong> side you can use the <code>some_label</code> to trigger the message.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="output-triggered-by-a-message">Output triggered by a message</h4>
-<div class="paragraph">
-<p>The output message can be triggered by receiving a message.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">def</span> dsl = GroovyDsl.make {
-        description <span class="string"><span class="delimiter">'</span><span class="content">Some Description</span><span class="delimiter">'</span></span>
-        label <span class="string"><span class="delimiter">'</span><span class="content">some_label</span><span class="delimiter">'</span></span>
-        <span class="comment">// input is a message</span>
-        input {
-                <span class="comment">// the message was received from this destination</span>
-                messageFrom(<span class="string"><span class="delimiter">'</span><span class="content">input</span><span class="delimiter">'</span></span>)
-                <span class="comment">// has the following body</span>
-                messageBody([
-                        <span class="key">bookName</span>: <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>
-                ])
-                <span class="comment">// and the following headers</span>
-                messageHeaders {
-                        header(<span class="string"><span class="delimiter">'</span><span class="content">sample</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">header</span><span class="delimiter">'</span></span>)
-                }
-        }
-        outputMessage {
-                sentTo(<span class="string"><span class="delimiter">'</span><span class="content">output</span><span class="delimiter">'</span></span>)
-                body([
-                        <span class="key">bookName</span>: <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>
-                ])
-                headers {
-                        header(<span class="string"><span class="delimiter">'</span><span class="content">BOOK-NAME</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>)
-                }
-        }
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>In this case the output message will be sent to <code>output</code> if a proper message will be received on the <code>input</code> destination. In the message <strong>publisher&#8217;s</strong> side
-we will generate a test that will send the input message to the defined destination. On the <strong>consumer</strong> side you can either send a message to the input
-destination or use the <code>some_label</code> to trigger the message.</p>
-</div>
-</div>
 </div>
 <div class="sect2">
 <h3 id="stub-triggering">Stub triggering</h3>
@@ -1279,7 +1195,7 @@ receivedMessage.headers.get(<span class="string"><span class="delimiter">'</span
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-04-24 12:03:52 CEST
+Last updated 2016-04-24 21:39:37 CEST
 </div>
 </div>
 </body>

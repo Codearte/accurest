@@ -523,6 +523,7 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#passing-optional-parameters">Passing optional parameters</a></li>
 <li><a href="#executing-custom-methods-on-server-side">Executing custom methods on server side</a></li>
 <li><a href="#jax-rs-support">JAX-RS support</a></li>
+<li><a href="#messaging-top-level-elements">Messaging Top-Level Elements</a></li>
 </ul>
 </li>
 </ul>
@@ -884,8 +885,7 @@ for your test and your server side tests.</p>
                         header <span class="string"><span class="delimiter">'</span><span class="content">Content-Type</span><span class="delimiter">'</span></span>: <span class="string"><span class="delimiter">'</span><span class="content">application/json</span><span class="delimiter">'</span></span>
                 }
                 body(
-                                <span class="key">code</span>: value(stub(<span class="string"><span class="delimiter">&quot;</span><span class="content">123123</span><span class="delimiter">&quot;</span></span>), test(optional(<span class="string"><span class="delimiter">&quot;</span><span class="content">123123</span><span class="delimiter">&quot;</span></span>))),
-                                <span class="key">message</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">User not found by email == [</span><span class="inline"><span class="inline-delimiter">${</span>value(test(regex(email())), stub(<span class="string"><span class="delimiter">'</span><span class="content">not.existing@user.com</span><span class="delimiter">'</span></span>))<span class="inline-delimiter">}</span></span><span class="content">]</span><span class="delimiter">&quot;</span></span>
+                                <span class="key">code</span>: value(stub(<span class="string"><span class="delimiter">&quot;</span><span class="content">123123</span><span class="delimiter">&quot;</span></span>), test(optional(<span class="string"><span class="delimiter">&quot;</span><span class="content">123123</span><span class="delimiter">&quot;</span></span>)))
                 )
         }
 }</code></pre>
@@ -900,22 +900,21 @@ for your test and your server side tests.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy"><span class="string"><span class="delimiter">&quot;&quot;&quot;</span><span class="content">
-given:
- def request = given()
-   .header('Content-Type', 'application/json')
-   .body('''{&quot;email&quot;:&quot;abc@abc.com&quot;,&quot;callback_url&quot;:&quot;http://partners.com&quot;}''')
+ given:
+  def request = given()
+    .header('Content-Type', 'application/json')
+    .body('''{&quot;email&quot;:&quot;abc@abc.com&quot;,&quot;callback_url&quot;:&quot;http://partners.com&quot;}''')
 
-when:
- def response = given().spec(request)
-   .post(&quot;/users/password&quot;)
+ when:
+  def response = given().spec(request)
+    .post(&quot;/users/password&quot;)
 
-then:
- response.statusCode == 404
- response.header('Content-Type')  == 'application/json'
-and:
- DocumentContext parsedJson = JsonPath.parse(response.body.asString())
- assertThatJson(parsedJson).field(&quot;message&quot;).matches(&quot;User not found by email == </span><span class="char">\\</span><span class="char">\\</span><span class="char">\\</span><span class="char">\\</span><span class="content">[[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+</span><span class="char">\\</span><span class="char">\\</span><span class="char">\\</span><span class="char">\\</span><span class="content">.[a-zA-Z]{2,4}</span><span class="char">\\</span><span class="char">\\</span><span class="char">\\</span><span class="char">\\</span><span class="content">]&quot;)
- assertThatJson(parsedJson).field(&quot;code&quot;).matches(&quot;(123123)?&quot;)
+ then:
+  response.statusCode == 404
+  response.header('Content-Type')  == 'application/json'
+ and:
+  DocumentContext parsedJson = JsonPath.parse(response.body.asString())
+  assertThatJson(parsedJson).field(&quot;code&quot;).matches(&quot;(123123)?&quot;)
 </span><span class="delimiter">&quot;&quot;&quot;</span></span></code></pre>
 </div>
 </div>
@@ -1031,7 +1030,7 @@ in the configuration. Please see the examples below:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">        <span class="string"><span class="delimiter">'''</span><span class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="string"><span class="delimiter">'''</span><span class="content">
  // when:
   Response response = webTarget
     .path(&quot;/users&quot;)
@@ -1053,8 +1052,90 @@ in the configuration. Please see the examples below:</p>
  // and:
   DocumentContext parsedJson = JsonPath.parse(responseAsString);
   assertThatJson(parsedJson).field(&quot;property1&quot;).isEqualTo(&quot;a&quot;);
-  assertThatJson(parsedJson).field(&quot;property2&quot;).isEqualTo(&quot;b&quot;);
 </span><span class="delimiter">'''</span></span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="messaging-top-level-elements">Messaging Top-Level Elements</h3>
+<div class="paragraph">
+<p>The DSL for messaging looks a little bit different than the one that focuses on HTTP.</p>
+</div>
+<div class="sect3">
+<h4 id="output-triggered-by-a-method">Output triggered by a method</h4>
+<div class="paragraph">
+<p>The output message can be triggered by calling a method (e.g. a Scheduler was started and a message was sent)</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">def</span> dsl = GroovyDsl.make {
+        <span class="comment">// Human readable description</span>
+        description <span class="string"><span class="delimiter">'</span><span class="content">Some description</span><span class="delimiter">'</span></span>
+        <span class="comment">// Label by means of which the output message can be triggered</span>
+        label <span class="string"><span class="delimiter">'</span><span class="content">some_label</span><span class="delimiter">'</span></span>
+        <span class="comment">// input to the contract</span>
+        input {
+                <span class="comment">// the contract will be triggered by a method</span>
+                triggeredBy(<span class="string"><span class="delimiter">'</span><span class="content">bookReturnedTriggered()</span><span class="delimiter">'</span></span>)
+        }
+        <span class="comment">// output message of the contract</span>
+        outputMessage {
+                <span class="comment">// destination to which the output message will be sent</span>
+                sentTo(<span class="string"><span class="delimiter">'</span><span class="content">output</span><span class="delimiter">'</span></span>)
+                <span class="comment">// the body of the output message</span>
+                body(<span class="string"><span class="delimiter">'''</span><span class="content">{ &quot;bookName&quot; : &quot;foo&quot; }</span><span class="delimiter">'''</span></span>)
+                <span class="comment">// the headers of the output message</span>
+                headers {
+                        header(<span class="string"><span class="delimiter">'</span><span class="content">BOOK-NAME</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>)
+                }
+        }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this case the output message will be sent to <code>output</code> if a method called <code>bookReturnedTriggered</code> will be executed. In the message <strong>publisher&#8217;s</strong> side
+we will generate a test that will call that method to trigger the message. On the <strong>consumer</strong> side you can use the <code>some_label</code> to trigger the message.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="output-triggered-by-a-message">Output triggered by a message</h4>
+<div class="paragraph">
+<p>The output message can be triggered by receiving a message.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">def</span> dsl = GroovyDsl.make {
+        description <span class="string"><span class="delimiter">'</span><span class="content">Some Description</span><span class="delimiter">'</span></span>
+        label <span class="string"><span class="delimiter">'</span><span class="content">some_label</span><span class="delimiter">'</span></span>
+        <span class="comment">// input is a message</span>
+        input {
+                <span class="comment">// the message was received from this destination</span>
+                messageFrom(<span class="string"><span class="delimiter">'</span><span class="content">input</span><span class="delimiter">'</span></span>)
+                <span class="comment">// has the following body</span>
+                messageBody([
+                        <span class="key">bookName</span>: <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>
+                ])
+                <span class="comment">// and the following headers</span>
+                messageHeaders {
+                        header(<span class="string"><span class="delimiter">'</span><span class="content">sample</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">header</span><span class="delimiter">'</span></span>)
+                }
+        }
+        outputMessage {
+                sentTo(<span class="string"><span class="delimiter">'</span><span class="content">output</span><span class="delimiter">'</span></span>)
+                body([
+                        <span class="key">bookName</span>: <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>
+                ])
+                headers {
+                        header(<span class="string"><span class="delimiter">'</span><span class="content">BOOK-NAME</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>)
+                }
+        }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this case the output message will be sent to <code>output</code> if a proper message will be received on the <code>input</code> destination. In the message <strong>publisher&#8217;s</strong> side
+we will generate a test that will send the input message to the defined destination. On the <strong>consumer</strong> side you can either send a message to the input
+destination or use the <code>some_label</code> to trigger the message.</p>
 </div>
 </div>
 </div>
@@ -1063,7 +1144,7 @@ in the configuration. Please see the examples below:</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-04-24 21:09:44 CEST
+Last updated 2016-04-24 21:39:37 CEST
 </div>
 </div>
 </body>
