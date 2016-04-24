@@ -727,7 +727,10 @@ For messaging, special stub routes are defined.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"></code></pre>
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@ClassRule</span> <span class="directive">public</span> <span class="directive">static</span> AccurestRule rule = <span class="keyword">new</span> AccurestRule()
+                .repoRoot(repoRoot())
+                .downloadStub(<span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">loanIssuance</span><span class="delimiter">&quot;</span></span>)
+                .downloadStub(<span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest.stubs:fraudDetectionServer</span><span class="delimiter">&quot;</span></span>);</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -787,7 +790,25 @@ Check their <a href="http://docs.groovy-lang.org/latest/html/documentation/grape
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">Unresolved directive <span class="keyword">in</span> -junit/README.adoc - <span class="key">include</span>::src/test/groovy/io/codearte/accurest/stubrunner/junit/AccurestRuleSpec.java[tags=classrule]</code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="annotation">@ClassRule</span> <span class="annotation">@Shared</span> AccurestRule rule = <span class="keyword">new</span> AccurestRule()
+                .repoRoot(AccurestRuleSpec.getResource(<span class="string"><span class="delimiter">&quot;</span><span class="content">/m2repo</span><span class="delimiter">&quot;</span></span>).toURI().toString())
+                .downloadStub(<span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">loanIssuance</span><span class="delimiter">&quot;</span></span>)
+                .downloadStub(<span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest.stubs:fraudDetectionServer</span><span class="delimiter">&quot;</span></span>)
+
+<span class="keyword">def</span> <span class="string"><span class="delimiter">'</span><span class="content">should start WireMock servers</span><span class="delimiter">'</span></span>() {
+        <span class="key">expect</span>: <span class="string"><span class="delimiter">'</span><span class="content">WireMocks are running</span><span class="delimiter">'</span></span>
+                rule.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>) != <span class="predefined-constant">null</span>
+                rule.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>) != <span class="predefined-constant">null</span>
+                rule.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>) == rule.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>)
+                rule.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:fraudDetectionServer</span><span class="delimiter">'</span></span>) != <span class="predefined-constant">null</span>
+        <span class="key">and</span>:
+                rule.findAllRunningStubs().isPresent(<span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>)
+                rule.findAllRunningStubs().isPresent(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">fraudDetectionServer</span><span class="delimiter">'</span></span>)
+                rule.findAllRunningStubs().isPresent(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:fraudDetectionServer</span><span class="delimiter">'</span></span>)
+        <span class="key">and</span>: <span class="string"><span class="delimiter">'</span><span class="content">Stubs were registered</span><span class="delimiter">'</span></span>
+                <span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>rule.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>).toString()<span class="inline-delimiter">}</span></span><span class="content">/name</span><span class="delimiter">&quot;</span></span>.toURL().text == <span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>
+                <span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>rule.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">fraudDetectionServer</span><span class="delimiter">'</span></span>).toString()<span class="inline-delimiter">}</span></span><span class="content">/name</span><span class="delimiter">&quot;</span></span>.toURL().text == <span class="string"><span class="delimiter">'</span><span class="content">fraudDetectionServer</span><span class="delimiter">'</span></span>
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -795,7 +816,21 @@ Check their <a href="http://docs.groovy-lang.org/latest/html/documentation/grape
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"></code></pre>
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Test</span>
+<span class="directive">public</span> <span class="type">void</span> should_start_wiremock_servers() <span class="directive">throws</span> <span class="exception">Exception</span> {
+        <span class="comment">// expect: 'WireMocks are running'</span>
+                then(rule.findStubUrl(<span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">loanIssuance</span><span class="delimiter">&quot;</span></span>)).isNotNull();
+                then(rule.findStubUrl(<span class="string"><span class="delimiter">&quot;</span><span class="content">loanIssuance</span><span class="delimiter">&quot;</span></span>)).isNotNull();
+                then(rule.findStubUrl(<span class="string"><span class="delimiter">&quot;</span><span class="content">loanIssuance</span><span class="delimiter">&quot;</span></span>)).isEqualTo(rule.findStubUrl(<span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">loanIssuance</span><span class="delimiter">&quot;</span></span>));
+                then(rule.findStubUrl(<span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest.stubs:fraudDetectionServer</span><span class="delimiter">&quot;</span></span>)).isNotNull();
+        <span class="comment">// and:</span>
+                then(rule.findAllRunningStubs().isPresent(<span class="string"><span class="delimiter">&quot;</span><span class="content">loanIssuance</span><span class="delimiter">&quot;</span></span>)).isTrue();
+                then(rule.findAllRunningStubs().isPresent(<span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">fraudDetectionServer</span><span class="delimiter">&quot;</span></span>)).isTrue();
+                then(rule.findAllRunningStubs().isPresent(<span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest.stubs:fraudDetectionServer</span><span class="delimiter">&quot;</span></span>)).isTrue();
+        <span class="comment">// and: 'Stubs were registered'</span>
+                then(httpGet(rule.findStubUrl(<span class="string"><span class="delimiter">&quot;</span><span class="content">loanIssuance</span><span class="delimiter">&quot;</span></span>).toString() + <span class="string"><span class="delimiter">&quot;</span><span class="content">/name</span><span class="delimiter">&quot;</span></span>)).isEqualTo(<span class="string"><span class="delimiter">&quot;</span><span class="content">loanIssuance</span><span class="delimiter">&quot;</span></span>);
+                then(httpGet(rule.findStubUrl(<span class="string"><span class="delimiter">&quot;</span><span class="content">fraudDetectionServer</span><span class="delimiter">&quot;</span></span>).toString() + <span class="string"><span class="delimiter">&quot;</span><span class="content">/name</span><span class="delimiter">&quot;</span></span>)).isEqualTo(<span class="string"><span class="delimiter">&quot;</span><span class="content">fraudDetectionServer</span><span class="delimiter">&quot;</span></span>);
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -851,7 +886,8 @@ its methods as presented below:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="yml"></code></pre>
+<pre class="CodeRay highlight"><code data-lang="yml"><span class="key">stubrunner.stubs.repository.root</span>: <span class="string"><span class="content">classpath:m2repo/repository/</span></span>
+<span class="key">stubrunner.stubs.ids</span>: <span class="string"><span class="content">io.codearte.accurest.stubs:loanIssuance,io.codearte.accurest.stubs:fraudDetectionServer</span></span></code></pre>
 </div>
 </div>
 </div>
