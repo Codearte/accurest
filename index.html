@@ -1472,6 +1472,35 @@ we will generate a test that will send the input message to the defined destinat
 destination or use the <code>some_label</code> to trigger the message.</p>
 </div>
 </div>
+<div class="sect3">
+<h4 id="consumer-producer">Consumer / Producer</h4>
+<div class="paragraph">
+<p>In HTTP you have a notion of <code>client</code>/<code>stub and `server</code>/<code>test</code> notation. You can use them also in messaging but we&#8217;re providing also the <code>consumer</code> and <code>produer</code> methods
+as presented below (note you can use either <code>$</code> or <code>value</code> methods to provide <code>consumer</code> and <code>producer</code> parts)</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">Accurest.make {
+        label <span class="string"><span class="delimiter">'</span><span class="content">some_label</span><span class="delimiter">'</span></span>
+        input {
+                messageFrom value(consumer(<span class="string"><span class="delimiter">'</span><span class="content">jms:output</span><span class="delimiter">'</span></span>), producer(<span class="string"><span class="delimiter">'</span><span class="content">jms:input</span><span class="delimiter">'</span></span>))
+                messageBody([
+                                <span class="key">bookName</span>: <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>
+                ])
+                messageHeaders {
+                        header(<span class="string"><span class="delimiter">'</span><span class="content">sample</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">header</span><span class="delimiter">'</span></span>)
+                }
+        }
+        outputMessage {
+                sentTo <span class="error">$</span>(consumer(<span class="string"><span class="delimiter">'</span><span class="content">jms:input</span><span class="delimiter">'</span></span>), producer(<span class="string"><span class="delimiter">'</span><span class="content">jms:output</span><span class="delimiter">'</span></span>))
+                body([
+                                <span class="key">bookName</span>: <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>
+                ])
+        }
+}</code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
