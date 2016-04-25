@@ -855,7 +855,7 @@ a tiny subset of it (namely literals, method calls and closures). What&#8217;s m
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-Since 1.0.7 you can use the <code>io.codearte.accurest.dsl.Accurest</code> class in your DSL files.
+Since 1.1.0 you can use the <code>io.codearte.accurest.dsl.Accurest</code> class in your DSL files.
 </td>
 </tr>
 </table>
@@ -1387,7 +1387,7 @@ in the configuration. Please see the examples below:</p>
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-Feature available since 1.0.7
+Feature available since 1.1.0
 </td>
 </tr>
 </table>
@@ -1600,7 +1600,7 @@ src/test/accurest/myservice/shouldReturnUser.groovy</code></pre>
 <p><strong>basePackageForTests</strong> - specifies base package for all generated tests. By default set to io.codearte.accurest.tests</p>
 </li>
 <li>
-<p><strong>baseClassForTests</strong> - base class for generated tests. By default <code>spock.lang.Specification</code></p>
+<p><strong>baseClassForTests</strong> - base class for generated tests. By default <code>spock.lang.Specification</code> if using Spock tests.</p>
 </li>
 <li>
 <p><strong>ruleClassForTests</strong> - specifies Rule which should be added to generated test classes.</p>
@@ -1802,7 +1802,7 @@ src/test/accurest/myservice/shouldReturnUser.groovy</code></pre>
 <p><strong>ruleClassForTests</strong> - specifies Rule which should be added to generated test classes.</p>
 </li>
 <li>
-<p><strong>baseClassForTests</strong> - base class for generated tests. By default <code>spock.lang.Specification</code>.</p>
+<p><strong>baseClassForTests</strong> - base class for generated tests. By default <code>spock.lang.Specification</code> if using Spock tests.</p>
 </li>
 <li>
 <p><strong>contractsDir</strong> - directory containing contracts written using the GroovyDSL. By default <code>/src/test/accurest</code>.</p>
@@ -1982,7 +1982,7 @@ More details about Wiremock scenarios can be found under [<a href="http://wiremo
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-Feature available since 1.0.7
+Feature available since 1.1.0
 </td>
 </tr>
 </table>
@@ -2111,15 +2111,16 @@ inside the application (e.g. scheduler)</p>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy"><span class="string"><span class="delimiter">'''</span><span class="content">
-// when:
-         bookReturnedTriggered();
+ // when:
+  bookReturnedTriggered();
 
-// then:
-         AccurestMessage response = accurestMessaging.receiveMessage(&quot;activemq:output&quot;);
-         assertThat(response.getHeader(&quot;BOOK-NAME&quot;)).isEqualTo(&quot;foo&quot;);
-// and:
-         DocumentContext parsedJson = JsonPath.parse(accurestObjectMapper.writeValueAsString(response.getPayload()));
-         assertThatJson(parsedJson).field(&quot;bookName&quot;).isEqualTo(&quot;foo&quot;);
+ // then:
+  AccurestMessage response = accurestMessaging.receiveMessage(&quot;activemq:output&quot;);
+  assertThat(response).isNotNull();
+  assertThat(response.getHeader(&quot;BOOK-NAME&quot;)).isEqualTo(&quot;foo&quot;);
+ // and:
+  DocumentContext parsedJson = JsonPath.parse(accurestObjectMapper.writeValueAsString(response.getPayload()));
+  assertThatJson(parsedJson).field(&quot;bookName&quot;).isEqualTo(&quot;foo&quot;);
 </span><span class="delimiter">'''</span></span></code></pre>
 </div>
 </div>
@@ -2129,15 +2130,17 @@ inside the application (e.g. scheduler)</p>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy"><span class="string"><span class="delimiter">'''</span><span class="content">
-when:
-         bookReturnedTriggered()
+ when:
+  bookReturnedTriggered()
 
-then:
-         def response = accurestMessaging.receiveMessage('activemq:output')
-         response.getHeader('BOOK-NAME')  == 'foo'
-and:
-         DocumentContext parsedJson = JsonPath.parse(accurestObjectMapper.writeValueAsString(response.payload))
-         assertThatJson(parsedJson).field(&quot;bookName&quot;).isEqualTo(&quot;foo&quot;)
+ then:
+  def response = accurestMessaging.receiveMessage('activemq:output')
+  assert response != null
+  response.getHeader('BOOK-NAME')  == 'foo'
+ and:
+  DocumentContext parsedJson = JsonPath.parse(accurestObjectMapper.writeValueAsString(response.payload))
+  assertThatJson(parsedJson).field(&quot;bookName&quot;).isEqualTo(&quot;foo&quot;)
+
 </span><span class="delimiter">'''</span></span></code></pre>
 </div>
 </div>
@@ -2180,20 +2183,20 @@ and:
 <pre class="CodeRay highlight"><code data-lang="groovy"><span class="string"><span class="delimiter">'''</span><span class="content">
 // given:
  AccurestMessage inputMessage = accurestMessaging.create(
-        &quot;{</span><span class="char">\\</span><span class="content">&quot;bookName</span><span class="char">\\</span><span class="content">&quot;:</span><span class="char">\\</span><span class="content">&quot;foo</span><span class="char">\\</span><span class="content">&quot;}&quot;
+  &quot;{</span><span class="char">\\</span><span class="content">&quot;bookName</span><span class="char">\\</span><span class="content">&quot;:</span><span class="char">\\</span><span class="content">&quot;foo</span><span class="char">\\</span><span class="content">&quot;}&quot;
 , headers()
-        .header(&quot;sample&quot;, &quot;header&quot;));
+  .header(&quot;sample&quot;, &quot;header&quot;));
 
 // when:
  accurestMessaging.send(inputMessage, &quot;jms:input&quot;);
 
 // then:
  AccurestMessage response = accurestMessaging.receiveMessage(&quot;jms:output&quot;);
+ assertThat(response).isNotNull();
  assertThat(response.getHeader(&quot;BOOK-NAME&quot;)).isEqualTo(&quot;foo&quot;);
 // and:
  DocumentContext parsedJson = JsonPath.parse(accurestObjectMapper.writeValueAsString(response.getPayload()));
  assertThatJson(parsedJson).field(&quot;bookName&quot;).isEqualTo(&quot;foo&quot;);
-
 </span><span class="delimiter">'''</span></span></code></pre>
 </div>
 </div>
@@ -2202,23 +2205,24 @@ and:
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="string"><span class="delimiter">'''</span><span class="content">
-given:
-         def inputMessage = accurestMessaging.create(
-                </span><span class="char">\'</span><span class="char">\'</span><span class="char">\'</span><span class="content">{&quot;bookName&quot;:&quot;foo&quot;}</span><span class="char">\'</span><span class="char">\'</span><span class="char">\'</span><span class="content">,
-                ['sample': 'header']
-        )
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="string"><span class="delimiter">&quot;&quot;&quot;</span><span class="char">\
+</span><span class="content">given:
+   def inputMessage = accurestMessaging.create(
+    '''{&quot;bookName&quot;:&quot;foo&quot;}''',
+    ['sample': 'header']
+  )
 
 when:
-         accurestMessaging.send(inputMessage, 'jms:input')
+   accurestMessaging.send(inputMessage, 'jms:input')
 
 then:
-         def response = accurestMessaging.receiveMessage('jms:output')
-         response.getHeader('BOOK-NAME')  == 'foo'
+   def response = accurestMessaging.receiveMessage('jms:output')
+   assert response !- null
+   response.getHeader('BOOK-NAME')  == 'foo'
 and:
-         DocumentContext parsedJson = JsonPath.parse(accurestObjectMapper.writeValueAsString(response.payload))
-         assertThatJson(parsedJson).field(&quot;bookName&quot;).isEqualTo(&quot;foo&quot;)
-</span><span class="delimiter">'''</span></span></code></pre>
+   DocumentContext parsedJson = JsonPath.parse(accurestObjectMapper.writeValueAsString(response.payload))
+   assertThatJson(parsedJson).field(&quot;bookName&quot;).isEqualTo(&quot;foo&quot;)
+</span><span class="delimiter">&quot;&quot;&quot;</span></span></code></pre>
 </div>
 </div>
 </div>
@@ -2803,7 +2807,7 @@ You can disable Stub Runner support by providing: <code>stubrunner.cloud.enabled
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-Feature available since 1.0.7
+Feature available since 1.1.0
 </td>
 </tr>
 </table>
@@ -3521,7 +3525,7 @@ as your first choice:</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-04-25 10:03:38 +02:00
+Last updated 2016-04-25 12:33:03 +02:00
 </div>
 </div>
 </body>

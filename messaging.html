@@ -665,15 +665,16 @@ inside the application (e.g. scheduler)</p>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy"><span class="string"><span class="delimiter">'''</span><span class="content">
-// when:
-         bookReturnedTriggered();
+ // when:
+  bookReturnedTriggered();
 
-// then:
-         AccurestMessage response = accurestMessaging.receiveMessage(&quot;activemq:output&quot;);
-         assertThat(response.getHeader(&quot;BOOK-NAME&quot;)).isEqualTo(&quot;foo&quot;);
-// and:
-         DocumentContext parsedJson = JsonPath.parse(accurestObjectMapper.writeValueAsString(response.getPayload()));
-         assertThatJson(parsedJson).field(&quot;bookName&quot;).isEqualTo(&quot;foo&quot;);
+ // then:
+  AccurestMessage response = accurestMessaging.receiveMessage(&quot;activemq:output&quot;);
+  assertThat(response).isNotNull();
+  assertThat(response.getHeader(&quot;BOOK-NAME&quot;)).isEqualTo(&quot;foo&quot;);
+ // and:
+  DocumentContext parsedJson = JsonPath.parse(accurestObjectMapper.writeValueAsString(response.getPayload()));
+  assertThatJson(parsedJson).field(&quot;bookName&quot;).isEqualTo(&quot;foo&quot;);
 </span><span class="delimiter">'''</span></span></code></pre>
 </div>
 </div>
@@ -683,15 +684,17 @@ inside the application (e.g. scheduler)</p>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy"><span class="string"><span class="delimiter">'''</span><span class="content">
-when:
-         bookReturnedTriggered()
+ when:
+  bookReturnedTriggered()
 
-then:
-         def response = accurestMessaging.receiveMessage('activemq:output')
-         response.getHeader('BOOK-NAME')  == 'foo'
-and:
-         DocumentContext parsedJson = JsonPath.parse(accurestObjectMapper.writeValueAsString(response.payload))
-         assertThatJson(parsedJson).field(&quot;bookName&quot;).isEqualTo(&quot;foo&quot;)
+ then:
+  def response = accurestMessaging.receiveMessage('activemq:output')
+  assert response != null
+  response.getHeader('BOOK-NAME')  == 'foo'
+ and:
+  DocumentContext parsedJson = JsonPath.parse(accurestObjectMapper.writeValueAsString(response.payload))
+  assertThatJson(parsedJson).field(&quot;bookName&quot;).isEqualTo(&quot;foo&quot;)
+
 </span><span class="delimiter">'''</span></span></code></pre>
 </div>
 </div>
@@ -734,20 +737,20 @@ and:
 <pre class="CodeRay highlight"><code data-lang="groovy"><span class="string"><span class="delimiter">'''</span><span class="content">
 // given:
  AccurestMessage inputMessage = accurestMessaging.create(
-        &quot;{</span><span class="char">\\</span><span class="content">&quot;bookName</span><span class="char">\\</span><span class="content">&quot;:</span><span class="char">\\</span><span class="content">&quot;foo</span><span class="char">\\</span><span class="content">&quot;}&quot;
+  &quot;{</span><span class="char">\\</span><span class="content">&quot;bookName</span><span class="char">\\</span><span class="content">&quot;:</span><span class="char">\\</span><span class="content">&quot;foo</span><span class="char">\\</span><span class="content">&quot;}&quot;
 , headers()
-        .header(&quot;sample&quot;, &quot;header&quot;));
+  .header(&quot;sample&quot;, &quot;header&quot;));
 
 // when:
  accurestMessaging.send(inputMessage, &quot;jms:input&quot;);
 
 // then:
  AccurestMessage response = accurestMessaging.receiveMessage(&quot;jms:output&quot;);
+ assertThat(response).isNotNull();
  assertThat(response.getHeader(&quot;BOOK-NAME&quot;)).isEqualTo(&quot;foo&quot;);
 // and:
  DocumentContext parsedJson = JsonPath.parse(accurestObjectMapper.writeValueAsString(response.getPayload()));
  assertThatJson(parsedJson).field(&quot;bookName&quot;).isEqualTo(&quot;foo&quot;);
-
 </span><span class="delimiter">'''</span></span></code></pre>
 </div>
 </div>
@@ -756,23 +759,24 @@ and:
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="string"><span class="delimiter">'''</span><span class="content">
-given:
-         def inputMessage = accurestMessaging.create(
-                </span><span class="char">\'</span><span class="char">\'</span><span class="char">\'</span><span class="content">{&quot;bookName&quot;:&quot;foo&quot;}</span><span class="char">\'</span><span class="char">\'</span><span class="char">\'</span><span class="content">,
-                ['sample': 'header']
-        )
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="string"><span class="delimiter">&quot;&quot;&quot;</span><span class="char">\
+</span><span class="content">given:
+   def inputMessage = accurestMessaging.create(
+    '''{&quot;bookName&quot;:&quot;foo&quot;}''',
+    ['sample': 'header']
+  )
 
 when:
-         accurestMessaging.send(inputMessage, 'jms:input')
+   accurestMessaging.send(inputMessage, 'jms:input')
 
 then:
-         def response = accurestMessaging.receiveMessage('jms:output')
-         response.getHeader('BOOK-NAME')  == 'foo'
+   def response = accurestMessaging.receiveMessage('jms:output')
+   assert response !- null
+   response.getHeader('BOOK-NAME')  == 'foo'
 and:
-         DocumentContext parsedJson = JsonPath.parse(accurestObjectMapper.writeValueAsString(response.payload))
-         assertThatJson(parsedJson).field(&quot;bookName&quot;).isEqualTo(&quot;foo&quot;)
-</span><span class="delimiter">'''</span></span></code></pre>
+   DocumentContext parsedJson = JsonPath.parse(accurestObjectMapper.writeValueAsString(response.payload))
+   assertThatJson(parsedJson).field(&quot;bookName&quot;).isEqualTo(&quot;foo&quot;)
+</span><span class="delimiter">&quot;&quot;&quot;</span></span></code></pre>
 </div>
 </div>
 </div>
