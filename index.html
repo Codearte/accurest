@@ -574,7 +574,7 @@ table.CodeRay td.code>pre{padding:0}
 <ul class="sectlevel2">
 <li><a href="#migration-to-0-4-7">Migration to 0.4.7</a></li>
 <li><a href="#migration-to-1-0-0-rc1">Migration to 1.0.0-RC1</a></li>
-<li><a href="#migration-to-1-0-7">Migration to 1.0.7</a></li>
+<li><a href="#migration-to-1-1-0">Migration to 1.1.0</a></li>
 </ul>
 </li>
 </ul>
@@ -2576,7 +2576,7 @@ Check their <a href="http://docs.groovy-lang.org/latest/html/documentation/grape
 
 <span class="keyword">import</span> <span class="include">io.codearte.accurest.dsl.GroovyDsl</span>
 
-<span class="type">interface</span> StubFinder <span class="directive">extends</span> StubTriggerer {
+<span class="type">interface</span> StubFinder <span class="directive">extends</span> StubTrigger {
         <span class="comment">/**
          * For the given groupId and artifactId tries to find the matching
          * URL of the running stub.
@@ -2840,7 +2840,7 @@ Feature available since 1.1.0
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">package</span> io.codearte.accurest.stubrunner
 
-<span class="type">interface</span> StubTriggerer {
+<span class="type">interface</span> StubTrigger {
 
         <span class="comment">/**
          * Triggers an event by a given label for a given {@code groupid:artifactid} notation. You can use only {@code artifactId} too.
@@ -3505,11 +3505,11 @@ receivedMessage.headers.get(<span class="string"><span class="delimiter">'</span
 </div>
 </div>
 <div class="sect2">
-<h3 id="migration-to-1-0-7">Migration to 1.0.7</h3>
+<h3 id="migration-to-1-1-0">Migration to 1.1.0</h3>
 <div class="ulist">
 <ul>
 <li>
-<p>from 1.0.7 we&#8217;re setting JUnit as a default testing utility. You have to pass the following option to keep Spock
+<p>from 1.1.0 we&#8217;re setting JUnit as a default testing utility. You have to pass the following option to keep Spock
 as your first choice:</p>
 </li>
 </ul>
