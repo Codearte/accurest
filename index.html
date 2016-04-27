@@ -2871,6 +2871,60 @@ Check their <a href="http://docs.groovy-lang.org/latest/html/documentation/grape
 <div class="paragraph">
 <p>Check the <strong>Common properties for JUnit and Spring</strong> for more information on how to apply global configuration of Stub Runner.</p>
 </div>
+<div class="sect3">
+<h4 id="providing-fixed-ports">Providing fixed ports</h4>
+<div class="paragraph">
+<p>You can also run your stubs on fixed ports. You can do it in two different ways. One is to pass it in the properties, and the other via fluent API.</p>
+</div>
+<div class="sect4">
+<h5 id="system-properties">System properties</h5>
+<div class="paragraph">
+<p>You can provide the stubs to download via the <code>stubrunner.stubs.ids</code> system property. They follow the following pattern:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">groupId:artifactId:classifier:port</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>classifier</code> and <code>port</code> are optional.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>If you don&#8217;t provide the <code>classifier</code> then the default one will be taken.</p>
+</li>
+<li>
+<p>If you don&#8217;t provide the <code>port</code> then a random one will be picked</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="fluent-api">Fluent API</h4>
+<div class="paragraph">
+<p>When using the <code>AccurestRule</code> you can add a stub to download and then pass the port for the last downloaded stub.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@ClassRule</span> <span class="directive">public</span> <span class="directive">static</span> AccurestRule rule = <span class="keyword">new</span> AccurestRule()
+                .repoRoot(repoRoot())
+                .downloadStub(<span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">loanIssuance</span><span class="delimiter">&quot;</span></span>)
+                .withPort(<span class="integer">12345</span>)
+                .downloadStub(<span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest.stubs:fraudDetectionServer:12346</span><span class="delimiter">&quot;</span></span>);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can see that for this example the following test is valid:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">then(rule.findStubUrl(<span class="string"><span class="delimiter">&quot;</span><span class="content">loanIssuance</span><span class="delimiter">&quot;</span></span>)).isEqualTo(<span class="predefined-type">URI</span>.create(<span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:12345</span><span class="delimiter">&quot;</span></span>).toURL());
+then(rule.findStubUrl(<span class="string"><span class="delimiter">&quot;</span><span class="content">fraudDetectionServer</span><span class="delimiter">&quot;</span></span>)).isEqualTo(<span class="predefined-type">URI</span>.create(<span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:12346</span><span class="delimiter">&quot;</span></span>).toURL());</code></pre>
+</div>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="stub-runner-spring">Stub Runner Spring</h3>
@@ -3749,7 +3803,7 @@ as your first choice:</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-04-25 12:33:03 +02:00
+Last updated 2016-04-25 18:49:10 +02:00
 </div>
 </div>
 </body>
