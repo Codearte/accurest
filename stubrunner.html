@@ -734,12 +734,26 @@ For messaging, special stub routes are defined.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>After that rule gets executed Stub Runner connects to your Maven repository and for the given list of dependencies tries to:
-* download them
-* cache them locally
-* unzip them to a temporary folder
-* start a WireMock server for each Maven dependency on a random port from the provided range of ports
-* feed the WireMock server with all JSON files that are valid WireMock definitions</p>
+<p>After that rule gets executed Stub Runner connects to your Maven repository and for the given list of dependencies tries to:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>download them</p>
+</li>
+<li>
+<p>cache them locally</p>
+</li>
+<li>
+<p>unzip them to a temporary folder</p>
+</li>
+<li>
+<p>start a WireMock server for each Maven dependency on a random port from the provided range of ports</p>
+</li>
+<li>
+<p>feed the WireMock server with all JSON files that are valid WireMock definitions</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p>Stub Runner uses <a href="http://docs.groovy-lang.org/latest/html/documentation/grape.html">Groovy&#8217;s Grape</a> mechanism to download the Maven dependencies.

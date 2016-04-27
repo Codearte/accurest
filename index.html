@@ -2585,12 +2585,26 @@ For messaging, special stub routes are defined.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>After that rule gets executed Stub Runner connects to your Maven repository and for the given list of dependencies tries to:
-* download them
-* cache them locally
-* unzip them to a temporary folder
-* start a WireMock server for each Maven dependency on a random port from the provided range of ports
-* feed the WireMock server with all JSON files that are valid WireMock definitions</p>
+<p>After that rule gets executed Stub Runner connects to your Maven repository and for the given list of dependencies tries to:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>download them</p>
+</li>
+<li>
+<p>cache them locally</p>
+</li>
+<li>
+<p>unzip them to a temporary folder</p>
+</li>
+<li>
+<p>start a WireMock server for each Maven dependency on a random port from the provided range of ports</p>
+</li>
+<li>
+<p>feed the WireMock server with all JSON files that are valid WireMock definitions</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p>Stub Runner uses <a href="http://docs.groovy-lang.org/latest/html/documentation/grape.html">Groovy&#8217;s Grape</a> mechanism to download the Maven dependencies.
@@ -2875,22 +2889,28 @@ Feature available since 1.1.0
          * Triggers an event by a given label for a given {@code groupid:artifactid} notation. You can use only {@code artifactId} too.
          *
          * Feature related to messaging.
+         *
+         * @return true - if managed to run a trigger
          */</span>
-        <span class="type">void</span> trigger(<span class="predefined-type">String</span> ivyNotation, <span class="predefined-type">String</span> labelName)
+        <span class="type">boolean</span> trigger(<span class="predefined-type">String</span> ivyNotation, <span class="predefined-type">String</span> labelName)
 
         <span class="comment">/**
          * Triggers an event by a given label.
          *
          * Feature related to messaging.
+         *
+         * @return true - if managed to run a trigger
          */</span>
-        <span class="type">void</span> trigger(<span class="predefined-type">String</span> labelName)
+        <span class="type">boolean</span> trigger(<span class="predefined-type">String</span> labelName)
 
         <span class="comment">/**
          * Triggers all possible events.
          *
          * Feature related to messaging.
+         *
+         * @return true - if managed to run a trigger
          */</span>
-        <span class="type">void</span> trigger()
+        <span class="type">boolean</span> trigger()
 }</code></pre>
 </div>
 </div>
@@ -3178,7 +3198,7 @@ routes.</p>
                 triggeredBy(<span class="string"><span class="delimiter">'</span><span class="content">bookReturnedTriggered()</span><span class="delimiter">'</span></span>)
         }
         outputMessage {
-                sentTo(<span class="string"><span class="delimiter">'</span><span class="content">jms:output</span><span class="delimiter">'</span></span>)
+                sentTo(<span class="string"><span class="delimiter">'</span><span class="content">output</span><span class="delimiter">'</span></span>)
                 body(<span class="string"><span class="delimiter">'''</span><span class="content">{ &quot;bookName&quot; : &quot;foo&quot; }</span><span class="delimiter">'''</span></span>)
                 headers {
                         header(<span class="string"><span class="delimiter">'</span><span class="content">BOOK-NAME</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>)
@@ -3195,7 +3215,7 @@ routes.</p>
 <pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest.dsl.GroovyDsl.make {
         label <span class="string"><span class="delimiter">'</span><span class="content">return_book_2</span><span class="delimiter">'</span></span>
         input {
-                messageFrom(<span class="string"><span class="delimiter">'</span><span class="content">jms:input</span><span class="delimiter">'</span></span>)
+                messageFrom(<span class="string"><span class="delimiter">'</span><span class="content">input</span><span class="delimiter">'</span></span>)
                 messageBody([
                                 <span class="key">bookName</span>: <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>
                 ])
@@ -3204,7 +3224,7 @@ routes.</p>
                 }
         }
         outputMessage {
-                sentTo(<span class="string"><span class="delimiter">'</span><span class="content">jms:output</span><span class="delimiter">'</span></span>)
+                sentTo(<span class="string"><span class="delimiter">'</span><span class="content">output</span><span class="delimiter">'</span></span>)
                 body([
                                 <span class="key">bookName</span>: <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>
                 ])

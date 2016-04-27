@@ -575,22 +575,28 @@ Feature available since {messaging_version}
          * Triggers an event by a given label for a given {@code groupid:artifactid} notation. You can use only {@code artifactId} too.
          *
          * Feature related to messaging.
+         *
+         * @return true - if managed to run a trigger
          */</span>
-        <span class="type">void</span> trigger(<span class="predefined-type">String</span> ivyNotation, <span class="predefined-type">String</span> labelName)
+        <span class="type">boolean</span> trigger(<span class="predefined-type">String</span> ivyNotation, <span class="predefined-type">String</span> labelName)
 
         <span class="comment">/**
          * Triggers an event by a given label.
          *
          * Feature related to messaging.
+         *
+         * @return true - if managed to run a trigger
          */</span>
-        <span class="type">void</span> trigger(<span class="predefined-type">String</span> labelName)
+        <span class="type">boolean</span> trigger(<span class="predefined-type">String</span> labelName)
 
         <span class="comment">/**
          * Triggers all possible events.
          *
          * Feature related to messaging.
+         *
+         * @return true - if managed to run a trigger
          */</span>
-        <span class="type">void</span> trigger()
+        <span class="type">boolean</span> trigger()
 }</code></pre>
 </div>
 </div>
@@ -878,7 +884,7 @@ routes.</p>
                 triggeredBy(<span class="string"><span class="delimiter">'</span><span class="content">bookReturnedTriggered()</span><span class="delimiter">'</span></span>)
         }
         outputMessage {
-                sentTo(<span class="string"><span class="delimiter">'</span><span class="content">jms:output</span><span class="delimiter">'</span></span>)
+                sentTo(<span class="string"><span class="delimiter">'</span><span class="content">output</span><span class="delimiter">'</span></span>)
                 body(<span class="string"><span class="delimiter">'''</span><span class="content">{ &quot;bookName&quot; : &quot;foo&quot; }</span><span class="delimiter">'''</span></span>)
                 headers {
                         header(<span class="string"><span class="delimiter">'</span><span class="content">BOOK-NAME</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>)
@@ -895,7 +901,7 @@ routes.</p>
 <pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest.dsl.GroovyDsl.make {
         label <span class="string"><span class="delimiter">'</span><span class="content">return_book_2</span><span class="delimiter">'</span></span>
         input {
-                messageFrom(<span class="string"><span class="delimiter">'</span><span class="content">jms:input</span><span class="delimiter">'</span></span>)
+                messageFrom(<span class="string"><span class="delimiter">'</span><span class="content">input</span><span class="delimiter">'</span></span>)
                 messageBody([
                                 <span class="key">bookName</span>: <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>
                 ])
@@ -904,7 +910,7 @@ routes.</p>
                 }
         }
         outputMessage {
-                sentTo(<span class="string"><span class="delimiter">'</span><span class="content">jms:output</span><span class="delimiter">'</span></span>)
+                sentTo(<span class="string"><span class="delimiter">'</span><span class="content">output</span><span class="delimiter">'</span></span>)
                 body([
                                 <span class="key">bookName</span>: <span class="string"><span class="delimiter">'</span><span class="content">foo</span><span class="delimiter">'</span></span>
                 ])
