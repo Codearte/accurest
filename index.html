@@ -557,6 +557,7 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#publishing-stubs-as-jars">Publishing stubs as JARs</a></li>
 <li><a href="#modules">Modules</a></li>
 <li><a href="#stub-runner-core">Stub Runner core</a></li>
+<li><a href="#stub-runner-junit-rule">Stub Runner JUnit Rule</a></li>
 <li><a href="#stub-runner-spring">Stub Runner Spring</a></li>
 <li><a href="#stub-runner-spring-cloud">Stub Runner Spring Cloud</a></li>
 <li><a href="#common-properties-for-junit-and-spring">Common properties for JUnit and Spring</a></li>
@@ -2571,8 +2572,176 @@ For messaging, special stub routes are defined.</p>
 <h5 id="messaging-stubs">Messaging Stubs</h5>
 <div class="paragraph">
 <p>Depending on the provided Stub Runner dependency and the DSL the messaging routes are automatically set up.
-=== Stub Runner JUnit Rule</p>
+=== Stub Runner Boot</p>
 </div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Feature available since 1.1.0
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Accurest Stub Runner Boot is a Spring Boot application that exposes REST endpoints to
+trigger the messaging labels and to access started WireMock servers.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="how-to-use-it">How to use it?</h4>
+<div class="paragraph">
+<p>Just add the</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">compile <span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest:stub-runner-boot:</span><span class="inline"><span class="inline-delimiter">${</span>accurestVersion<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and a messaging implementation:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="comment">// for Apache Camel</span>
+compile <span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest:accurest-messaging-camel:</span><span class="inline"><span class="inline-delimiter">${</span>accurestVersion<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span>
+<span class="comment">// for Spring Integration</span>
+compile <span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest:accurest-messaging-integration:</span><span class="inline"><span class="inline-delimiter">${</span>accurestVersion<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span>
+<span class="comment">// for Spring Cloud Stream</span>
+compile <span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest:accurest-messaging-stream:</span><span class="inline"><span class="inline-delimiter">${</span>accurestVersion<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Build a fat-jar and you&#8217;re ready to go!</p>
+</div>
+<div class="paragraph">
+<p>For the properties check the <strong>Stub Runner Spring</strong> section.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="endpoints">Endpoints</h4>
+<div class="sect4">
+<h5 id="http">HTTP</h5>
+<div class="ulist">
+<ul>
+<li>
+<p>GET <code>/stubs</code> - returns a list of all running stubs in <code>ivy:integer</code> notation</p>
+</li>
+<li>
+<p>GET <code>/stubs/{ivy}</code> - returns a port for the given <code>ivy</code> notation (when calling the endpoint <code>ivy</code> can also be <code>artifactId</code> only)</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="messaging">Messaging</h5>
+<div class="paragraph">
+<p>For Messaging</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>GET <code>/triggers</code> - returns a list of all running labels in <code>ivy : [ label1, label2 &#8230;&#8203;]</code> notation</p>
+</li>
+<li>
+<p>POST <code>/triggers/{label}</code> - executes a trigger with <code>label</code></p>
+</li>
+<li>
+<p>POST <code>/triggers/{ivy}/{label}</code> - executes a trigger with <code>label</code> for the given <code>ivy</code> notation (when calling the endpoint <code>ivy</code> can also be <code>artifactId</code> only)</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="example">Example</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="annotation">@ContextConfiguration</span>(classes = StubRunnerBoot, loader = SpringApplicationContextLoader)
+<span class="type">class</span> <span class="class">StubRunnerBootSpec</span> <span class="directive">extends</span> Specification {
+
+        <span class="annotation">@Autowired</span> StubRunning stubRunning
+
+        <span class="keyword">def</span> <span class="function">setup</span>() {
+                RestAssuredMockMvc.standaloneSetup(<span class="keyword">new</span> HttpStubsController(stubRunning),
+                                <span class="keyword">new</span> TriggerController(stubRunning))
+        }
+
+        <span class="keyword">def</span> <span class="string"><span class="delimiter">'</span><span class="content">should return a list of running stub servers in &quot;ivy:port&quot; notation</span><span class="delimiter">'</span></span>() {
+                <span class="key">when</span>:
+                        <span class="predefined-type">String</span> response = RestAssuredMockMvc.get(<span class="string"><span class="delimiter">'</span><span class="content">/stubs</span><span class="delimiter">'</span></span>).body.asString()
+                <span class="key">then</span>:
+                        <span class="keyword">def</span> root = <span class="keyword">new</span> JsonSlurper().parseText(response)
+                        root.<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:streamService:stubs</span><span class="delimiter">'</span></span> <span class="keyword">instanceof</span> <span class="predefined-type">Integer</span>
+        }
+
+        <span class="keyword">def</span> <span class="string"><span class="delimiter">'</span><span class="content">should return a port on which a [#stubId] stub is running</span><span class="delimiter">'</span></span>() {
+                <span class="key">when</span>:
+                        <span class="keyword">def</span> response = RestAssuredMockMvc.get(<span class="string"><span class="delimiter">&quot;</span><span class="content">/stubs/</span><span class="inline"><span class="inline-delimiter">${</span>stubId<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span>)
+                <span class="key">then</span>:
+                        response.statusCode == <span class="integer">200</span>
+                        response.body.as(<span class="predefined-type">Integer</span>) &gt; <span class="integer">0</span>
+                <span class="key">where</span>:
+                        stubId &lt;&lt; [<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:streamService:stubs</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:streamService</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">streamService</span><span class="delimiter">'</span></span>]
+        }
+
+        <span class="keyword">def</span> <span class="string"><span class="delimiter">'</span><span class="content">should return 404 when missing stub was called</span><span class="delimiter">'</span></span>() {
+                <span class="key">when</span>:
+                        <span class="keyword">def</span> response = RestAssuredMockMvc.get(<span class="string"><span class="delimiter">&quot;</span><span class="content">/stubs/a:b:c:d</span><span class="delimiter">&quot;</span></span>)
+                <span class="key">then</span>:
+                        response.statusCode == <span class="integer">404</span>
+        }
+
+        <span class="keyword">def</span> <span class="string"><span class="delimiter">'</span><span class="content">should return a list of messaging labels that can be triggered</span><span class="delimiter">'</span></span>() {
+                <span class="key">when</span>:
+                        <span class="predefined-type">String</span> response = RestAssuredMockMvc.get(<span class="string"><span class="delimiter">'</span><span class="content">/triggers</span><span class="delimiter">'</span></span>).body.asString()
+                <span class="key">then</span>:
+                        response == <span class="string"><span class="delimiter">'''</span><span class="content">{&quot;io.codearte.accurest.stubs:streamService:stubs&quot;:[&quot;delete_book&quot;,&quot;return_book_1&quot;,&quot;return_book_2&quot;]}</span><span class="delimiter">'''</span></span>
+        }
+
+        <span class="keyword">def</span> <span class="string"><span class="delimiter">'</span><span class="content">should trigger a messaging label</span><span class="delimiter">'</span></span>() {
+                <span class="key">given</span>:
+                        StubRunning stubRunning = Mock()
+                        RestAssuredMockMvc.standaloneSetup(<span class="keyword">new</span> HttpStubsController(stubRunning), <span class="keyword">new</span> TriggerController(stubRunning))
+                <span class="key">when</span>:
+                        <span class="keyword">def</span> response = RestAssuredMockMvc.post(<span class="string"><span class="delimiter">&quot;</span><span class="content">/triggers/delete_book</span><span class="delimiter">&quot;</span></span>)
+                <span class="key">then</span>:
+                        response.statusCode == <span class="integer">200</span>
+                <span class="key">and</span>:
+                        <span class="integer">1</span> * stubRunning.trigger(<span class="string"><span class="delimiter">'</span><span class="content">delete_book</span><span class="delimiter">'</span></span>)
+        }
+
+        <span class="keyword">def</span> <span class="string"><span class="delimiter">'</span><span class="content">should trigger a messaging label for a stub with [#stubId] ivy notation</span><span class="delimiter">'</span></span>() {
+                <span class="key">given</span>:
+                        StubRunning stubRunning = Mock()
+                        RestAssuredMockMvc.standaloneSetup(<span class="keyword">new</span> HttpStubsController(stubRunning), <span class="keyword">new</span> TriggerController(stubRunning))
+                <span class="key">when</span>:
+                        <span class="keyword">def</span> response = RestAssuredMockMvc.post(<span class="string"><span class="delimiter">&quot;</span><span class="content">/triggers/</span><span class="inline"><span class="inline-delimiter">$</span>stubId</span><span class="content">/delete_book</span><span class="delimiter">&quot;</span></span>)
+                <span class="key">then</span>:
+                        response.statusCode == <span class="integer">200</span>
+                <span class="key">and</span>:
+                        <span class="integer">1</span> * stubRunning.trigger(stubId, <span class="string"><span class="delimiter">'</span><span class="content">delete_book</span><span class="delimiter">'</span></span>)
+                <span class="key">where</span>:
+                        stubId &lt;&lt; [<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:streamService:stubs</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:streamService</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">streamService</span><span class="delimiter">'</span></span>]
+        }
+
+        <span class="keyword">def</span> <span class="string"><span class="delimiter">'</span><span class="content">should return when trigger is missing</span><span class="delimiter">'</span></span>() {
+                <span class="key">when</span>:
+                        <span class="keyword">def</span> response = RestAssuredMockMvc.post(<span class="string"><span class="delimiter">&quot;</span><span class="content">/triggers/missing_label</span><span class="delimiter">&quot;</span></span>)
+                <span class="key">then</span>:
+                        response.statusCode == <span class="integer">404</span>
+                        response.body.asString() == <span class="string"><span class="delimiter">'''</span><span class="content">{&quot;io.codearte.accurest.stubs:streamService:stubs&quot;:[&quot;delete_book&quot;,&quot;return_book_1&quot;,&quot;return_book_2&quot;]}</span><span class="delimiter">'''</span></span>
+        }</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="stub-runner-junit-rule">Stub Runner JUnit Rule</h3>
 <div class="paragraph">
 <p>Stub Runner comes with a JUnit rule thanks to which you can very easily download and run stubs for given group and artifact id:</p>
 </div>
@@ -2700,8 +2869,6 @@ Check their <a href="http://docs.groovy-lang.org/latest/html/documentation/grape
 </div>
 <div class="paragraph">
 <p>Check the <strong>Common properties for JUnit and Spring</strong> for more information on how to apply global configuration of Stub Runner.</p>
-</div>
-</div>
 </div>
 </div>
 <div class="sect2">
@@ -2911,6 +3078,13 @@ Feature available since 1.1.0
          * @return true - if managed to run a trigger
          */</span>
         <span class="type">boolean</span> trigger()
+
+        <span class="comment">/**
+         * Returns a mapping of ivy notation of a dependency to all the labels it has.
+         *
+         * Feature related to messaging.
+         */</span>
+        <span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">Collection</span>&lt;<span class="predefined-type">String</span>&gt;&gt; labels()
 }</code></pre>
 </div>
 </div>
