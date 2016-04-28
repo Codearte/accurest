@@ -519,6 +519,7 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#publishing-stubs-as-jars">Publishing stubs as JARs</a></li>
 <li><a href="#modules">Modules</a></li>
 <li><a href="#stub-runner-core">Stub Runner Core</a></li>
+<li><a href="#stub-runner-boot">Stub Runner Boot</a></li>
 <li><a href="#stub-runner-junit-rule">Stub Runner JUnit Rule</a></li>
 <li><a href="#stub-runner-spring">Stub Runner Spring</a></li>
 <li><a href="#stub-runner-spring-cloud">Stub Runner Spring Cloud</a></li>
@@ -721,9 +722,13 @@ For messaging, special stub routes are defined.</p>
 <div class="sect4">
 <h5 id="messaging-stubs">Messaging Stubs</h5>
 <div class="paragraph">
-<p>Depending on the provided Stub Runner dependency and the DSL the messaging routes are automatically set up.
-=== Stub Runner Boot</p>
+<p>Depending on the provided Stub Runner dependency and the DSL the messaging routes are automatically set up.</p>
 </div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="stub-runner-boot">Stub Runner Boot</h3>
 <div class="admonitionblock warning">
 <table>
 <tr>
@@ -739,8 +744,6 @@ Feature available since {messaging_version}
 <div class="paragraph">
 <p>Accurest Stub Runner Boot is a Spring Boot application that exposes REST endpoints to
 trigger the messaging labels and to access started WireMock servers.</p>
-</div>
-</div>
 </div>
 <div class="sect3">
 <h4 id="how-to-use-it">How to use it?</h4>
@@ -852,7 +855,8 @@ compile <span class="string"><span class="delimiter">&quot;</span><span class="c
                 <span class="key">when</span>:
                         <span class="predefined-type">String</span> response = RestAssuredMockMvc.get(<span class="string"><span class="delimiter">'</span><span class="content">/triggers</span><span class="delimiter">'</span></span>).body.asString()
                 <span class="key">then</span>:
-                        response == <span class="string"><span class="delimiter">'''</span><span class="content">{&quot;io.codearte.accurest.stubs:streamService:stubs&quot;:[&quot;delete_book&quot;,&quot;return_book_1&quot;,&quot;return_book_2&quot;]}</span><span class="delimiter">'''</span></span>
+                        <span class="keyword">def</span> root = <span class="keyword">new</span> JsonSlurper().parseText(response)
+                        root.<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:streamService:stubs</span><span class="delimiter">'</span></span>.containsAll([<span class="string"><span class="delimiter">&quot;</span><span class="content">delete_book</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">return_book_1</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">return_book_2</span><span class="delimiter">&quot;</span></span>])
         }
 
         <span class="keyword">def</span> <span class="string"><span class="delimiter">'</span><span class="content">should trigger a messaging label</span><span class="delimiter">'</span></span>() {
@@ -886,7 +890,8 @@ compile <span class="string"><span class="delimiter">&quot;</span><span class="c
                         <span class="keyword">def</span> response = RestAssuredMockMvc.post(<span class="string"><span class="delimiter">&quot;</span><span class="content">/triggers/missing_label</span><span class="delimiter">&quot;</span></span>)
                 <span class="key">then</span>:
                         response.statusCode == <span class="integer">404</span>
-                        response.body.asString() == <span class="string"><span class="delimiter">'''</span><span class="content">{&quot;io.codearte.accurest.stubs:streamService:stubs&quot;:[&quot;delete_book&quot;,&quot;return_book_1&quot;,&quot;return_book_2&quot;]}</span><span class="delimiter">'''</span></span>
+                        <span class="keyword">def</span> root = <span class="keyword">new</span> JsonSlurper().parseText(response.body.asString())
+                        root.<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:streamService:stubs</span><span class="delimiter">'</span></span>.containsAll([<span class="string"><span class="delimiter">&quot;</span><span class="content">delete_book</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">return_book_1</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">return_book_2</span><span class="delimiter">&quot;</span></span>])
         }
 
 }</code></pre>
@@ -1222,7 +1227,7 @@ You can disable Stub Runner support by providing: <code>stubrunner.cloud.enabled
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-04-28 09:14:02 +02:00
+Last updated 2016-04-28 15:23:56 +02:00
 </div>
 </div>
 </body>
