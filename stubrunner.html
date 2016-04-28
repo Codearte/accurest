@@ -1144,19 +1144,17 @@ You can disable Stub Runner support by providing: <code>stubrunner.cloud.enabled
 <div class="paragraph">
 <p>Some of the properties that are repetitive can be set using system properties or property sources (for Spring). Here are their names with their default values:</p>
 </div>
-<table class="tableblock frame-topbot grid-all" style="width: 60%;">
+<table class="tableblock frame-topbot grid-all spread">
 <colgroup>
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">Property name</th>
 <th class="tableblock halign-left valign-top">Default value</th>
 <th class="tableblock halign-left valign-top">Description</th>
-<th class="tableblock halign-left valign-top"></th>
 </tr>
 </thead>
 <tbody>
@@ -1164,37 +1162,31 @@ You can disable Stub Runner support by providing: <code>stubrunner.cloud.enabled
 <td class="tableblock halign-left valign-top"><p class="tableblock">stubrunner.port.range.min</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">10000</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Minimal value of a port for a started WireMock with stubs</p></td>
-<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">stubrunner.port.range.max</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">15000</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Minimal value of a port for a started WireMock with stubs</p></td>
-<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">stubrunner.stubs.repository.root</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Maven repo url. If blank then will call the local maven repo</p></td>
-<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">stubrunner.stubs.classifier</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">stubs</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Default classifier for the stub artifacts</p></td>
-<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">stubrunner.work-offline</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">If true then will not contact any remote repositories to download stubs</p></td>
-<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">stubrunner.stubs</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">stubrunner.stubs.ids</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Comma separated list of Ivy notation of stubs to download</p></td>
-<td class="tableblock halign-left valign-top"></td>
 </tr>
 </tbody>
 </table>
@@ -1231,7 +1223,7 @@ You can disable Stub Runner support by providing: <code>stubrunner.cloud.enabled
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-04-28 15:23:56 +02:00
+Last updated 2016-04-28 15:40:25 +02:00
 </div>
 </div>
 </body>
