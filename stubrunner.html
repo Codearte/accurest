@@ -811,7 +811,9 @@ compile <span class="string"><span class="delimiter">&quot;</span><span class="c
 <h4 id="example">Example</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="annotation">@ContextConfiguration</span>(classes = StubRunnerBoot, loader = SpringApplicationContextLoader)
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="annotation">@ContextConfiguration</span>(classes = [StubRunnerBootSpec, StubRunnerBoot], loader = SpringApplicationContextLoader)
+<span class="annotation">@EnableBinding</span>
+<span class="annotation">@Configuration</span>
 <span class="type">class</span> <span class="class">StubRunnerBootSpec</span> <span class="directive">extends</span> Specification {
 
         <span class="annotation">@Autowired</span> StubRunning stubRunning
@@ -885,7 +887,9 @@ compile <span class="string"><span class="delimiter">&quot;</span><span class="c
                 <span class="key">then</span>:
                         response.statusCode == <span class="integer">404</span>
                         response.body.asString() == <span class="string"><span class="delimiter">'''</span><span class="content">{&quot;io.codearte.accurest.stubs:streamService:stubs&quot;:[&quot;delete_book&quot;,&quot;return_book_1&quot;,&quot;return_book_2&quot;]}</span><span class="delimiter">'''</span></span>
-        }</code></pre>
+        }
+
+}</code></pre>
 </div>
 </div>
 </div>
@@ -1218,7 +1222,7 @@ You can disable Stub Runner support by providing: <code>stubrunner.cloud.enabled
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-04-27 22:56:16 +02:00
+Last updated 2016-04-28 09:14:02 +02:00
 </div>
 </div>
 </body>
