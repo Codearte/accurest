@@ -2487,7 +2487,7 @@ For messaging, special stub routes are defined.</p>
                                  (<span class="keyword">default</span>: <span class="integer">10000</span>)
 -s (--stubs) VAL               : Comma separated list of Ivy representation of
                                  jars with stubs. Eg. groupid:artifactid1,group
-                                 <span class="key">id2</span>:<span class="key">artifactid2</span>:classifier
+                                 <span class="key">id2</span>:<span class="key">artifactid2</span>:<span class="key">version</span>:classifier
 -sr (--stubRepositoryRoot) VAL : Location of a Jar containing server where you
                                  keep your stubs (e.g. http:<span class="comment">//nexus.net/content</span>
                                  <span class="regexp"><span class="delimiter">/</span><span class="content">repositories</span><span class="delimiter">/</span></span>repository)
@@ -2515,7 +2515,7 @@ For messaging, special stub routes are defined.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">java -jar stub-runner/stub-runner/build/libs/stub-runner-<span class="float">1.0</span><span class="float">.1</span>-SNAPSHOT-fatJar.jar -sr <span class="key">http</span>:<span class="comment">//a.b.com -s a:b:c,d:e,f:g:h</span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">java -jar stub-runner/stub-runner/build/libs/stub-runner-<span class="float">1.0</span><span class="float">.1</span>-SNAPSHOT-fatJar.jar -sr <span class="key">http</span>:<span class="comment">//a.b.com -s a:b:c,d:e,f:g:h:i</span></code></pre>
 </div>
 </div>
 </div>
@@ -2681,12 +2681,12 @@ compile <span class="string"><span class="delimiter">&quot;</span><span class="c
                                 <span class="keyword">new</span> TriggerController(stubRunning))
         }
 
-        <span class="keyword">def</span> <span class="string"><span class="delimiter">'</span><span class="content">should return a list of running stub servers in &quot;ivy:port&quot; notation</span><span class="delimiter">'</span></span>() {
+        <span class="keyword">def</span> <span class="string"><span class="delimiter">'</span><span class="content">should return a list of running stub servers in &quot;full ivy:port&quot; notation</span><span class="delimiter">'</span></span>() {
                 <span class="key">when</span>:
                         <span class="predefined-type">String</span> response = RestAssuredMockMvc.get(<span class="string"><span class="delimiter">'</span><span class="content">/stubs</span><span class="delimiter">'</span></span>).body.asString()
                 <span class="key">then</span>:
                         <span class="keyword">def</span> root = <span class="keyword">new</span> JsonSlurper().parseText(response)
-                        root.<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:streamService:stubs</span><span class="delimiter">'</span></span> <span class="keyword">instanceof</span> <span class="predefined-type">Integer</span>
+                        root.<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:streamService:0.0.1-SNAPSHOT:stubs</span><span class="delimiter">'</span></span> <span class="keyword">instanceof</span> <span class="predefined-type">Integer</span>
         }
 
         <span class="keyword">def</span> <span class="string"><span class="delimiter">'</span><span class="content">should return a port on which a [#stubId] stub is running</span><span class="delimiter">'</span></span>() {
@@ -2696,7 +2696,11 @@ compile <span class="string"><span class="delimiter">&quot;</span><span class="c
                         response.statusCode == <span class="integer">200</span>
                         response.body.as(<span class="predefined-type">Integer</span>) &gt; <span class="integer">0</span>
                 <span class="key">where</span>:
-                        stubId &lt;&lt; [<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:streamService:stubs</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:streamService</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">streamService</span><span class="delimiter">'</span></span>]
+                        stubId &lt;&lt; [<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:streamService:+:stubs</span><span class="delimiter">'</span></span>,
+                                           <span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:streamService:0.0.1-SNAPSHOT:stubs</span><span class="delimiter">'</span></span>,
+                                           <span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:streamService:+</span><span class="delimiter">'</span></span>,
+                                           <span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:streamService</span><span class="delimiter">'</span></span>,
+                                           <span class="string"><span class="delimiter">'</span><span class="content">streamService</span><span class="delimiter">'</span></span>]
         }
 
         <span class="keyword">def</span> <span class="string"><span class="delimiter">'</span><span class="content">should return 404 when missing stub was called</span><span class="delimiter">'</span></span>() {
@@ -2706,12 +2710,12 @@ compile <span class="string"><span class="delimiter">&quot;</span><span class="c
                         response.statusCode == <span class="integer">404</span>
         }
 
-        <span class="keyword">def</span> <span class="string"><span class="delimiter">'</span><span class="content">should return a list of messaging labels that can be triggered</span><span class="delimiter">'</span></span>() {
+        <span class="keyword">def</span> <span class="string"><span class="delimiter">'</span><span class="content">should return a list of messaging labels that can be triggered when version and classifier are passed</span><span class="delimiter">'</span></span>() {
                 <span class="key">when</span>:
                         <span class="predefined-type">String</span> response = RestAssuredMockMvc.get(<span class="string"><span class="delimiter">'</span><span class="content">/triggers</span><span class="delimiter">'</span></span>).body.asString()
                 <span class="key">then</span>:
                         <span class="keyword">def</span> root = <span class="keyword">new</span> JsonSlurper().parseText(response)
-                        root.<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:streamService:stubs</span><span class="delimiter">'</span></span>.containsAll([<span class="string"><span class="delimiter">&quot;</span><span class="content">delete_book</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">return_book_1</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">return_book_2</span><span class="delimiter">&quot;</span></span>])
+                        root.<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:streamService:0.0.1-SNAPSHOT:stubs</span><span class="delimiter">'</span></span>?.containsAll([<span class="string"><span class="delimiter">&quot;</span><span class="content">delete_book</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">return_book_1</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">return_book_2</span><span class="delimiter">&quot;</span></span>])
         }
 
         <span class="keyword">def</span> <span class="string"><span class="delimiter">'</span><span class="content">should trigger a messaging label</span><span class="delimiter">'</span></span>() {
@@ -2746,7 +2750,7 @@ compile <span class="string"><span class="delimiter">&quot;</span><span class="c
                 <span class="key">then</span>:
                         response.statusCode == <span class="integer">404</span>
                         <span class="keyword">def</span> root = <span class="keyword">new</span> JsonSlurper().parseText(response.body.asString())
-                        root.<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:streamService:stubs</span><span class="delimiter">'</span></span>.containsAll([<span class="string"><span class="delimiter">&quot;</span><span class="content">delete_book</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">return_book_1</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">return_book_2</span><span class="delimiter">&quot;</span></span>])
+                        root.<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:streamService:0.0.1-SNAPSHOT:stubs</span><span class="delimiter">'</span></span>?.containsAll([<span class="string"><span class="delimiter">&quot;</span><span class="content">delete_book</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">return_book_1</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">return_book_2</span><span class="delimiter">&quot;</span></span>])
         }
 
 }</code></pre>
@@ -3022,7 +3026,7 @@ You can disable Stub Runner support by providing: <code>stubrunner.cloud.enabled
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">stubrunner.stubs.repository.root</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Maven repo url. If blank then will call the local maven repo</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Comma separated list of Maven repo urls. If blank then will call the local maven repo</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">stubrunner.stubs.classifier</p></td>
@@ -3048,19 +3052,22 @@ You can disable Stub Runner support by providing: <code>stubrunner.cloud.enabled
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">groupId:artifactId:classifier:port</code></pre>
+<pre class="CodeRay highlight"><code data-lang="java">groupId:artifactId:version:classifier:port</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p><code>classifier</code> and <code>port</code> are optional.</p>
+<p><code>version</code>, <code>classifier</code> and <code>port</code> are optional.</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
+<p>If you don&#8217;t provide the <code>port</code> then a random one will be picked</p>
+</li>
+<li>
 <p>If you don&#8217;t provide the <code>classifier</code> then the default one will be taken.</p>
 </li>
 <li>
-<p>If you don&#8217;t provide the <code>port</code> then a random one will be picked</p>
+<p>If you don&#8217;t provide the <code>version</code> then the <code>+</code> will be passed and the latest one will be downloaded</p>
 </li>
 </ul>
 </div>
@@ -3696,7 +3703,7 @@ channel name.
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">stubrunner.stubs.repository.root</span>: <span class="string"><span class="content">classpath:m2repo/repository/</span></span>
-<span class="key">stubrunner.stubs.ids</span>: <span class="string"><span class="content">io.codearte.accurest.stubs:streamService</span></span>
+<span class="key">stubrunner.stubs.ids</span>: <span class="string"><span class="content">io.codearte.accurest.stubs:streamService:0.0.1-SNAPSHOT:stubs</span></span>
 
 <span class="key">spring</span>:
   <span class="key">cloud</span>:
@@ -3844,7 +3851,7 @@ as your first choice:</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-04-25 12:33:03 +02:00
+Last updated 2016-04-25 18:49:10 +02:00
 </div>
 </div>
 </body>
