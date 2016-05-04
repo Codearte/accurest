@@ -585,7 +585,7 @@ dependencies {
 <div class="sect4">
 <h5 id="add-stubs">Add stubs</h5>
 <div class="paragraph">
-<p>By default Accurest is looking for stubs in <code>src/test/accurest</code> directory.</p>
+<p>By default Accurest is looking for stubs in <code>src/test/resources/accurest</code> directory.</p>
 </div>
 <div class="paragraph">
 <p>Directory containing stub definitions is treated as a class name, and each stub definition is treated as a single test.
@@ -594,8 +594,8 @@ So with following structure</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">src/test/accurest/myservice/shouldCreateUser.groovy
-src/test/accurest/myservice/shouldReturnUser.groovy</code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">src/test/resources/accurest/myservice/shouldCreateUser.groovy
+src/test/resources/accurest/myservice/shouldReturnUser.groovy</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -659,7 +659,7 @@ src/test/accurest/myservice/shouldReturnUser.groovy</code></pre>
 <p><strong>ignoredFiles</strong> - Ant matcher allowing defining stub files for which processing should be skipped. By default empty array []</p>
 </li>
 <li>
-<p><strong>contractsDslDir</strong> - directory containing contracts written using the GroovyDSL. By default <code>$rootDir/src/test/accurest</code></p>
+<p><strong>contractsDslDir</strong> - directory containing contracts written using the GroovyDSL. By default <code>$rootDir/src/test/resources/accurest</code></p>
 </li>
 <li>
 <p><strong>generatedTestSourcesDir</strong> - test source directory where tests generated from Groovy DSL should be placed. By default <code>$buildDir/generated-test-sources/accurest</code></p>
@@ -718,7 +718,7 @@ should also contain <code>protected WebTarget webTarget</code> field, right now 
 <h4 id="accurest-on-consumer-side">Accurest on consumer side</h4>
 <div class="paragraph">
 <p>In consumer service you need to configure Accurest plugin in exactly the same way as in case of provider. If you don&#8217;t want to use Stub Runner then you need to copy contracts stored in
-<code>src/test/accurest</code> and generate WireMock json stubs using:</p>
+<code>src/test/resources/accurest</code> and generate WireMock json stubs using:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -789,15 +789,15 @@ should also contain <code>protected WebTarget webTarget</code> field, right now 
 <div class="sect3">
 <h4 id="add-stubs-2">Add stubs</h4>
 <div class="paragraph">
-<p>By default Accurest is looking for stubs in <code>src/test/accurest</code> directory.
+<p>By default Accurest is looking for stubs in <code>src/test/resources/accurest</code> directory.
 Directory containing stub definitions is treated as a class name, and each stub definition is treated as a single test.
 We assume that it contains at least one directory which will be used as test class name. If there is more than one level of nested directories all except the last one will be used as package name.
 So with following structure</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">src/test/accurest/myservice/shouldCreateUser.groovy
-src/test/accurest/myservice/shouldReturnUser.groovy</code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">src/test/resources/accurest/myservice/shouldCreateUser.groovy
+src/test/resources/accurest/myservice/shouldReturnUser.groovy</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -855,7 +855,7 @@ src/test/accurest/myservice/shouldReturnUser.groovy</code></pre>
 <p><strong>baseClassForTests</strong> - base class for generated tests. By default <code>spock.lang.Specification</code> if using Spock tests.</p>
 </li>
 <li>
-<p><strong>contractsDir</strong> - directory containing contracts written using the GroovyDSL. By default <code>/src/test/accurest</code>.</p>
+<p><strong>contractsDir</strong> - directory containing contracts written using the GroovyDSL. By default <code>/src/test/resources/accurest</code>.</p>
 </li>
 <li>
 <p><strong>testFramework</strong> - the target test framework to be used; currently Spock and JUnit are supported with Spock being the default framework</p>
@@ -940,7 +940,7 @@ src/test/accurest/myservice/shouldReturnUser.groovy</code></pre>
 <div class="sect3">
 <h4 id="accurest-on-consumer-side-2">Accurest on consumer side</h4>
 <div class="paragraph">
-<p>In consumer service you need to configure Accurest plugin in exactly the same way as in case of provider. You need to copy contracts stored in <code>src/test/accurest</code> and generate Wiremock json stubs using: <code>mvn generateStubs</code> command. By default generated WireMock mapping is stored in directory <code>target/mappings</code>. Your project should create from this generated mappings additional artifact with classifier <code>stubs</code> for easy deploy to maven repository.</p>
+<p>In consumer service you need to configure Accurest plugin in exactly the same way as in case of provider. You need to copy contracts stored in <code>src/test/resources/accurest</code> and generate Wiremock json stubs using: <code>mvn generateStubs</code> command. By default generated WireMock mapping is stored in directory <code>target/mappings</code>. Your project should create from this generated mappings additional artifact with classifier <code>stubs</code> for easy deploy to maven repository.</p>
 </div>
 <div class="paragraph">
 <p>Sample configuration:</p>
@@ -1025,7 +1025,7 @@ More details about Wiremock scenarios can be found under [<a href="http://wiremo
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-04-25 18:49:10 +02:00
+Last updated 2016-05-03 16:58:15 +02:00
 </div>
 </div>
 </body>

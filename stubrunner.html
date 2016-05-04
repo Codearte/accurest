@@ -1135,6 +1135,27 @@ its methods as presented below:</p>
 <p>and the Stub Runner autoconfiguration should be picked up.</p>
 </div>
 <div class="sect3">
+<h4 id="stubbing-service-discovery">Stubbing Service Discovery</h4>
+<div class="paragraph">
+<p>The most important feature of <code>Stub Runner Spring Cloud</code> is the fact that it&#8217;s stubbing</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>DiscoveryClient</code></p>
+</li>
+<li>
+<p><code>Ribbon</code> <code>ServerList</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>that means that regardles of the fact whether you&#8217;re using Zookeeper, Consul, Eureka or anything else, you don&#8217;t need that in your tests.
+We&#8217;re starting WireMock instances of your dependencies and we&#8217;re telling your application whenever you&#8217;re using <code>Feign</code>, load balanced <code>RestTemplate</code>
+or <code>DiscoveryClient</code> directly, to call those stubbed servers instead of calling the real Service Discovery tool.</p>
+</div>
+</div>
+<div class="sect3">
 <h4 id="additional-configuration">Additional Configuration</h4>
 <div class="paragraph">
 <p>You can match the artifactId of the stub with the name of your app by using the <code>stubrunner.stubs.idsToServiceIds:</code> map.
