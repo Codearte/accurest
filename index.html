@@ -528,6 +528,7 @@ table.CodeRay td.code>pre{padding:0}
 </li>
 <li><a href="#contract-dsl">Contract DSL</a>
 <ul class="sectlevel2">
+<li><a href="#limitations">Limitations</a></li>
 <li><a href="#http-top-level-elements">HTTP Top-Level Elements</a></li>
 <li><a href="#request">Request</a></li>
 <li><a href="#response">Response</a></li>
@@ -857,11 +858,11 @@ is under constant development.</p>
 a tiny subset of it (namely literals, method calls and closures). What&#8217;s more, Accurest&#8217;s DSL is designed to be programmer-readable without any knowledge of the DSL itself -
  it&#8217;s statically typed.</p>
 </div>
-<div class="admonitionblock warning">
+<div class="admonitionblock tip">
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
+<i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
 Since 1.1.0 you can use the <code>io.codearte.accurest.dsl.Accurest</code> class in your DSL files.
@@ -927,6 +928,33 @@ Since 1.1.0 you can use the <code>io.codearte.accurest.dsl.Accurest</code> class
 <p>You can easily compile Accurest Contracts to WireMock stubs mapping using standalone maven command: <code>mvn io.codearte.accurest:accurest-maven-plugin:convert</code>.</p>
 </div>
 </blockquote>
+</div>
+<div class="sect2">
+<h3 id="limitations">Limitations</h3>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Accurest doesn&#8217;t support XML properly. Please use JSON or help us implement this feature.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Accurest supports equality check on text response. Regular expressions are not yet available.
+</td>
+</tr>
+</table>
+</div>
 </div>
 <div class="sect2">
 <h3 id="http-top-level-elements">HTTP Top-Level Elements</h3>
@@ -3879,7 +3907,7 @@ as your first choice:</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-04-25 18:49:10 +02:00
+Last updated 2016-04-25 12:33:03 +02:00
 </div>
 </div>
 </body>
