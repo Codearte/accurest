@@ -867,7 +867,9 @@ is under constant development.</p>
 </td>
 <td class="content">
 Remember that inside the contract file you have to provide the fully qualified name to
-the <code>Contract</code> class and the <code>make</code> static import i.e. <code>org.springframework.cloud.contract.verifier.dsl.Contract.make { &#8230;&#8203; }</code>
+the <code>Contract</code> class and the <code>make</code> static import i.e. <code>org.springframework.cloud.contract.verifier.dsl.Contract.make { &#8230;&#8203; }</code>.
+You can also provide an import to the <code>Contract</code> class <code>import org.springframework.cloud.contract.verifier.dsl.Contract</code> and then call
+  <code>Contract.make { &#8230;&#8203; }</code>
 </td>
 </tr>
 </table>
@@ -882,7 +884,7 @@ a tiny subset of it (namely literals, method calls and closures). What&#8217;s m
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">Contract.make {
+<pre class="CodeRay highlight"><code data-lang="groovy">org.springframework.cloud.contract.verifier.dsl.Contract.make {
         request {
                 method <span class="string"><span class="delimiter">'</span><span class="content">PUT</span><span class="delimiter">'</span></span>
                 url <span class="string"><span class="delimiter">'</span><span class="content">/api/12</span><span class="delimiter">'</span></span>

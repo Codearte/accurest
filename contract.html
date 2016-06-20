@@ -542,7 +542,9 @@ table.CodeRay td.code>pre{padding:0}
 </td>
 <td class="content">
 Remember that inside the contract file you have to provide the fully qualified name to
-the <code>Contract</code> class and the <code>make</code> static import i.e. <code>org.springframework.cloud.contract.verifier.dsl.Contract.make { &#8230;&#8203; }</code>
+the <code>Contract</code> class and the <code>make</code> static import i.e. <code>org.springframework.cloud.contract.verifier.dsl.Contract.make { &#8230;&#8203; }</code>.
+You can also provide an import to the <code>Contract</code> class <code>import org.springframework.cloud.contract.verifier.dsl.Contract</code> and then call
+  <code>Contract.make { &#8230;&#8203; }</code>
 </td>
 </tr>
 </table>
@@ -557,7 +559,7 @@ a tiny subset of it (namely literals, method calls and closures). What&#8217;s m
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">Contract.make {
+<pre class="CodeRay highlight"><code data-lang="groovy">org.springframework.cloud.contract.verifier.dsl.Contract.make {
         request {
                 method <span class="string"><span class="delimiter">'</span><span class="content">PUT</span><span class="delimiter">'</span></span>
                 url <span class="string"><span class="delimiter">'</span><span class="content">/api/12</span><span class="delimiter">'</span></span>
@@ -1214,7 +1216,7 @@ as presented below (note you can use either <code>$</code> or <code>value</code>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-06-20 13:42:59 +02:00
+Last updated 2016-06-20 13:45:37 +02:00
 </div>
 </div>
 </body>
