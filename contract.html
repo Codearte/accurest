@@ -535,33 +535,21 @@ table.CodeRay td.code>pre{padding:0}
 <h2 id="contract-dsl">Contract DSL</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Contract DSL in Accurest is written in Groovy, but don&#8217;t be alarmed if you didn&#8217;t use Groovy before. Knowledge of the language is not really needed as our DSL uses only
-a tiny subset of it (namely literals, method calls and closures). What&#8217;s more, Accurest&#8217;s DSL is designed to be programmer-readable without any knowledge of the DSL itself -
+<p>Contract DSL is written in Groovy, but don&#8217;t be alarmed if you didn&#8217;t use Groovy before. Knowledge of the language is not really needed as our DSL uses only
+a tiny subset of it (namely literals, method calls and closures). What&#8217;s more the DSL is designed to be programmer-readable without any knowledge of the DSL itself -
  it&#8217;s statically typed.</p>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-Since {messaging_version} you can use the <code>io.codearte.accurest.dsl.Accurest</code> class in your DSL files.
-</td>
-</tr>
-</table>
 </div>
 <div class="paragraph">
 <p>Let&#8217;s look at full example of a contract definition.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest.dsl.GroovyDsl.make {
+<pre class="CodeRay highlight"><code data-lang="groovy">Contract.make {
         request {
                 method <span class="string"><span class="delimiter">'</span><span class="content">PUT</span><span class="delimiter">'</span></span>
                 url <span class="string"><span class="delimiter">'</span><span class="content">/api/12</span><span class="delimiter">'</span></span>
                 headers {
-                        header <span class="string"><span class="delimiter">'</span><span class="content">Content-Type</span><span class="delimiter">'</span></span>: <span class="string"><span class="delimiter">'</span><span class="content">application/vnd.com.ofg.twitter-places-analyzer.v1+json</span><span class="delimiter">'</span></span>
+                        header <span class="string"><span class="delimiter">'</span><span class="content">Content-Type</span><span class="delimiter">'</span></span>: <span class="string"><span class="delimiter">'</span><span class="content">application/vnd.org.springframework.cloud.contract.verifier.twitter-places-analyzer.v1+json</span><span class="delimiter">'</span></span>
                 }
                 body <span class="string"><span class="delimiter">'''</span><span class="content">\
 </span><span class="content">                [{
@@ -606,7 +594,7 @@ Since {messaging_version} you can use the <code>io.codearte.accurest.dsl.Accures
 <div class="quoteblock">
 <blockquote>
 <div class="paragraph">
-<p>You can easily compile Accurest Contracts to WireMock stubs mapping using standalone maven command: <code>mvn io.codearte.accurest:accurest-maven-plugin:convert</code>.</p>
+<p>You can easily compile Contracts to WireMock stubs mapping using standalone maven command: <code>mvn org.springframework.cloud.contract:spring-cloud-contract-verifier-maven-plugin:convert</code>.</p>
 </div>
 </blockquote>
 </div>
@@ -619,7 +607,7 @@ Since {messaging_version} you can use the <code>io.codearte.accurest.dsl.Accures
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-Accurest doesn&#8217;t support XML properly. Please use JSON or help us implement this feature.
+Spring Cloud Contract Verifier doesn&#8217;t support XML properly. Please use JSON or help us implement this feature.
 </td>
 </tr>
 </table>
@@ -631,7 +619,7 @@ Accurest doesn&#8217;t support XML properly. Please use JSON or help us implemen
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-Accurest supports equality check on text response. Regular expressions are not yet available.
+Spring Cloud Contract Verifier supports equality check on text response. Regular expressions are not yet available.
 </td>
 </tr>
 </table>
@@ -644,7 +632,7 @@ Accurest supports equality check on text response. Regular expressions are not y
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest.dsl.GroovyDsl.make {
+<pre class="CodeRay highlight"><code data-lang="groovy">Contract.make {
         <span class="comment">// Definition of HTTP request part of the contract</span>
         <span class="comment">// (this can be a valid request or invalid depending</span>
         <span class="comment">// on type of contract being specified).</span>
@@ -670,11 +658,11 @@ Accurest supports equality check on text response. Regular expressions are not y
 <div class="sect2">
 <h3 id="request">Request</h3>
 <div class="paragraph">
-<p>HTTP protocol requires only <strong>method and address</strong> to be specified in a request. The same information is mandatory in request definition of Accurest contract.</p>
+<p>HTTP protocol requires only <strong>method and address</strong> to be specified in a request. The same information is mandatory in request definition of the Contract.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest.dsl.GroovyDsl.make {
+<pre class="CodeRay highlight"><code data-lang="groovy">Contract.make {
         request {
                 <span class="comment">// HTTP request method (GET/POST/PUT/DELETE).</span>
                 method <span class="string"><span class="delimiter">'</span><span class="content">GET</span><span class="delimiter">'</span></span>
@@ -694,7 +682,7 @@ Accurest supports equality check on text response. Regular expressions are not y
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest.dsl.GroovyDsl.make {
+<pre class="CodeRay highlight"><code data-lang="groovy">Contract.make {
         request {
                 method <span class="string"><span class="delimiter">'</span><span class="content">GET</span><span class="delimiter">'</span></span>
 
@@ -713,7 +701,7 @@ Accurest supports equality check on text response. Regular expressions are not y
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest.dsl.GroovyDsl.make {
+<pre class="CodeRay highlight"><code data-lang="groovy">Contract.make {
         request {
                 <span class="comment">//...</span>
 
@@ -761,7 +749,7 @@ Accurest supports equality check on text response. Regular expressions are not y
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest.dsl.GroovyDsl.make {
+<pre class="CodeRay highlight"><code data-lang="groovy">Contract.make {
         request {
                 <span class="comment">//...</span>
 
@@ -784,7 +772,7 @@ Accurest supports equality check on text response. Regular expressions are not y
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest.dsl.GroovyDsl.make {
+<pre class="CodeRay highlight"><code data-lang="groovy">Contract.make {
         request {
                 <span class="comment">//...</span>
 
@@ -804,7 +792,7 @@ Accurest supports equality check on text response. Regular expressions are not y
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest.dsl.GroovyDsl.make {
+<pre class="CodeRay highlight"><code data-lang="groovy">Contract.make {
         request {
                 <span class="comment">//...</span>
 
@@ -828,7 +816,7 @@ Accurest supports equality check on text response. Regular expressions are not y
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest.dsl.GroovyDsl.make {
+<pre class="CodeRay highlight"><code data-lang="groovy">Contract.make {
         request {
                 <span class="comment">//...</span>
         }
@@ -856,7 +844,7 @@ for your test and your server side tests.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest.dsl.GroovyDsl.make {
+<pre class="CodeRay highlight"><code data-lang="groovy">Contract.make {
         request {
                 method(<span class="string"><span class="delimiter">'</span><span class="content">GET</span><span class="delimiter">'</span></span>)
                 url <span class="error">$</span>(client(~<span class="regexp"><span class="delimiter">/</span><span class="char">\/</span><span class="content">[0-9]{2}</span><span class="delimiter">/</span></span>), server(<span class="string"><span class="delimiter">'</span><span class="content">/12</span><span class="delimiter">'</span></span>))
@@ -906,7 +894,7 @@ for your test and your server side tests.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest.dsl.GroovyDsl.make {
+<pre class="CodeRay highlight"><code data-lang="groovy">Contract.make {
         priority <span class="integer">1</span>
         request {
                 method <span class="string"><span class="delimiter">'</span><span class="content">POST</span><span class="delimiter">'</span></span>
@@ -1002,7 +990,7 @@ in the configuration. Please see the examples below:</p>
 <h4 id="groovy-dsl">Groovy DSL</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest.dsl.GroovyDsl.make {
+<pre class="CodeRay highlight"><code data-lang="groovy">Contract.make {
         request {
                 method <span class="string"><span class="delimiter">'</span><span class="content">PUT</span><span class="delimiter">'</span></span>
                 url <span class="error">$</span>(client(regex(<span class="string"><span class="delimiter">'</span><span class="content">^/api/[0-9]{2}$</span><span class="delimiter">'</span></span>)), server(<span class="string"><span class="delimiter">'</span><span class="content">/api/12</span><span class="delimiter">'</span></span>))
@@ -1098,18 +1086,6 @@ in the configuration. Please see the examples below:</p>
 </div>
 <div class="sect2">
 <h3 id="messaging-top-level-elements">Messaging Top-Level Elements</h3>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-Feature available since {messaging_version}
-</td>
-</tr>
-</table>
-</div>
 <div class="paragraph">
 <p>The DSL for messaging looks a little bit different than the one that focuses on HTTP.</p>
 </div>
@@ -1120,7 +1096,7 @@ Feature available since {messaging_version}
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">def</span> dsl = GroovyDsl.make {
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">def</span> dsl = Contract.make {
         <span class="comment">// Human readable description</span>
         description <span class="string"><span class="delimiter">'</span><span class="content">Some description</span><span class="delimiter">'</span></span>
         <span class="comment">// Label by means of which the output message can be triggered</span>
@@ -1156,7 +1132,7 @@ we will generate a test that will call that method to trigger the message. On th
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">def</span> dsl = GroovyDsl.make {
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">def</span> dsl = Contract.make {
         description <span class="string"><span class="delimiter">'</span><span class="content">Some Description</span><span class="delimiter">'</span></span>
         label <span class="string"><span class="delimiter">'</span><span class="content">some_label</span><span class="delimiter">'</span></span>
         <span class="comment">// input is a message</span>
@@ -1198,7 +1174,7 @@ as presented below (note you can use either <code>$</code> or <code>value</code>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">Accurest.make {
+<pre class="CodeRay highlight"><code data-lang="groovy">Contract.make {
         label <span class="string"><span class="delimiter">'</span><span class="content">some_label</span><span class="delimiter">'</span></span>
         input {
                 messageFrom value(consumer(<span class="string"><span class="delimiter">'</span><span class="content">jms:output</span><span class="delimiter">'</span></span>), producer(<span class="string"><span class="delimiter">'</span><span class="content">jms:input</span><span class="delimiter">'</span></span>))
@@ -1225,7 +1201,7 @@ as presented below (note you can use either <code>$</code> or <code>value</code>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-05-11 18:10:13 +02:00
+Last updated 2016-06-20 13:02:17 +02:00
 </div>
 </div>
 </body>

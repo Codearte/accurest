@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
-<title>Stub Runner</title>
+<title>Spring Cloud Contract Stub Runner</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -514,7 +514,7 @@ table.CodeRay td.code>pre{padding:0}
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#stub-runner">Stub Runner</a>
+<li><a href="#spring-cloud-contract-stub-runner">Spring Cloud Contract Stub Runner</a>
 <ul class="sectlevel2">
 <li><a href="#publishing-stubs-as-jars">Publishing stubs as JARs</a></li>
 <li><a href="#modules">Modules</a></li>
@@ -531,10 +531,10 @@ table.CodeRay td.code>pre{padding:0}
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="stub-runner">Stub Runner</h2>
+<h2 id="spring-cloud-contract-stub-runner">Spring Cloud Contract Stub Runner</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>One of the issues that you could have encountered while using Accurest was to pass the generated WireMock JSON stubs from the server side to the client side (or various clients).
+<p>One of the issues that you could have encountered while using Spring Cloud Contract Verifier was to pass the generated WireMock JSON stubs from the server side to the client side (or various clients).
  The same takes place in terms of client side generation for messaging.</p>
 </div>
 <div class="paragraph">
@@ -548,7 +548,7 @@ table.CodeRay td.code>pre{padding:0}
 <div class="sect3">
 <h4 id="gradle">Gradle</h4>
 <div class="paragraph">
-<p>Example of Accurest Gradle setup:</p>
+<p>Example of Spring Cloud Contract Verifier Gradle setup:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -556,7 +556,7 @@ table.CodeRay td.code>pre{padding:0}
         contractsDir = file(<span class="string"><span class="delimiter">&quot;</span><span class="content">mappings</span><span class="delimiter">&quot;</span></span>)
         stubsOutputDirRoot = file(<span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>project.buildDir<span class="inline-delimiter">}</span></span><span class="content">/production/</span><span class="inline"><span class="inline-delimiter">${</span>project.name<span class="inline-delimiter">}</span></span><span class="content">-stubs/</span><span class="delimiter">&quot;</span></span>)
         wireMockStubsOutputDir = file(<span class="keyword">new</span> <span class="predefined-type">File</span>(stubsOutputDirRoot, <span class="string"><span class="delimiter">'</span><span class="content">repository/mappings/</span><span class="delimiter">'</span></span>))
-        contractsOutputDir = file(<span class="keyword">new</span> <span class="predefined-type">File</span>(stubsOutputDirRoot, <span class="string"><span class="delimiter">'</span><span class="content">repository/accurest/</span><span class="delimiter">'</span></span>))
+        contractsOutputDir = file(<span class="keyword">new</span> <span class="predefined-type">File</span>(stubsOutputDirRoot, <span class="string"><span class="delimiter">'</span><span class="content">repository/contracts/</span><span class="delimiter">'</span></span>))
 }
 
 task copyContracts(<span class="key">type</span>: Copy) {
@@ -589,23 +589,23 @@ publishing {
 <div class="sect3">
 <h4 id="maven">Maven</h4>
 <div class="paragraph">
-<p>Example of Maven can be found in the <a href="https://github.com/Codearte/accurest-maven-plugin/=publishing-wiremock-stubs-projectf-stubsjar">Accurest Maven Plugin README</a></p>
+<p>Example of Maven can be found in the <a href="https://github.com/Codearte/accurest-maven-plugin/=publishing-wiremock-stubs-projectf-stubsjar">Spring Cloud Contract Verifier Maven Plugin README</a></p>
 </div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="modules">Modules</h3>
 <div class="paragraph">
-<p>Accurest comes with a new structure of modules</p>
+<p>Spring Cloud Contract Stub Runner comes with a new structure of modules</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code>└── stub-runner
-    ├── stub-runner
-    ├── stub-runner-boot
-    ├── stub-runner-junit
-    ├── stub-runner-spring
-    └── stub-runner-spring-cloud</code></pre>
+<pre class="CodeRay highlight"><code>└── spring-cloud-contract-stub-runner
+    ├── spring-cloud-contract-stub-runner
+    ├── spring-cloud-contract-stub-runner-boot
+    ├── spring-cloud-contract-stub-runner-junit
+    ├── spring-cloud-contract-stub-runner-spring
+    └── spring-cloud-contract-stub-runner-spring-cloud</code></pre>
 </div>
 </div>
 </div>
@@ -656,7 +656,7 @@ For messaging, special stub routes are defined.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">.<span class="regexp"><span class="delimiter">/</span><span class="content">gradlew stub-runner-root:stub-runner:shadowJar -PfatJar</span></span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">.<span class="regexp"><span class="delimiter">/</span><span class="content">gradlew spring-cloud-contract-stub-runner-root:spring-cloud-contract-stub-runner:shadowJar -PfatJar</span></span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -664,7 +664,7 @@ For messaging, special stub routes are defined.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">java -jar stub-runner/stub-runner/build/libs/stub-runner-<span class="float">1.0</span><span class="float">.1</span>-SNAPSHOT-fatJar.jar -sr <span class="key">http</span>:<span class="comment">//a.b.com -s a:b:c,d:e,f:g:h:i</span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">java -jar spring-cloud-contract-stub-runner/spring-cloud-contract-stub-runner/build/libs/spring-cloud-contract-stub-runner-<span class="float">1.0</span><span class="float">.0</span>-SNAPSHOT-fatJar.jar -sr <span class="key">http</span>:<span class="comment">//a.b.com -s a:b:c,d:e,f:g:h:i</span></code></pre>
 </div>
 </div>
 </div>
@@ -676,7 +676,7 @@ For messaging, special stub routes are defined.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">.<span class="regexp"><span class="delimiter">/</span><span class="content">gradlew stub-runner-root:stub-runner:run -Pargs=&quot;-c pl -minp 10000 -maxp 10005 -s a:b:c,d:e,f:g:h&quot;</span></span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">.<span class="regexp"><span class="delimiter">/</span><span class="content">gradlew spring-cloud-contract-stub-runner-root:spring-cloud-contract-stub-runner:run -Pargs=&quot;-c pl -minp 10000 -maxp 10005 -s a:b:c,d:e,f:g:h&quot;</span></span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -684,7 +684,7 @@ For messaging, special stub routes are defined.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">.<span class="regexp"><span class="delimiter">/</span><span class="content">gradlew stub-runner-root:stub-runner:run -Pc=pl -Pminp=10000 -Pmaxp=10005 -Ps=a:b:c,d:e,f:g:h</span></span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">.<span class="regexp"><span class="delimiter">/</span><span class="content">gradlew spring-cloud-contract-stub-runner-root:spring-cloud-contract-stub-runner:run -Pc=pl -Pminp=10000 -Pmaxp=10005 -Ps=a:b:c,d:e,f:g:h</span></span></code></pre>
 </div>
 </div>
 <div class="sect4">
@@ -729,20 +729,8 @@ For messaging, special stub routes are defined.</p>
 </div>
 <div class="sect2">
 <h3 id="stub-runner-boot">Stub Runner Boot</h3>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-Feature available since {messaging_version}
-</td>
-</tr>
-</table>
-</div>
 <div class="paragraph">
-<p>Accurest Stub Runner Boot is a Spring Boot application that exposes REST endpoints to
+<p>Spring Cloud Contract Verifier Stub Runner Boot is a Spring Boot application that exposes REST endpoints to
 trigger the messaging labels and to access started WireMock servers.</p>
 </div>
 <div class="paragraph">
@@ -756,7 +744,7 @@ trigger the messaging labels and to access started WireMock servers.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">compile <span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest:stub-runner-boot:</span><span class="inline"><span class="inline-delimiter">${</span>accurestVersion<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">compile <span class="string"><span class="delimiter">&quot;</span><span class="content">org.springframework.cloud.contract:stub-runner-boot:</span><span class="inline"><span class="inline-delimiter">${</span>verifierVersion<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -765,11 +753,11 @@ trigger the messaging labels and to access started WireMock servers.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy"><span class="comment">// for Apache Camel</span>
-compile <span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest:stub-runner-messaging-camel:</span><span class="inline"><span class="inline-delimiter">${</span>accurestVersion<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span>
+compile <span class="string"><span class="delimiter">&quot;</span><span class="content">org.springframework.cloud.contract:spring-cloud-contract-stub-runner-messaging-camel:</span><span class="inline"><span class="inline-delimiter">${</span>verifierVersion<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span>
 <span class="comment">// for Spring Integration</span>
-compile <span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest:stub-runner-messaging-integration:</span><span class="inline"><span class="inline-delimiter">${</span>accurestVersion<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span>
+compile <span class="string"><span class="delimiter">&quot;</span><span class="content">org.springframework.cloud.contract:spring-cloud-contract-stub-runner-messaging-integration:</span><span class="inline"><span class="inline-delimiter">${</span>verifierVersion<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span>
 <span class="comment">// for Spring Cloud Stream</span>
-compile <span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest:stub-runner-messaging-stream:</span><span class="inline"><span class="inline-delimiter">${</span>accurestVersion<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span></code></pre>
+compile <span class="string"><span class="delimiter">&quot;</span><span class="content">org.springframework.cloud.contract:spring-cloud-contract-stub-runner-messaging-stream:</span><span class="inline"><span class="inline-delimiter">${</span>verifierVersion<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -835,7 +823,7 @@ compile <span class="string"><span class="delimiter">&quot;</span><span class="c
                         <span class="predefined-type">String</span> response = RestAssuredMockMvc.get(<span class="string"><span class="delimiter">'</span><span class="content">/stubs</span><span class="delimiter">'</span></span>).body.asString()
                 <span class="key">then</span>:
                         <span class="keyword">def</span> root = <span class="keyword">new</span> JsonSlurper().parseText(response)
-                        root.<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:streamService:0.0.1-SNAPSHOT:stubs</span><span class="delimiter">'</span></span> <span class="keyword">instanceof</span> <span class="predefined-type">Integer</span>
+                        root.<span class="string"><span class="delimiter">'</span><span class="content">org.springframework.cloud.contract.verifier.stubs:streamService:0.0.1-SNAPSHOT:stubs</span><span class="delimiter">'</span></span> <span class="keyword">instanceof</span> <span class="predefined-type">Integer</span>
         }
 
         <span class="keyword">def</span> <span class="string"><span class="delimiter">'</span><span class="content">should return a port on which a [#stubId] stub is running</span><span class="delimiter">'</span></span>() {
@@ -845,10 +833,10 @@ compile <span class="string"><span class="delimiter">&quot;</span><span class="c
                         response.statusCode == <span class="integer">200</span>
                         response.body.as(<span class="predefined-type">Integer</span>) &gt; <span class="integer">0</span>
                 <span class="key">where</span>:
-                        stubId &lt;&lt; [<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:streamService:+:stubs</span><span class="delimiter">'</span></span>,
-                                           <span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:streamService:0.0.1-SNAPSHOT:stubs</span><span class="delimiter">'</span></span>,
-                                           <span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:streamService:+</span><span class="delimiter">'</span></span>,
-                                           <span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:streamService</span><span class="delimiter">'</span></span>,
+                        stubId &lt;&lt; [<span class="string"><span class="delimiter">'</span><span class="content">org.springframework.cloud.contract.verifier.stubs:streamService:+:stubs</span><span class="delimiter">'</span></span>,
+                                           <span class="string"><span class="delimiter">'</span><span class="content">org.springframework.cloud.contract.verifier.stubs:streamService:0.0.1-SNAPSHOT:stubs</span><span class="delimiter">'</span></span>,
+                                           <span class="string"><span class="delimiter">'</span><span class="content">org.springframework.cloud.contract.verifier.stubs:streamService:+</span><span class="delimiter">'</span></span>,
+                                           <span class="string"><span class="delimiter">'</span><span class="content">org.springframework.cloud.contract.verifier.stubs:streamService</span><span class="delimiter">'</span></span>,
                                            <span class="string"><span class="delimiter">'</span><span class="content">streamService</span><span class="delimiter">'</span></span>]
         }
 
@@ -864,7 +852,7 @@ compile <span class="string"><span class="delimiter">&quot;</span><span class="c
                         <span class="predefined-type">String</span> response = RestAssuredMockMvc.get(<span class="string"><span class="delimiter">'</span><span class="content">/triggers</span><span class="delimiter">'</span></span>).body.asString()
                 <span class="key">then</span>:
                         <span class="keyword">def</span> root = <span class="keyword">new</span> JsonSlurper().parseText(response)
-                        root.<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:streamService:0.0.1-SNAPSHOT:stubs</span><span class="delimiter">'</span></span>?.containsAll([<span class="string"><span class="delimiter">&quot;</span><span class="content">delete_book</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">return_book_1</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">return_book_2</span><span class="delimiter">&quot;</span></span>])
+                        root.<span class="string"><span class="delimiter">'</span><span class="content">org.springframework.cloud.contract.verifier.stubs:streamService:0.0.1-SNAPSHOT:stubs</span><span class="delimiter">'</span></span>?.containsAll([<span class="string"><span class="delimiter">&quot;</span><span class="content">delete_book</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">return_book_1</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">return_book_2</span><span class="delimiter">&quot;</span></span>])
         }
 
         <span class="keyword">def</span> <span class="string"><span class="delimiter">'</span><span class="content">should trigger a messaging label</span><span class="delimiter">'</span></span>() {
@@ -890,7 +878,7 @@ compile <span class="string"><span class="delimiter">&quot;</span><span class="c
                 <span class="key">and</span>:
                         <span class="integer">1</span> * stubRunning.trigger(stubId, <span class="string"><span class="delimiter">'</span><span class="content">delete_book</span><span class="delimiter">'</span></span>)
                 <span class="key">where</span>:
-                        stubId &lt;&lt; [<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:streamService:stubs</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:streamService</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">streamService</span><span class="delimiter">'</span></span>]
+                        stubId &lt;&lt; [<span class="string"><span class="delimiter">'</span><span class="content">org.springframework.cloud.contract.verifier.stubs:streamService:stubs</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">org.springframework.cloud.contract.verifier.stubs:streamService</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">streamService</span><span class="delimiter">'</span></span>]
         }
 
         <span class="keyword">def</span> <span class="string"><span class="delimiter">'</span><span class="content">should return when trigger is missing</span><span class="delimiter">'</span></span>() {
@@ -899,7 +887,7 @@ compile <span class="string"><span class="delimiter">&quot;</span><span class="c
                 <span class="key">then</span>:
                         response.statusCode == <span class="integer">404</span>
                         <span class="keyword">def</span> root = <span class="keyword">new</span> JsonSlurper().parseText(response.body.asString())
-                        root.<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:streamService:0.0.1-SNAPSHOT:stubs</span><span class="delimiter">'</span></span>?.containsAll([<span class="string"><span class="delimiter">&quot;</span><span class="content">delete_book</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">return_book_1</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">return_book_2</span><span class="delimiter">&quot;</span></span>])
+                        root.<span class="string"><span class="delimiter">'</span><span class="content">org.springframework.cloud.contract.verifier.stubs:streamService:0.0.1-SNAPSHOT:stubs</span><span class="delimiter">'</span></span>?.containsAll([<span class="string"><span class="delimiter">&quot;</span><span class="content">delete_book</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">return_book_1</span><span class="delimiter">&quot;</span></span>,<span class="string"><span class="delimiter">&quot;</span><span class="content">return_book_2</span><span class="delimiter">&quot;</span></span>])
         }
 
 }</code></pre>
@@ -914,10 +902,10 @@ compile <span class="string"><span class="delimiter">&quot;</span><span class="c
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@ClassRule</span> <span class="directive">public</span> <span class="directive">static</span> AccurestRule rule = <span class="keyword">new</span> AccurestRule()
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@ClassRule</span> <span class="directive">public</span> <span class="directive">static</span> StubRunnerRule rule = <span class="keyword">new</span> StubRunnerRule()
                 .repoRoot(repoRoot())
-                .downloadStub(<span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">loanIssuance</span><span class="delimiter">&quot;</span></span>)
-                .downloadStub(<span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest.stubs:fraudDetectionServer</span><span class="delimiter">&quot;</span></span>);</code></pre>
+                .downloadStub(<span class="string"><span class="delimiter">&quot;</span><span class="content">org.springframework.cloud.contract.verifier.stubs</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">loanIssuance</span><span class="delimiter">&quot;</span></span>)
+                .downloadStub(<span class="string"><span class="delimiter">&quot;</span><span class="content">org.springframework.cloud.contract.verifier.stubs:fraudDetectionServer</span><span class="delimiter">&quot;</span></span>);</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -947,13 +935,29 @@ compile <span class="string"><span class="delimiter">&quot;</span><span class="c
 Check their <a href="https://wiki.eclipse.org/Aether">docs</a> for more information.</p>
 </div>
 <div class="paragraph">
-<p>Since the <code>AccurestRule</code> implements the <code>StubFinder</code> it allows you to find the started stubs:</p>
+<p>Since the <code>StubRunnerRule</code> implements the <code>StubFinder</code> it allows you to find the started stubs:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">package</span> io.codearte.accurest.stubrunner
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="comment">/*
+ *  Copyright 2013-2016 the original author or authors.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */</span>
 
-<span class="keyword">import</span> <span class="include">io.codearte.accurest.dsl.GroovyDsl</span>
+<span class="keyword">package</span> org.springframework.cloud.contract.stubrunner
+
+<span class="keyword">import</span> <span class="include">org.springframework.cloud.contract.verifier.dsl.Contract</span>
 
 <span class="type">interface</span> StubFinder <span class="directive">extends</span> StubTrigger {
         <span class="comment">/**
@@ -980,9 +984,9 @@ Check their <a href="https://wiki.eclipse.org/Aether">docs</a> for more informat
         RunningStubs findAllRunningStubs()
 
         <span class="comment">/**
-         * Returns the list of Accurest contracts
+         * Returns the list of Contracts
          */</span>
-        <span class="predefined-type">Map</span>&lt;StubConfiguration, <span class="predefined-type">Collection</span>&lt;GroovyDsl&gt;&gt; getAccurestContracts()
+        <span class="predefined-type">Map</span>&lt;StubConfiguration, <span class="predefined-type">Collection</span>&lt;Contract&gt;&gt; getContracts()
 }</code></pre>
 </div>
 </div>
@@ -991,21 +995,21 @@ Check their <a href="https://wiki.eclipse.org/Aether">docs</a> for more informat
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="annotation">@ClassRule</span> <span class="annotation">@Shared</span> AccurestRule rule = <span class="keyword">new</span> AccurestRule()
-                .repoRoot(AccurestRuleSpec.getResource(<span class="string"><span class="delimiter">&quot;</span><span class="content">/m2repo</span><span class="delimiter">&quot;</span></span>).toURI().toString())
-                .downloadStub(<span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">loanIssuance</span><span class="delimiter">&quot;</span></span>)
-                .downloadStub(<span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest.stubs:fraudDetectionServer</span><span class="delimiter">&quot;</span></span>)
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="annotation">@ClassRule</span> <span class="annotation">@Shared</span> StubRunnerRule rule = <span class="keyword">new</span> StubRunnerRule()
+                .repoRoot(StubRunnerRuleSpec.getResource(<span class="string"><span class="delimiter">&quot;</span><span class="content">/m2repo/repository</span><span class="delimiter">&quot;</span></span>).toURI().toString())
+                .downloadStub(<span class="string"><span class="delimiter">&quot;</span><span class="content">org.springframework.cloud.contract.verifier.stubs</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">loanIssuance</span><span class="delimiter">&quot;</span></span>)
+                .downloadStub(<span class="string"><span class="delimiter">&quot;</span><span class="content">org.springframework.cloud.contract.verifier.stubs:fraudDetectionServer</span><span class="delimiter">&quot;</span></span>)
 
 <span class="keyword">def</span> <span class="string"><span class="delimiter">'</span><span class="content">should start WireMock servers</span><span class="delimiter">'</span></span>() {
         <span class="key">expect</span>: <span class="string"><span class="delimiter">'</span><span class="content">WireMocks are running</span><span class="delimiter">'</span></span>
-                rule.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>) != <span class="predefined-constant">null</span>
+                rule.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">org.springframework.cloud.contract.verifier.stubs</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>) != <span class="predefined-constant">null</span>
                 rule.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>) != <span class="predefined-constant">null</span>
-                rule.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>) == rule.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>)
-                rule.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:fraudDetectionServer</span><span class="delimiter">'</span></span>) != <span class="predefined-constant">null</span>
+                rule.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>) == rule.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">org.springframework.cloud.contract.verifier.stubs</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>)
+                rule.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">org.springframework.cloud.contract.verifier.stubs:fraudDetectionServer</span><span class="delimiter">'</span></span>) != <span class="predefined-constant">null</span>
         <span class="key">and</span>:
                 rule.findAllRunningStubs().isPresent(<span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>)
-                rule.findAllRunningStubs().isPresent(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">fraudDetectionServer</span><span class="delimiter">'</span></span>)
-                rule.findAllRunningStubs().isPresent(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:fraudDetectionServer</span><span class="delimiter">'</span></span>)
+                rule.findAllRunningStubs().isPresent(<span class="string"><span class="delimiter">'</span><span class="content">org.springframework.cloud.contract.verifier.stubs</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">fraudDetectionServer</span><span class="delimiter">'</span></span>)
+                rule.findAllRunningStubs().isPresent(<span class="string"><span class="delimiter">'</span><span class="content">org.springframework.cloud.contract.verifier.stubs:fraudDetectionServer</span><span class="delimiter">'</span></span>)
         <span class="key">and</span>: <span class="string"><span class="delimiter">'</span><span class="content">Stubs were registered</span><span class="delimiter">'</span></span>
                 <span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>rule.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>).toString()<span class="inline-delimiter">}</span></span><span class="content">/name</span><span class="delimiter">&quot;</span></span>.toURL().text == <span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>
                 <span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>rule.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">fraudDetectionServer</span><span class="delimiter">'</span></span>).toString()<span class="inline-delimiter">}</span></span><span class="content">/name</span><span class="delimiter">&quot;</span></span>.toURL().text == <span class="string"><span class="delimiter">'</span><span class="content">fraudDetectionServer</span><span class="delimiter">'</span></span>
@@ -1020,14 +1024,14 @@ Check their <a href="https://wiki.eclipse.org/Aether">docs</a> for more informat
 <pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Test</span>
 <span class="directive">public</span> <span class="type">void</span> should_start_wiremock_servers() <span class="directive">throws</span> <span class="exception">Exception</span> {
         <span class="comment">// expect: 'WireMocks are running'</span>
-                then(rule.findStubUrl(<span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">loanIssuance</span><span class="delimiter">&quot;</span></span>)).isNotNull();
+                then(rule.findStubUrl(<span class="string"><span class="delimiter">&quot;</span><span class="content">org.springframework.cloud.contract.verifier.stubs</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">loanIssuance</span><span class="delimiter">&quot;</span></span>)).isNotNull();
                 then(rule.findStubUrl(<span class="string"><span class="delimiter">&quot;</span><span class="content">loanIssuance</span><span class="delimiter">&quot;</span></span>)).isNotNull();
-                then(rule.findStubUrl(<span class="string"><span class="delimiter">&quot;</span><span class="content">loanIssuance</span><span class="delimiter">&quot;</span></span>)).isEqualTo(rule.findStubUrl(<span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">loanIssuance</span><span class="delimiter">&quot;</span></span>));
-                then(rule.findStubUrl(<span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest.stubs:fraudDetectionServer</span><span class="delimiter">&quot;</span></span>)).isNotNull();
+                then(rule.findStubUrl(<span class="string"><span class="delimiter">&quot;</span><span class="content">loanIssuance</span><span class="delimiter">&quot;</span></span>)).isEqualTo(rule.findStubUrl(<span class="string"><span class="delimiter">&quot;</span><span class="content">org.springframework.cloud.contract.verifier.stubs</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">loanIssuance</span><span class="delimiter">&quot;</span></span>));
+                then(rule.findStubUrl(<span class="string"><span class="delimiter">&quot;</span><span class="content">org.springframework.cloud.contract.verifier.stubs:fraudDetectionServer</span><span class="delimiter">&quot;</span></span>)).isNotNull();
         <span class="comment">// and:</span>
-                then(rule.findAllRunningStubs().isPresent(<span class="string"><span class="delimiter">&quot;</span><span class="content">loanIssuance</span><span class="delimiter">&quot;</span></span>)).isTrue();
-                then(rule.findAllRunningStubs().isPresent(<span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">fraudDetectionServer</span><span class="delimiter">&quot;</span></span>)).isTrue();
-                then(rule.findAllRunningStubs().isPresent(<span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest.stubs:fraudDetectionServer</span><span class="delimiter">&quot;</span></span>)).isTrue();
+                BDDAssertions.then(rule.findAllRunningStubs().isPresent(<span class="string"><span class="delimiter">&quot;</span><span class="content">loanIssuance</span><span class="delimiter">&quot;</span></span>)).isTrue();
+                BDDAssertions.then(rule.findAllRunningStubs().isPresent(<span class="string"><span class="delimiter">&quot;</span><span class="content">org.springframework.cloud.contract.verifier.stubs</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">fraudDetectionServer</span><span class="delimiter">&quot;</span></span>)).isTrue();
+                BDDAssertions.then(rule.findAllRunningStubs().isPresent(<span class="string"><span class="delimiter">&quot;</span><span class="content">org.springframework.cloud.contract.verifier.stubs:fraudDetectionServer</span><span class="delimiter">&quot;</span></span>)).isTrue();
         <span class="comment">// and: 'Stubs were registered'</span>
                 then(httpGet(rule.findStubUrl(<span class="string"><span class="delimiter">&quot;</span><span class="content">loanIssuance</span><span class="delimiter">&quot;</span></span>).toString() + <span class="string"><span class="delimiter">&quot;</span><span class="content">/name</span><span class="delimiter">&quot;</span></span>)).isEqualTo(<span class="string"><span class="delimiter">&quot;</span><span class="content">loanIssuance</span><span class="delimiter">&quot;</span></span>);
                 then(httpGet(rule.findStubUrl(<span class="string"><span class="delimiter">&quot;</span><span class="content">fraudDetectionServer</span><span class="delimiter">&quot;</span></span>).toString() + <span class="string"><span class="delimiter">&quot;</span><span class="content">/name</span><span class="delimiter">&quot;</span></span>)).isEqualTo(<span class="string"><span class="delimiter">&quot;</span><span class="content">fraudDetectionServer</span><span class="delimiter">&quot;</span></span>);
@@ -1047,15 +1051,15 @@ JUnit rule.</p>
 <div class="sect3">
 <h4 id="fluent-api">Fluent API</h4>
 <div class="paragraph">
-<p>When using the <code>AccurestRule</code> you can add a stub to download and then pass the port for the last downloaded stub.</p>
+<p>When using the <code>StubRunnerRule</code> you can add a stub to download and then pass the port for the last downloaded stub.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@ClassRule</span> <span class="directive">public</span> <span class="directive">static</span> AccurestRule rule = <span class="keyword">new</span> AccurestRule()
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@ClassRule</span> <span class="directive">public</span> <span class="directive">static</span> StubRunnerRule rule = <span class="keyword">new</span> StubRunnerRule()
                 .repoRoot(repoRoot())
-                .downloadStub(<span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">loanIssuance</span><span class="delimiter">&quot;</span></span>)
+                .downloadStub(<span class="string"><span class="delimiter">&quot;</span><span class="content">org.springframework.cloud.contract.verifier.stubs</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">loanIssuance</span><span class="delimiter">&quot;</span></span>)
                 .withPort(<span class="integer">12345</span>)
-                .downloadStub(<span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest.stubs:fraudDetectionServer:12346</span><span class="delimiter">&quot;</span></span>);</code></pre>
+                .downloadStub(<span class="string"><span class="delimiter">&quot;</span><span class="content">org.springframework.cloud.contract.verifier.stubs:fraudDetectionServer:12346</span><span class="delimiter">&quot;</span></span>);</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1091,14 +1095,14 @@ its methods as presented below:</p>
 
         <span class="keyword">def</span> <span class="string"><span class="delimiter">'</span><span class="content">should start WireMock servers</span><span class="delimiter">'</span></span>() {
                 <span class="key">expect</span>: <span class="string"><span class="delimiter">'</span><span class="content">WireMocks are running</span><span class="delimiter">'</span></span>
-                        stubFinder.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>) != <span class="predefined-constant">null</span>
+                        stubFinder.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">org.springframework.cloud.contract.verifier.stubs</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>) != <span class="predefined-constant">null</span>
                         stubFinder.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>) != <span class="predefined-constant">null</span>
-                        stubFinder.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>) == stubFinder.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>)
-                        stubFinder.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:fraudDetectionServer</span><span class="delimiter">'</span></span>) != <span class="predefined-constant">null</span>
+                        stubFinder.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>) == stubFinder.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">org.springframework.cloud.contract.verifier.stubs</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>)
+                        stubFinder.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">org.springframework.cloud.contract.verifier.stubs:fraudDetectionServer</span><span class="delimiter">'</span></span>) != <span class="predefined-constant">null</span>
                 <span class="key">and</span>:
                         stubFinder.findAllRunningStubs().isPresent(<span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>)
-                        stubFinder.findAllRunningStubs().isPresent(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">fraudDetectionServer</span><span class="delimiter">'</span></span>)
-                        stubFinder.findAllRunningStubs().isPresent(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:fraudDetectionServer</span><span class="delimiter">'</span></span>)
+                        stubFinder.findAllRunningStubs().isPresent(<span class="string"><span class="delimiter">'</span><span class="content">org.springframework.cloud.contract.verifier.stubs</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">fraudDetectionServer</span><span class="delimiter">'</span></span>)
+                        stubFinder.findAllRunningStubs().isPresent(<span class="string"><span class="delimiter">'</span><span class="content">org.springframework.cloud.contract.verifier.stubs:fraudDetectionServer</span><span class="delimiter">'</span></span>)
                 <span class="key">and</span>: <span class="string"><span class="delimiter">'</span><span class="content">Stubs were registered</span><span class="delimiter">'</span></span>
                         <span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>stubFinder.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>).toString()<span class="inline-delimiter">}</span></span><span class="content">/name</span><span class="delimiter">&quot;</span></span>.toURL().text == <span class="string"><span class="delimiter">'</span><span class="content">loanIssuance</span><span class="delimiter">'</span></span>
                         <span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>stubFinder.findStubUrl(<span class="string"><span class="delimiter">'</span><span class="content">fraudDetectionServer</span><span class="delimiter">'</span></span>).toString()<span class="inline-delimiter">}</span></span><span class="content">/name</span><span class="delimiter">&quot;</span></span>.toURL().text == <span class="string"><span class="delimiter">'</span><span class="content">fraudDetectionServer</span><span class="delimiter">'</span></span>
@@ -1117,7 +1121,7 @@ its methods as presented below:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="yml"><span class="key">stubrunner.stubs.repository.root</span>: <span class="string"><span class="content">classpath:m2repo/repository/</span></span>
-<span class="key">stubrunner.stubs.ids</span>: <span class="string"><span class="content">io.codearte.accurest.stubs:loanIssuance,io.codearte.accurest.stubs:fraudDetectionServer</span></span></code></pre>
+<span class="key">stubrunner.stubs.ids</span>: <span class="string"><span class="content">org.springframework.cloud.contract.verifier.stubs:loanIssuance,org.springframework.cloud.contract.verifier.stubs:fraudDetectionServer</span></span></code></pre>
 </div>
 </div>
 </div>
@@ -1128,7 +1132,7 @@ its methods as presented below:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest:stub-runner-spring-cloud</code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">org.springframework.cloud.contract:stub-runner-spring-cloud</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1251,7 +1255,7 @@ You can disable Stub Runner support by providing: <code>stubrunner.cloud.enabled
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-05-10 21:53:32 +02:00
+Last updated 2016-06-20 13:02:17 +02:00
 </div>
 </div>
 </body>

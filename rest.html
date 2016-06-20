@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
-<title>Accurest HTTP</title>
+<title>Spring Cloud Contract Verifier HTTP</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -514,7 +514,7 @@ table.CodeRay td.code>pre{padding:0}
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#accurest-http">Accurest HTTP</a>
+<li><a href="#spring-cloud-contract-verifier-http">Spring Cloud Contract Verifier HTTP</a>
 <ul class="sectlevel2">
 <li><a href="#gradle-project">Gradle Project</a></li>
 <li><a href="#using-in-your-maven-project">Using in your Maven project</a></li>
@@ -526,14 +526,14 @@ table.CodeRay td.code>pre{padding:0}
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="accurest-http">Accurest HTTP</h2>
+<h2 id="spring-cloud-contract-verifier-http">Spring Cloud Contract Verifier HTTP</h2>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="gradle-project">Gradle Project</h3>
 <div class="sect3">
 <h4 id="prerequisites">Prerequisites</h4>
 <div class="paragraph">
-<p>In order to use Accurest with Wiremock you have to use gradle or maven plugin.</p>
+<p>In order to use Spring Cloud Contract Verifier with Wiremock you have to use gradle or maven plugin.</p>
 </div>
 <div class="sect4">
 <h5 id="add-gradle-plugin">Add gradle plugin</h5>
@@ -544,12 +544,12 @@ table.CodeRay td.code>pre{padding:0}
                 mavenCentral()
         }
         dependencies {
-                classpath <span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest:accurest-gradle-plugin:${accurest_version}</span><span class="delimiter">'</span></span>
+                classpath <span class="string"><span class="delimiter">'</span><span class="content">org.springframework.cloud.contract:spring-cloud-contract-verifier-gradle-plugin:${verifier_version}</span><span class="delimiter">'</span></span>
         }
 }
 
 apply <span class="key">plugin</span>: <span class="string"><span class="delimiter">'</span><span class="content">groovy</span><span class="delimiter">'</span></span>
-apply <span class="key">plugin</span>: <span class="string"><span class="delimiter">'</span><span class="content">accurest</span><span class="delimiter">'</span></span>
+apply <span class="key">plugin</span>: <span class="string"><span class="delimiter">'</span><span class="content">contract-verifier</span><span class="delimiter">'</span></span>
 
 dependencies {
         testCompile <span class="string"><span class="delimiter">'</span><span class="content">org.codehaus.groovy:groovy-all:2.4.6</span><span class="delimiter">'</span></span>
@@ -558,14 +558,29 @@ dependencies {
 }</code></pre>
 </div>
 </div>
+<div class="sect5">
+<h6 id="snapshot-versions">Snapshot versions</h6>
+<div class="paragraph">
+<p>Add the additional snapshot repository to your build.gradle to use snapshot versions which are automatically uploaded after every successful build:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">repositories {
+    (...)
+    <span class="comment">//Required only for SNAPSHOT versions</span>
+    maven { url <span class="string"><span class="delimiter">&quot;</span><span class="content">https://oss.sonatype.org/content/repositories/snapshots</span><span class="delimiter">&quot;</span></span> }
+}</code></pre>
+</div>
+</div>
+</div>
 </div>
 <div class="sect4">
 <h5 id="add-maven-plugin">Add maven plugin</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
-    <span class="tag">&lt;groupId&gt;</span>io.codearte.accurest<span class="tag">&lt;/groupId&gt;</span>
-    <span class="tag">&lt;artifactId&gt;</span>accurest-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
+    <span class="tag">&lt;groupId&gt;</span>org.springframework.cloud.contract<span class="tag">&lt;/groupId&gt;</span>
+    <span class="tag">&lt;artifactId&gt;</span>spring-cloud-contract-verifier-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
     <span class="tag">&lt;executions&gt;</span>
         <span class="tag">&lt;execution&gt;</span>
             <span class="tag">&lt;goals&gt;</span>
@@ -585,7 +600,7 @@ dependencies {
 <div class="sect4">
 <h5 id="add-stubs">Add stubs</h5>
 <div class="paragraph">
-<p>By default Accurest is looking for stubs in <code>src/test/resources/accurest</code> directory.</p>
+<p>By default Spring Cloud Contract Verifier is looking for stubs in <code>src/test/resources/contracts</code> directory.</p>
 </div>
 <div class="paragraph">
 <p>Directory containing stub definitions is treated as a class name, and each stub definition is treated as a single test.
@@ -594,12 +609,12 @@ So with following structure</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">src/test/resources/accurest/myservice/shouldCreateUser.groovy
-src/test/resources/accurest/myservice/shouldReturnUser.groovy</code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">src/test/resources/contracts/myservice/shouldCreateUser.groovy
+src/test/resources/contracts/myservice/shouldReturnUser.groovy</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Accurest will create test class <code>defaultBasePackage.MyService</code> with two methods</p>
+<p>Spring Cloud Contract Verifier will create test class <code>defaultBasePackage.MyService</code> with two methods</p>
 </div>
 <div class="ulist">
 <ul>
@@ -616,20 +631,20 @@ src/test/resources/accurest/myservice/shouldReturnUser.groovy</code></pre>
 <div class="sect3">
 <h4 id="run-plugin">Run plugin</h4>
 <div class="paragraph">
-<p>Plugin registers itself to be invoked before <code>check</code> task. You have nothing to do as long as you want it to be part of your build process. If you just want to generate tests please invoke <code>generateAccurest</code> task.</p>
+<p>Plugin registers itself to be invoked before <code>check</code> task. You have nothing to do as long as you want it to be part of your build process. If you just want to generate tests please invoke <code>generateContractTests</code> task.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="configure-plugin">Configure plugin</h4>
 <div class="paragraph">
-<p>To change default configuration just add <code>accurest</code> snippet to your Gradle config</p>
+<p>To change default configuration just add <code>contractVerifier</code> snippet to your Gradle config</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">accurest {
+<pre class="CodeRay highlight"><code data-lang="groovy">contractVerifier {
         testMode = <span class="string"><span class="delimiter">'</span><span class="content">MockMvc</span><span class="delimiter">'</span></span>
         baseClassForTests = <span class="string"><span class="delimiter">'</span><span class="content">org.mycompany.tests</span><span class="delimiter">'</span></span>
-        generatedTestSourcesDir = project.file(<span class="string"><span class="delimiter">'</span><span class="content">src/accurest</span><span class="delimiter">'</span></span>)
+        generatedTestSourcesDir = project.file(<span class="string"><span class="delimiter">'</span><span class="content">src/generatedContract</span><span class="delimiter">'</span></span>)
 }</code></pre>
 </div>
 </div>
@@ -647,7 +662,7 @@ src/test/resources/accurest/myservice/shouldReturnUser.groovy</code></pre>
 <p><strong>staticImports</strong> - array with static imports that should be included in generated tests(for example ['org.myorg.Matchers.*']). By default empty array []</p>
 </li>
 <li>
-<p><strong>basePackageForTests</strong> - specifies base package for all generated tests. By default set to io.codearte.accurest.tests</p>
+<p><strong>basePackageForTests</strong> - specifies base package for all generated tests. By default set to org.springframework.cloud.contract.verifier.tests</p>
 </li>
 <li>
 <p><strong>baseClassForTests</strong> - base class for generated tests. By default <code>spock.lang.Specification</code> if using Spock tests.</p>
@@ -659,13 +674,13 @@ src/test/resources/accurest/myservice/shouldReturnUser.groovy</code></pre>
 <p><strong>ignoredFiles</strong> - Ant matcher allowing defining stub files for which processing should be skipped. By default empty array []</p>
 </li>
 <li>
-<p><strong>contractsDslDir</strong> - directory containing contracts written using the GroovyDSL. By default <code>$rootDir/src/test/resources/accurest</code></p>
+<p><strong>contractsDslDir</strong> - directory containing contracts written using the GroovyDSL. By default <code>$rootDir/src/test/resources/contracts</code></p>
 </li>
 <li>
-<p><strong>generatedTestSourcesDir</strong> - test source directory where tests generated from Groovy DSL should be placed. By default <code>$buildDir/generated-test-sources/accurest</code></p>
+<p><strong>generatedTestSourcesDir</strong> - test source directory where tests generated from Groovy DSL should be placed. By default <code>$buildDir/generated-test-sources/contractVerifier</code></p>
 </li>
 <li>
-<p><strong>stubsOutputDir</strong> - dir where the generated Wiremock stubs from Groovy DSL should be placed</p>
+<p><strong>stubsOutputDir</strong> - dir where the generated WireMock stubs from Groovy DSL should be placed</p>
 </li>
 <li>
 <p><strong>targetFramework</strong> - the target test framework to be used; currently Spock and JUnit are supported with JUnit being the default framework</p>
@@ -676,7 +691,7 @@ src/test/resources/accurest/myservice/shouldReturnUser.groovy</code></pre>
 <div class="sect4">
 <h5 id="base-class-for-tests">Base class for tests</h5>
 <div class="paragraph">
-<p>When using Accurest in default MockMvc you need to create a base specification for all generated acceptance tests. In this class you need to point to endpoint which should be verified.</p>
+<p>When using Spring Cloud Contract Verifier in default MockMvc you need to create a base specification for all generated acceptance tests. In this class you need to point to endpoint which should be verified.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -710,15 +725,15 @@ should also contain <code>protected WebTarget webTarget</code> field, right now 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">./gradlew generateAccurest test</code></pre>
+<pre class="CodeRay highlight"><code data-lang="bash">./gradlew generateContractTests test</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="accurest-on-consumer-side">Accurest on consumer side</h4>
+<h4 id="spring-cloud-contract-verifier-on-consumer-side">Spring Cloud Contract Verifier on consumer side</h4>
 <div class="paragraph">
-<p>In consumer service you need to configure Accurest plugin in exactly the same way as in case of provider. If you don&#8217;t want to use Stub Runner then you need to copy contracts stored in
-<code>src/test/resources/accurest</code> and generate WireMock json stubs using:</p>
+<p>In consumer service you need to configure Spring Cloud Contract Verifier plugin in exactly the same way as in case of provider. If you don&#8217;t want to use Stub Runner then you need to copy contracts stored in
+<code>src/test/resources/contracts</code> and generate WireMock json stubs using:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -757,7 +772,7 @@ should also contain <code>protected WebTarget webTarget</code> field, right now 
 </div>
 </div>
 <div class="paragraph">
-<p>Underneath LoanApplication makes a call to FraudDetection service. This request is handled by Wiremock server configured using stubs generated by Accurest.</p>
+<p>Underneath LoanApplication makes a call to FraudDetection service. This request is handled by Wiremock server configured using stubs generated by Spring Cloud Contract Verifier.</p>
 </div>
 </div>
 </div>
@@ -768,8 +783,8 @@ should also contain <code>protected WebTarget webTarget</code> field, right now 
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
-    <span class="tag">&lt;groupId&gt;</span>io.codearte.accurest<span class="tag">&lt;/groupId&gt;</span>
-    <span class="tag">&lt;artifactId&gt;</span>accurest-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
+    <span class="tag">&lt;groupId&gt;</span>org.springframework.cloud.contract.verifier<span class="tag">&lt;/groupId&gt;</span>
+    <span class="tag">&lt;artifactId&gt;</span>spring-cloud-contract-verifier-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
     <span class="tag">&lt;executions&gt;</span>
         <span class="tag">&lt;execution&gt;</span>
             <span class="tag">&lt;goals&gt;</span>
@@ -789,19 +804,19 @@ should also contain <code>protected WebTarget webTarget</code> field, right now 
 <div class="sect3">
 <h4 id="add-stubs-2">Add stubs</h4>
 <div class="paragraph">
-<p>By default Accurest is looking for stubs in <code>src/test/resources/accurest</code> directory.
+<p>By default Spring Cloud Contract Verifier is looking for stubs in <code>src/test/resources/contracts</code> directory.
 Directory containing stub definitions is treated as a class name, and each stub definition is treated as a single test.
 We assume that it contains at least one directory which will be used as test class name. If there is more than one level of nested directories all except the last one will be used as package name.
 So with following structure</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">src/test/resources/accurest/myservice/shouldCreateUser.groovy
-src/test/resources/accurest/myservice/shouldReturnUser.groovy</code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">src/test/resources/contracts/myservice/shouldCreateUser.groovy
+src/test/resources/contracts/myservice/shouldReturnUser.groovy</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Accurest will create test class <code>defaultBasePackage.MyService</code> with two methods
+<p>Spring Cloud Contract Verifier will create test class <code>defaultBasePackage.MyService</code> with two methods
  - <code>shouldCreateUser()</code>
  - <code>shouldReturnUser()</code></p>
 </div>
@@ -820,8 +835,8 @@ src/test/resources/accurest/myservice/shouldReturnUser.groovy</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
-    <span class="tag">&lt;groupId&gt;</span>io.codearte.accurest<span class="tag">&lt;/groupId&gt;</span>
-    <span class="tag">&lt;artifactId&gt;</span>accurest-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
+    <span class="tag">&lt;groupId&gt;</span>org.springframework.cloud.contract.verifier<span class="tag">&lt;/groupId&gt;</span>
+    <span class="tag">&lt;artifactId&gt;</span>spring-cloud-contract-verifier-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
     <span class="tag">&lt;executions&gt;</span>
         <span class="tag">&lt;execution&gt;</span>
             <span class="tag">&lt;goals&gt;</span>
@@ -832,8 +847,8 @@ src/test/resources/accurest/myservice/shouldReturnUser.groovy</code></pre>
         <span class="tag">&lt;/execution&gt;</span>
     <span class="tag">&lt;/executions&gt;</span>
     <span class="tag">&lt;configuration&gt;</span>
-        <span class="tag">&lt;basePackageForTests&gt;</span>com.ofg.twitter.place<span class="tag">&lt;/basePackageForTests&gt;</span>
-        <span class="tag">&lt;baseClassForTests&gt;</span>com.ofg.twitter.place.BaseMockMvcSpec<span class="tag">&lt;/baseClassForTests&gt;</span>
+        <span class="tag">&lt;basePackageForTests&gt;</span>org.springframework.cloud.contract.verifier.twitter.place<span class="tag">&lt;/basePackageForTests&gt;</span>
+        <span class="tag">&lt;baseClassForTests&gt;</span>org.springframework.cloud.contract.verifier.twitter.place.BaseMockMvcSpec<span class="tag">&lt;/baseClassForTests&gt;</span>
     <span class="tag">&lt;/configuration&gt;</span>
 <span class="tag">&lt;/plugin&gt;</span></code></pre>
 </div>
@@ -846,7 +861,7 @@ src/test/resources/accurest/myservice/shouldReturnUser.groovy</code></pre>
 <p><strong>testMode</strong> - defines mode for acceptance tests. By default <code>MockMvc</code> which is based on Spring&#8217;s MockMvc. It can also be changed to <code>JaxRsClient</code> or to <code>Explicit</code> for real HTTP calls.</p>
 </li>
 <li>
-<p><strong>basePackageForTests</strong> - specifies base package for all generated tests. By default set to <code>io.codearte.accurest.tests</code>.</p>
+<p><strong>basePackageForTests</strong> - specifies base package for all generated tests. By default set to <code>org.springframework.cloud.contract.verifier.tests</code>.</p>
 </li>
 <li>
 <p><strong>ruleClassForTests</strong> - specifies Rule which should be added to generated test classes.</p>
@@ -855,7 +870,7 @@ src/test/resources/accurest/myservice/shouldReturnUser.groovy</code></pre>
 <p><strong>baseClassForTests</strong> - base class for generated tests. By default <code>spock.lang.Specification</code> if using Spock tests.</p>
 </li>
 <li>
-<p><strong>contractsDir</strong> - directory containing contracts written using the GroovyDSL. By default <code>/src/test/resources/accurest</code>.</p>
+<p><strong>contractsDir</strong> - directory containing contracts written using the GroovyDSL. By default <code>/src/test/resources/contracts</code>.</p>
 </li>
 <li>
 <p><strong>testFramework</strong> - the target test framework to be used; currently Spock and JUnit are supported with Spock being the default framework</p>
@@ -870,7 +885,7 @@ src/test/resources/accurest/myservice/shouldReturnUser.groovy</code></pre>
 <h5 id="base-class-for-tests-2">Base class for tests</h5>
 <div class="literalblock">
 <div class="content">
-<pre>When using Accurest in default MockMvc you need to create a base specification for all generated acceptance tests. In this class you need to point to endpoint which should be verified.</pre>
+<pre>When using Spring Cloud Contract Verifier in default MockMvc you need to create a base specification for all generated acceptance tests. In this class you need to point to endpoint which should be verified.</pre>
 </div>
 </div>
 <div class="listingblock">
@@ -896,7 +911,7 @@ src/test/resources/accurest/myservice/shouldReturnUser.groovy</code></pre>
 <div class="sect3">
 <h4 id="invoking-generated-tests-2">Invoking generated tests</h4>
 <div class="paragraph">
-<p>Accurest Maven Plugins generates verification code into directory <code>/generated-test-sources/accurest</code> and attach this directory to <code>testCompile</code> goal.</p>
+<p>Spring Cloud Contract Verifier Maven Plugins generates verification code into directory <code>/generated-test-sources/contractVerifier</code> and attach this directory to <code>testCompile</code> goal.</p>
 </div>
 <div class="paragraph">
 <p>For Groovy Spock code use:</p>
@@ -923,7 +938,7 @@ src/test/resources/accurest/myservice/shouldReturnUser.groovy</code></pre>
                                 <span class="tag">&lt;/includes&gt;</span>
                         <span class="tag">&lt;/testSource&gt;</span>
                         <span class="tag">&lt;testSource&gt;</span>
-                                <span class="tag">&lt;directory&gt;</span>${project.build.directory}/generated-test-sources/accurest<span class="tag">&lt;/directory&gt;</span>
+                                <span class="tag">&lt;directory&gt;</span>${project.build.directory}/generated-test-sources/contractVerifier<span class="tag">&lt;/directory&gt;</span>
                                 <span class="tag">&lt;includes&gt;</span>
                                         <span class="tag">&lt;include&gt;</span>**/*.groovy<span class="tag">&lt;/include&gt;</span>
                                 <span class="tag">&lt;/includes&gt;</span>
@@ -938,9 +953,9 @@ src/test/resources/accurest/myservice/shouldReturnUser.groovy</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="accurest-on-consumer-side-2">Accurest on consumer side</h4>
+<h4 id="spring-cloud-contract-verifier-on-consumer-side-2">Spring Cloud Contract Verifier on consumer side</h4>
 <div class="paragraph">
-<p>In consumer service you need to configure Accurest plugin in exactly the same way as in case of provider. You need to copy contracts stored in <code>src/test/resources/accurest</code> and generate Wiremock json stubs using: <code>mvn generateStubs</code> command. By default generated WireMock mapping is stored in directory <code>target/mappings</code>. Your project should create from this generated mappings additional artifact with classifier <code>stubs</code> for easy deploy to maven repository.</p>
+<p>In consumer service you need to configure Spring Cloud Contract Verifier plugin in exactly the same way as in case of provider. You need to copy contracts stored in <code>src/test/resources/contracts</code> and generate Wiremock json stubs using: <code>mvn generateStubs</code> command. By default generated WireMock mapping is stored in directory <code>target/mappings</code>. Your project should create from this generated mappings additional artifact with classifier <code>stubs</code> for easy deploy to maven repository.</p>
 </div>
 <div class="paragraph">
 <p>Sample configuration:</p>
@@ -948,9 +963,9 @@ src/test/resources/accurest/myservice/shouldReturnUser.groovy</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
-    <span class="tag">&lt;groupId&gt;</span>io.codearte.accurest<span class="tag">&lt;/groupId&gt;</span>
-    <span class="tag">&lt;artifactId&gt;</span>accurest-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>${accurest-plugin.version}<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;groupId&gt;</span>org.springframework.cloud.contract.verifier<span class="tag">&lt;/groupId&gt;</span>
+    <span class="tag">&lt;artifactId&gt;</span>spring-cloud-contract-verifier-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
+    <span class="tag">&lt;version&gt;</span>${verifier-plugin.version}<span class="tag">&lt;/version&gt;</span>
     <span class="tag">&lt;executions&gt;</span>
         <span class="tag">&lt;execution&gt;</span>
             <span class="tag">&lt;goals&gt;</span>
@@ -991,14 +1006,14 @@ src/test/resources/accurest/myservice/shouldReturnUser.groovy</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Underneath LoanApplication makes a call to FraudDetection service. This request is handled by Wiremock server configured using stubs generated by Accurest.</p>
+<p>Underneath LoanApplication makes a call to FraudDetection service. This request is handled by Wiremock server configured using stubs generated by Spring Cloud Contract Verifier.</p>
 </div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="scenarios">Scenarios</h3>
 <div class="paragraph">
-<p>It&#8217;s possible to handle scenarios with Accurest. All you need to do is to stick to proper naming convention while creating your contracts. The convention requires to include order number followed by the underscore.</p>
+<p>It&#8217;s possible to handle scenarios with Spring Cloud Contract Verifier. All you need to do is to stick to proper naming convention while creating your contracts. The convention requires to include order number followed by the underscore.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1010,14 +1025,14 @@ src/test/resources/accurest/myservice/shouldReturnUser.groovy</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Such tree will cause Accurest generating Wiremock&#8217;s scenario with name <code>scenario1</code> and three steps:
+<p>Such tree will cause Spring Cloud Contract Verifier generating Wiremock&#8217;s scenario with name <code>scenario1</code> and three steps:
  - login marked as <code>Started</code> pointing to:
  - showCart marked as <code>Step1</code> pointing to:
  - logout marked as <code>Step2</code> which will close the scenario.
 More details about Wiremock scenarios can be found under [<a href="http://wiremock.org/stateful-behaviour.html" class="bare">http://wiremock.org/stateful-behaviour.html</a>](<a href="http://wiremock.org/stateful-behaviour.html" class="bare">http://wiremock.org/stateful-behaviour.html</a>)</p>
 </div>
 <div class="paragraph">
-<p>Accurest will also generate tests with guaranteed order of execution.</p>
+<p>Spring Cloud Contract Verifier will also generate tests with guaranteed order of execution.</p>
 </div>
 </div>
 </div>
@@ -1025,7 +1040,7 @@ More details about Wiremock scenarios can be found under [<a href="http://wiremo
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-05-10 21:53:32 +02:00
+Last updated 2016-06-20 13:02:17 +02:00
 </div>
 </div>
 </body>

@@ -529,18 +529,6 @@ table.CodeRay td.code>pre{padding:0}
 <div class="sect1">
 <h2 id="stub-runner-for-messaging">Stub Runner for Messaging</h2>
 <div class="sectionbody">
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-Feature available since {messaging_version}
-</td>
-</tr>
-</table>
-</div>
 <div class="paragraph">
 <p>Stub Runner has the functionality to run the published stubs in memory. It can integrate with the following frameworks out of the box</p>
 </div>
@@ -563,11 +551,27 @@ Feature available since {messaging_version}
 <div class="sect2">
 <h3 id="stub-triggering">Stub triggering</h3>
 <div class="paragraph">
-<p>To trigger a message it&#8217;s enough to use the <code>StubTigger</code> interface:</p>
+<p>To trigger a message it&#8217;s enough to use the <code>StubTrigger</code> interface:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">package</span> io.codearte.accurest.stubrunner
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="comment">/*
+ *  Copyright 2013-2016 the original author or authors.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */</span>
+
+<span class="keyword">package</span> org.springframework.cloud.contract.stubrunner
 
 <span class="type">interface</span> StubTrigger {
 
@@ -624,7 +628,7 @@ Feature available since {messaging_version}
 <h5 id="trigger-by-group-and-artifact-ids">Trigger by group and artifact ids</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">stubFinder.trigger(<span class="string"><span class="delimiter">'</span><span class="content">io.codearte.accurest.stubs:camelService</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">return_book_1</span><span class="delimiter">'</span></span>)</code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">stubFinder.trigger(<span class="string"><span class="delimiter">'</span><span class="content">org.springframework.cloud.contract.verifier.stubs:camelService</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">return_book_1</span><span class="delimiter">'</span></span>)</code></pre>
 </div>
 </div>
 </div>
@@ -649,7 +653,7 @@ Feature available since {messaging_version}
 <div class="sect2">
 <h3 id="stub-runner-messaging-camel">Stub Runner Messaging Camel</h3>
 <div class="paragraph">
-<p>Accurest Stub Runner&#8217;s messaging module gives you an easy way to integrate with Apache Camel.
+<p>Spring Cloud Contract Verifier Stub Runner&#8217;s messaging module gives you an easy way to integrate with Apache Camel.
 For the provided artifacts it will automatically download the stubs and register the required
 routes.</p>
 </div>
@@ -660,7 +664,7 @@ routes.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">testCompile <span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest:stub-runner-messaging-camel:</span><span class="inline"><span class="inline-delimiter">${</span>accurestVersion<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">testCompile <span class="string"><span class="delimiter">&quot;</span><span class="content">org.springframework.cloud.contract:stub-runner-messaging-camel:</span><span class="inline"><span class="inline-delimiter">${</span>verifierVersion<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span></code></pre>
 </div>
 </div>
 </div>
@@ -708,7 +712,7 @@ routes.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest.dsl.GroovyDsl.make {
+<pre class="CodeRay highlight"><code data-lang="groovy">Contract.make {
         label <span class="string"><span class="delimiter">'</span><span class="content">return_book_1</span><span class="delimiter">'</span></span>
         input {
                 triggeredBy(<span class="string"><span class="delimiter">'</span><span class="content">bookReturnedTriggered()</span><span class="delimiter">'</span></span>)
@@ -728,7 +732,7 @@ routes.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest.dsl.GroovyDsl.make {
+<pre class="CodeRay highlight"><code data-lang="groovy">Contract.make {
         label <span class="string"><span class="delimiter">'</span><span class="content">return_book_2</span><span class="delimiter">'</span></span>
         input {
                 messageFrom(<span class="string"><span class="delimiter">'</span><span class="content">jms:input</span><span class="delimiter">'</span></span>)
@@ -826,7 +830,7 @@ receivedMessage.in.headers.get(<span class="string"><span class="delimiter">'</s
 <div class="sect2">
 <h3 id="stub-runner-messaging-integration">Stub Runner Messaging Integration</h3>
 <div class="paragraph">
-<p>Accurest Stub Runner&#8217;s messaging module gives you an easy way to integrate with Spring Integration.
+<p>Spring Cloud Contract Verifier Stub Runner&#8217;s messaging module gives you an easy way to integrate with Spring Integration.
 For the provided artifacts it will automatically download the stubs and register the required
 routes.</p>
 </div>
@@ -837,7 +841,7 @@ routes.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">testCompile <span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest:stub-runner-messaging-integration:</span><span class="inline"><span class="inline-delimiter">${</span>accurestVersion<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">testCompile <span class="string"><span class="delimiter">&quot;</span><span class="content">org.springframework.cloud.contract:stub-runner-messaging-integration:</span><span class="inline"><span class="inline-delimiter">${</span>verifierVersion<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span></code></pre>
 </div>
 </div>
 </div>
@@ -885,7 +889,7 @@ routes.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest.dsl.GroovyDsl.make {
+<pre class="CodeRay highlight"><code data-lang="groovy">Contract.make {
         label <span class="string"><span class="delimiter">'</span><span class="content">return_book_1</span><span class="delimiter">'</span></span>
         input {
                 triggeredBy(<span class="string"><span class="delimiter">'</span><span class="content">bookReturnedTriggered()</span><span class="delimiter">'</span></span>)
@@ -905,7 +909,7 @@ routes.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest.dsl.GroovyDsl.make {
+<pre class="CodeRay highlight"><code data-lang="groovy">Contract.make {
         label <span class="string"><span class="delimiter">'</span><span class="content">return_book_2</span><span class="delimiter">'</span></span>
         input {
                 messageFrom(<span class="string"><span class="delimiter">'</span><span class="content">input</span><span class="delimiter">'</span></span>)
@@ -934,6 +938,22 @@ routes.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="comment">&lt;!--
+  ~  Copyright 2013-2016 the original author or authors.
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  limitations under the License.
+  --&gt;</span>
+
 <span class="tag">&lt;beans:beans</span> <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.springframework.org/schema/integration</span><span class="delimiter">&quot;</span></span>
                          <span class="attribute-name">xmlns:xsi</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema-instance</span><span class="delimiter">&quot;</span></span>
                          <span class="attribute-name">xmlns:beans</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.springframework.org/schema/beans</span><span class="delimiter">&quot;</span></span>
@@ -970,7 +990,7 @@ routes.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">AccurestMessage receivedMessage = messaging.receiveMessage(<span class="string"><span class="delimiter">'</span><span class="content">outputTest</span><span class="delimiter">'</span></span>)</code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">ContractVerifierMessage receivedMessage = messaging.receiveMessage(<span class="string"><span class="delimiter">'</span><span class="content">outputTest</span><span class="delimiter">'</span></span>)</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -999,7 +1019,7 @@ receivedMessage.headers.get(<span class="string"><span class="delimiter">'</span
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">AccurestMessage receivedMessage = messaging.receiveMessage(<span class="string"><span class="delimiter">'</span><span class="content">outputTest</span><span class="delimiter">'</span></span>)</code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">ContractVerifierMessage receivedMessage = messaging.receiveMessage(<span class="string"><span class="delimiter">'</span><span class="content">outputTest</span><span class="delimiter">'</span></span>)</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1029,7 +1049,7 @@ receivedMessage.headers.get(<span class="string"><span class="delimiter">'</span
 <div class="sect2">
 <h3 id="stub-runner-messaging-stream">Stub Runner Messaging Stream</h3>
 <div class="paragraph">
-<p>Accurest Stub Runner&#8217;s messaging module gives you an easy way to integrate with Spring Stream.
+<p>Spring Cloud Contract Verifier Stub Runner&#8217;s messaging module gives you an easy way to integrate with Spring Stream.
 For the provided artifacts it will automatically download the stubs and register the required
 routes.</p>
 </div>
@@ -1054,7 +1074,7 @@ channel name.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">testCompile <span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest:stub-runner-messaging-stream:</span><span class="inline"><span class="inline-delimiter">${</span>accurestVersion<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">testCompile <span class="string"><span class="delimiter">&quot;</span><span class="content">org.springframework.cloud.contract:stub-runner-messaging-stream:</span><span class="inline"><span class="inline-delimiter">${</span>verifierVersion<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span></code></pre>
 </div>
 </div>
 </div>
@@ -1102,7 +1122,7 @@ channel name.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest.dsl.GroovyDsl.make {
+<pre class="CodeRay highlight"><code data-lang="groovy">Contract.make {
         label <span class="string"><span class="delimiter">'</span><span class="content">return_book_1</span><span class="delimiter">'</span></span>
         input {
                 triggeredBy(<span class="string"><span class="delimiter">'</span><span class="content">bookReturnedTriggered()</span><span class="delimiter">'</span></span>)
@@ -1122,7 +1142,7 @@ channel name.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">io.codearte.accurest.dsl.GroovyDsl.make {
+<pre class="CodeRay highlight"><code data-lang="groovy">Contract.make {
         label <span class="string"><span class="delimiter">'</span><span class="content">return_book_2</span><span class="delimiter">'</span></span>
         input {
                 messageFrom(<span class="string"><span class="delimiter">'</span><span class="content">bookStorage</span><span class="delimiter">'</span></span>)
@@ -1151,7 +1171,7 @@ channel name.
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">stubrunner.stubs.repository.root</span>: <span class="string"><span class="content">classpath:m2repo/repository/</span></span>
-<span class="key">stubrunner.stubs.ids</span>: <span class="string"><span class="content">io.codearte.accurest.stubs:streamService:0.0.1-SNAPSHOT:stubs</span></span>
+<span class="key">stubrunner.stubs.ids</span>: <span class="string"><span class="content">org.springframework.cloud.contract.verifier.stubs:streamService:0.0.1-SNAPSHOT:stubs</span></span>
 
 <span class="key">spring</span>:
   <span class="key">cloud</span>:
@@ -1179,7 +1199,7 @@ channel name.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">AccurestMessage receivedMessage = messaging.receiveMessage(<span class="string"><span class="delimiter">'</span><span class="content">returnBook</span><span class="delimiter">'</span></span>)</code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">ContractVerifierMessage receivedMessage = messaging.receiveMessage(<span class="string"><span class="delimiter">'</span><span class="content">returnBook</span><span class="delimiter">'</span></span>)</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1208,7 +1228,7 @@ receivedMessage.headers.get(<span class="string"><span class="delimiter">'</span
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">AccurestMessage receivedMessage = messaging.receiveMessage(<span class="string"><span class="delimiter">'</span><span class="content">returnBook</span><span class="delimiter">'</span></span>)</code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">ContractVerifierMessage receivedMessage = messaging.receiveMessage(<span class="string"><span class="delimiter">'</span><span class="content">returnBook</span><span class="delimiter">'</span></span>)</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1240,7 +1260,7 @@ receivedMessage.headers.get(<span class="string"><span class="delimiter">'</span
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-04-25 15:47:12 +02:00
+Last updated 2016-06-20 13:02:17 +02:00
 </div>
 </div>
 </body>

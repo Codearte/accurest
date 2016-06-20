@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
-<title>Accurest Messaging</title>
+<title>Spring Cloud Contract Verifier Messaging</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -514,7 +514,7 @@ table.CodeRay td.code>pre{padding:0}
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#accurest-messaging">Accurest Messaging</a>
+<li><a href="#spring-cloud-contract-verifier-messaging">Spring Cloud Contract Verifier Messaging</a>
 <ul class="sectlevel2">
 <li><a href="#integrations">Integrations</a></li>
 <li><a href="#manual-integration">Manual Integration</a></li>
@@ -527,22 +527,10 @@ table.CodeRay td.code>pre{padding:0}
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="accurest-messaging">Accurest Messaging</h2>
+<h2 id="spring-cloud-contract-verifier-messaging">Spring Cloud Contract Verifier Messaging</h2>
 <div class="sectionbody">
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-Feature available since {messaging_version}
-</td>
-</tr>
-</table>
-</div>
 <div class="paragraph">
-<p>Accurest allows you to verify your application that uses messaging as means of communication.
+<p>Spring Cloud Contract Verifier allows you to verify your application that uses messaging as means of communication.
 All of our integrations are working with Spring but you can also set one yourself.</p>
 </div>
 <div class="sect2">
@@ -567,50 +555,50 @@ All of our integrations are working with Spring but you can also set one yoursel
 <p>If you&#8217;re using Spring Boot, the aforementioned test configurations will be appended automatically.</p>
 </div>
 <div class="paragraph">
-<p>You have to provide as a dependency one of the Accurest Messaging modules. Example for Gradle:</p>
+<p>You have to provide as a dependency one of the Spring Cloud Contract Verifier Messaging modules. Example for Gradle:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy"><span class="comment">// for Apache Camel</span>
-testCompile <span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest:accurest-messaging-camel:</span><span class="inline"><span class="inline-delimiter">${</span>accurestVersion<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span>
+testCompile <span class="string"><span class="delimiter">&quot;</span><span class="content">org.springframework.cloud.contract:spring-cloud-contract-verifier-camel:</span><span class="inline"><span class="inline-delimiter">${</span>verifierVersion<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span>
 <span class="comment">// for Spring Integration</span>
-testCompile <span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest:accurest-messaging-integration:</span><span class="inline"><span class="inline-delimiter">${</span>accurestVersion<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span>
+testCompile <span class="string"><span class="delimiter">&quot;</span><span class="content">org.springframework.cloud.contract:spring-cloud-contract-verifier-integration:</span><span class="inline"><span class="inline-delimiter">${</span>verifierVersion<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span>
 <span class="comment">// for Spring Cloud Stream</span>
-testCompile <span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest:accurest-messaging-stream:</span><span class="inline"><span class="inline-delimiter">${</span>accurestVersion<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span></code></pre>
+testCompile <span class="string"><span class="delimiter">&quot;</span><span class="content">org.springframework.cloud.contract:spring-cloud-contract-verifier-stream:</span><span class="inline"><span class="inline-delimiter">${</span>verifierVersion<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span></code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="manual-integration">Manual Integration</h3>
 <div class="paragraph">
-<p>The <code>accurest-messaging-core</code> module contains 3 main interfaces:</p>
+<p>The <code>spring-cloud-contract-verifier-messaging-core</code> module contains 3 main interfaces:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><code>AccurestMessage</code> - describes a message received / sent to a channel / queue / topic etc.</p>
+<p><code>ContractVerifierMessage</code> - describes a message received / sent to a channel / queue / topic etc.</p>
 </li>
 <li>
-<p><code>AccurestMessageBuilder</code> - describes how to build a message</p>
+<p><code>ContractVerifierMessageBuilder</code> - describes how to build a message</p>
 </li>
 <li>
-<p><code>AccurestMessaging</code> - class that allows you to build, send and receive messages</p>
+<p><code>ContractVerifierMessaging</code> - class that allows you to build, send and receive messages</p>
 </li>
 <li>
-<p><code>AccurestFilter</code> - interface to filter out the messages that do not follow the pattern from the DSL</p>
+<p><code>ContractVerifierFilter</code> - interface to filter out the messages that do not follow the pattern from the DSL</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>In the generated test the <code>AccurestMessaging</code> is injected via <code>@Inject</code> annotation thus you can use other injection
+<p>In the generated test the <code>ContractVerifierMessaging</code> is injected via <code>@Inject</code> annotation thus you can use other injection
 frameworks than Spring.</p>
 </div>
 <div class="paragraph">
-<p>You have to provide as a dependency the <code>accurest-messaging-core</code> module. Example for Gradle:</p>
+<p>You have to provide as a dependency the <code>spring-cloud-contract-verifier-messaging-core</code> module. Example for Gradle:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">testCompile <span class="string"><span class="delimiter">&quot;</span><span class="content">io.codearte.accurest:accurest-messaging-core:</span><span class="inline"><span class="inline-delimiter">${</span>accurestVersion<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="groovy">testCompile <span class="string"><span class="delimiter">&quot;</span><span class="content">org.springframework.cloud.contract:spring-cloud-contract-verifier-messaging-core:</span><span class="inline"><span class="inline-delimiter">${</span>verifierVersion<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span></code></pre>
 </div>
 </div>
 </div>
@@ -644,7 +632,7 @@ inside the application (e.g. scheduler)</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">def</span> contractDsl = GroovyDsl.make {
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">def</span> contractDsl = Contract.make {
         label <span class="string"><span class="delimiter">'</span><span class="content">some_label</span><span class="delimiter">'</span></span>
         input {
                 triggeredBy(<span class="string"><span class="delimiter">'</span><span class="content">bookReturnedTriggered()</span><span class="delimiter">'</span></span>)
@@ -669,11 +657,11 @@ inside the application (e.g. scheduler)</p>
   bookReturnedTriggered();
 
  // then:
-  AccurestMessage response = accurestMessaging.receiveMessage(&quot;activemq:output&quot;);
+  ContractVerifierMessage response = contractVerifierMessaging.receiveMessage(&quot;activemq:output&quot;);
   assertThat(response).isNotNull();
   assertThat(response.getHeader(&quot;BOOK-NAME&quot;)).isEqualTo(&quot;foo&quot;);
  // and:
-  DocumentContext parsedJson = JsonPath.parse(accurestObjectMapper.writeValueAsString(response.getPayload()));
+  DocumentContext parsedJson = JsonPath.parse(contractVerifierObjectMapper.writeValueAsString(response.getPayload()));
   assertThatJson(parsedJson).field(&quot;bookName&quot;).isEqualTo(&quot;foo&quot;);
 </span><span class="delimiter">'''</span></span></code></pre>
 </div>
@@ -688,11 +676,11 @@ inside the application (e.g. scheduler)</p>
   bookReturnedTriggered()
 
  then:
-  def response = accurestMessaging.receiveMessage('activemq:output')
+  def response = contractVerifierMessaging.receiveMessage('activemq:output')
   assert response != null
   response.getHeader('BOOK-NAME')  == 'foo'
  and:
-  DocumentContext parsedJson = JsonPath.parse(accurestObjectMapper.writeValueAsString(response.payload))
+  DocumentContext parsedJson = JsonPath.parse(contractVerifierObjectMapper.writeValueAsString(response.payload))
   assertThatJson(parsedJson).field(&quot;bookName&quot;).isEqualTo(&quot;foo&quot;)
 
 </span><span class="delimiter">'''</span></span></code></pre>
@@ -706,7 +694,7 @@ inside the application (e.g. scheduler)</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">def</span> contractDsl = GroovyDsl.make {
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">def</span> contractDsl = Contract.make {
         label <span class="string"><span class="delimiter">'</span><span class="content">some_label</span><span class="delimiter">'</span></span>
         input {
                 messageFrom(<span class="string"><span class="delimiter">'</span><span class="content">jms:input</span><span class="delimiter">'</span></span>)
@@ -736,20 +724,20 @@ inside the application (e.g. scheduler)</p>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy"><span class="string"><span class="delimiter">'''</span><span class="content">
 // given:
- AccurestMessage inputMessage = accurestMessaging.create(
+ ContractVerifierMessage inputMessage = contractVerifierMessaging.create(
   &quot;{</span><span class="char">\\</span><span class="content">&quot;bookName</span><span class="char">\\</span><span class="content">&quot;:</span><span class="char">\\</span><span class="content">&quot;foo</span><span class="char">\\</span><span class="content">&quot;}&quot;
 , headers()
   .header(&quot;sample&quot;, &quot;header&quot;));
 
 // when:
- accurestMessaging.send(inputMessage, &quot;jms:input&quot;);
+ contractVerifierMessaging.send(inputMessage, &quot;jms:input&quot;);
 
 // then:
- AccurestMessage response = accurestMessaging.receiveMessage(&quot;jms:output&quot;);
+ ContractVerifierMessage response = contractVerifierMessaging.receiveMessage(&quot;jms:output&quot;);
  assertThat(response).isNotNull();
  assertThat(response.getHeader(&quot;BOOK-NAME&quot;)).isEqualTo(&quot;foo&quot;);
 // and:
- DocumentContext parsedJson = JsonPath.parse(accurestObjectMapper.writeValueAsString(response.getPayload()));
+ DocumentContext parsedJson = JsonPath.parse(contractVerifierObjectMapper.writeValueAsString(response.getPayload()));
  assertThatJson(parsedJson).field(&quot;bookName&quot;).isEqualTo(&quot;foo&quot;);
 </span><span class="delimiter">'''</span></span></code></pre>
 </div>
@@ -761,20 +749,20 @@ inside the application (e.g. scheduler)</p>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy"><span class="string"><span class="delimiter">&quot;&quot;&quot;</span><span class="char">\
 </span><span class="content">given:
-   def inputMessage = accurestMessaging.create(
+   def inputMessage = contractVerifierMessaging.create(
     '''{&quot;bookName&quot;:&quot;foo&quot;}''',
     ['sample': 'header']
   )
 
 when:
-   accurestMessaging.send(inputMessage, 'jms:input')
+   contractVerifierMessaging.send(inputMessage, 'jms:input')
 
 then:
-   def response = accurestMessaging.receiveMessage('jms:output')
+   def response = contractVerifierMessaging.receiveMessage('jms:output')
    assert response !- null
    response.getHeader('BOOK-NAME')  == 'foo'
 and:
-   DocumentContext parsedJson = JsonPath.parse(accurestObjectMapper.writeValueAsString(response.payload))
+   DocumentContext parsedJson = JsonPath.parse(contractVerifierObjectMapper.writeValueAsString(response.payload))
    assertThatJson(parsedJson).field(&quot;bookName&quot;).isEqualTo(&quot;foo&quot;)
 </span><span class="delimiter">&quot;&quot;&quot;</span></span></code></pre>
 </div>
@@ -787,7 +775,7 @@ and:
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">def</span> contractDsl = GroovyDsl.make {
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">def</span> contractDsl = Contract.make {
         label <span class="string"><span class="delimiter">'</span><span class="content">some_label</span><span class="delimiter">'</span></span>
         input {
                 messageFrom(<span class="string"><span class="delimiter">'</span><span class="content">jms:delete</span><span class="delimiter">'</span></span>)
@@ -809,13 +797,13 @@ and:
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy"><span class="string"><span class="delimiter">'''</span><span class="content">
 // given:
- AccurestMessage inputMessage = accurestMessaging.create(
+ ContractVerifierMessage inputMessage = contractVerifierMessaging.create(
         &quot;{</span><span class="char">\\</span><span class="content">&quot;bookName</span><span class="char">\\</span><span class="content">&quot;:</span><span class="char">\\</span><span class="content">&quot;foo</span><span class="char">\\</span><span class="content">&quot;}&quot;
 , headers()
         .header(&quot;sample&quot;, &quot;header&quot;));
 
 // when:
- accurestMessaging.send(inputMessage, &quot;jms:delete&quot;);
+ contractVerifierMessaging.send(inputMessage, &quot;jms:delete&quot;);
 
 // then:
  bookWasDeleted();
@@ -829,13 +817,13 @@ and:
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="groovy"><span class="string"><span class="delimiter">'''</span><span class="content">
 given:
-         def inputMessage = accurestMessaging.create(
+         def inputMessage = contractVerifierMessaging.create(
                 </span><span class="char">\'</span><span class="char">\'</span><span class="char">\'</span><span class="content">{&quot;bookName&quot;:&quot;foo&quot;}</span><span class="char">\'</span><span class="char">\'</span><span class="char">\'</span><span class="content">,
                 ['sample': 'header']
         )
 
 when:
-         accurestMessaging.send(inputMessage, 'jms:delete')
+         contractVerifierMessaging.send(inputMessage, 'jms:delete')
 
 then:
          noExceptionThrown()
@@ -857,7 +845,7 @@ and proper stubbed routes are created.</p>
 <div class="sect3">
 <h4 id="gradle-setup">Gradle Setup</h4>
 <div class="paragraph">
-<p>Example of Accurest Gradle setup:</p>
+<p>Example of Spring Cloud Contract Verifier Gradle setup:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -865,7 +853,7 @@ and proper stubbed routes are created.</p>
         contractsDir = file(<span class="string"><span class="delimiter">&quot;</span><span class="content">mappings</span><span class="delimiter">&quot;</span></span>)
         stubsOutputDirRoot = file(<span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>project.buildDir<span class="inline-delimiter">}</span></span><span class="content">/production/</span><span class="inline"><span class="inline-delimiter">${</span>project.name<span class="inline-delimiter">}</span></span><span class="content">-stubs/</span><span class="delimiter">&quot;</span></span>)
         wireMockStubsOutputDir = file(<span class="keyword">new</span> <span class="predefined-type">File</span>(stubsOutputDirRoot, <span class="string"><span class="delimiter">'</span><span class="content">repository/mappings/</span><span class="delimiter">'</span></span>))
-        contractsOutputDir = file(<span class="keyword">new</span> <span class="predefined-type">File</span>(stubsOutputDirRoot, <span class="string"><span class="delimiter">'</span><span class="content">repository/accurest/</span><span class="delimiter">'</span></span>))
+        contractsOutputDir = file(<span class="keyword">new</span> <span class="predefined-type">File</span>(stubsOutputDirRoot, <span class="string"><span class="delimiter">'</span><span class="content">repository/contracts/</span><span class="delimiter">'</span></span>))
 }
 
 task copyContracts(<span class="key">type</span>: Copy) {
@@ -898,7 +886,7 @@ publishing {
 <div class="sect3">
 <h4 id="maven-setup">Maven Setup</h4>
 <div class="paragraph">
-<p>Example of Maven can be found in the <a href="https://github.com/Codearte/accurest-maven-plugin/=publishing-wiremock-stubs-projectf-stubsjar">Accurest Maven Plugin README</a></p>
+<p>Example of Maven can be found in the <a href="https://github.com/Codearte/accurest-maven-plugin/=publishing-wiremock-stubs-projectf-stubsjar">Spring Cloud Contract Verifier Maven Plugin README</a></p>
 </div>
 </div>
 </div>
@@ -907,7 +895,7 @@ publishing {
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-04-25 10:03:38 +02:00
+Last updated 2016-06-20 13:02:17 +02:00
 </div>
 </div>
 </body>
