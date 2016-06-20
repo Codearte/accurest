@@ -534,6 +534,19 @@ table.CodeRay td.code>pre{padding:0}
 <div class="sect1">
 <h2 id="contract-dsl">Contract DSL</h2>
 <div class="sectionbody">
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Remember that inside the contract file you have to provide the fully qualified name to
+the <code>Contract</code> class and the <code>make</code> static import i.e. <code>org.springframework.cloud.contract.verifier.dsl.Contract.make { &#8230;&#8203; }</code>
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
 <p>Contract DSL is written in Groovy, but don&#8217;t be alarmed if you didn&#8217;t use Groovy before. Knowledge of the language is not really needed as our DSL uses only
 a tiny subset of it (namely literals, method calls and closures). What&#8217;s more the DSL is designed to be programmer-readable without any knowledge of the DSL itself -
@@ -632,7 +645,7 @@ Spring Cloud Contract Verifier supports equality check on text response. Regular
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">Contract.make {
+<pre class="CodeRay highlight"><code data-lang="groovy">org.springframework.cloud.contract.verifier.dsl.Contract.make {
         <span class="comment">// Definition of HTTP request part of the contract</span>
         <span class="comment">// (this can be a valid request or invalid depending</span>
         <span class="comment">// on type of contract being specified).</span>
@@ -662,7 +675,7 @@ Spring Cloud Contract Verifier supports equality check on text response. Regular
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">Contract.make {
+<pre class="CodeRay highlight"><code data-lang="groovy">org.springframework.cloud.contract.verifier.dsl.Contract.make {
         request {
                 <span class="comment">// HTTP request method (GET/POST/PUT/DELETE).</span>
                 method <span class="string"><span class="delimiter">'</span><span class="content">GET</span><span class="delimiter">'</span></span>
@@ -682,7 +695,7 @@ Spring Cloud Contract Verifier supports equality check on text response. Regular
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">Contract.make {
+<pre class="CodeRay highlight"><code data-lang="groovy">org.springframework.cloud.contract.verifier.dsl.Contract.make {
         request {
                 method <span class="string"><span class="delimiter">'</span><span class="content">GET</span><span class="delimiter">'</span></span>
 
@@ -701,7 +714,7 @@ Spring Cloud Contract Verifier supports equality check on text response. Regular
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">Contract.make {
+<pre class="CodeRay highlight"><code data-lang="groovy">org.springframework.cloud.contract.verifier.dsl.Contract.make {
         request {
                 <span class="comment">//...</span>
 
@@ -749,7 +762,7 @@ Spring Cloud Contract Verifier supports equality check on text response. Regular
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">Contract.make {
+<pre class="CodeRay highlight"><code data-lang="groovy">org.springframework.cloud.contract.verifier.dsl.Contract.make {
         request {
                 <span class="comment">//...</span>
 
@@ -772,7 +785,7 @@ Spring Cloud Contract Verifier supports equality check on text response. Regular
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">Contract.make {
+<pre class="CodeRay highlight"><code data-lang="groovy">org.springframework.cloud.contract.verifier.dsl.Contract.make {
         request {
                 <span class="comment">//...</span>
 
@@ -792,7 +805,7 @@ Spring Cloud Contract Verifier supports equality check on text response. Regular
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">Contract.make {
+<pre class="CodeRay highlight"><code data-lang="groovy">org.springframework.cloud.contract.verifier.dsl.Contract.make {
         request {
                 <span class="comment">//...</span>
 
@@ -816,7 +829,7 @@ Spring Cloud Contract Verifier supports equality check on text response. Regular
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">Contract.make {
+<pre class="CodeRay highlight"><code data-lang="groovy">org.springframework.cloud.contract.verifier.dsl.Contract.make {
         request {
                 <span class="comment">//...</span>
         }
@@ -844,7 +857,7 @@ for your test and your server side tests.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">Contract.make {
+<pre class="CodeRay highlight"><code data-lang="groovy">org.springframework.cloud.contract.verifier.dsl.Contract.make {
         request {
                 method(<span class="string"><span class="delimiter">'</span><span class="content">GET</span><span class="delimiter">'</span></span>)
                 url <span class="error">$</span>(client(~<span class="regexp"><span class="delimiter">/</span><span class="char">\/</span><span class="content">[0-9]{2}</span><span class="delimiter">/</span></span>), server(<span class="string"><span class="delimiter">'</span><span class="content">/12</span><span class="delimiter">'</span></span>))
@@ -894,7 +907,7 @@ for your test and your server side tests.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">Contract.make {
+<pre class="CodeRay highlight"><code data-lang="groovy">org.springframework.cloud.contract.verifier.dsl.Contract.make {
         priority <span class="integer">1</span>
         request {
                 method <span class="string"><span class="delimiter">'</span><span class="content">POST</span><span class="delimiter">'</span></span>
@@ -987,10 +1000,10 @@ for your test and your server side tests.</p>
 in the configuration. Please see the examples below:</p>
 </div>
 <div class="sect3">
-<h4 id="groovy-dsl">Groovy DSL</h4>
+<h4 id="contract-dsl-2">Contract DSL</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">Contract.make {
+<pre class="CodeRay highlight"><code data-lang="groovy">org.springframework.cloud.contract.verifier.dsl.Contract.make {
         request {
                 method <span class="string"><span class="delimiter">'</span><span class="content">PUT</span><span class="delimiter">'</span></span>
                 url <span class="error">$</span>(client(regex(<span class="string"><span class="delimiter">'</span><span class="content">^/api/[0-9]{2}$</span><span class="delimiter">'</span></span>)), server(<span class="string"><span class="delimiter">'</span><span class="content">/api/12</span><span class="delimiter">'</span></span>))
@@ -1201,7 +1214,7 @@ as presented below (note you can use either <code>$</code> or <code>value</code>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-06-20 13:02:17 +02:00
+Last updated 2016-06-20 13:42:59 +02:00
 </div>
 </div>
 </body>
