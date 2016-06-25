@@ -524,6 +524,7 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#dependencies">Dependencies</a></li>
 <li><a href="#additional-links">Additional links</a></li>
 <li><a href="#samples">Samples</a></li>
+<li><a href="#why-use-spring-cloud-contract-verifier-and-not-x">Why use Spring Cloud Contract Verifier and not X ?</a></li>
 </ul>
 </li>
 <li><a href="#contract-dsl">Contract DSL</a>
@@ -864,6 +865,36 @@ is under constant development.</p>
 <h3 id="samples">Samples</h3>
 <div class="paragraph">
 <p>Here you can find some <a href="https://github.com/Codearte/accurest-samples">working samples</a>. Check the readme of each project for more information.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="why-use-spring-cloud-contract-verifier-and-not-x">Why use Spring Cloud Contract Verifier and not X ?</h3>
+<div class="paragraph">
+<p>For the time being Spring Cloud Contract Verifier is a JVM based tool. So it could be your first pick when you&#8217;re already creating
+software for the JVM. This project has a lot of really interesting features but especially quite a few of them definitely make
+Spring Cloud Contract Verifier stand out on the "market" of Consumer Driven Contract (CDC) tooling. Out of many the most interesting are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Possibility to do CDC with messaging</p>
+</li>
+<li>
+<p>Clear and easy to use, statically typed DSL</p>
+</li>
+<li>
+<p>Possibility to copy paste your current JSON file to the contract and only edit its elements</p>
+</li>
+<li>
+<p>Automatic generation of tests from the defined Contract</p>
+</li>
+<li>
+<p>Stub Runner functionality - the stubs are automatically downloaded at runtime from Nexus / Artifactory</p>
+</li>
+<li>
+<p>Spring Cloud integration - no discovery service is needed for integration tests</p>
+</li>
+</ul>
 </div>
 </div>
 </div>
