@@ -18,13 +18,13 @@ package org.springframework.cloud.contract.stubrunner.messaging.integration
 
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
-import org.springframework.cloud.contract.verifier.messaging.ContractVerifierMessage
+import org.springframework.cloud.contract.spec.messaging.ContractVerifierMessage
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.test.SpringApplicationContextLoader
-import org.springframework.cloud.contract.verifier.dsl.Contract
+import org.springframework.cloud.contract.spec.Contract
 import org.springframework.cloud.contract.stubrunner.StubFinder
-import org.springframework.cloud.contract.verifier.messaging.ContractVerifierMessaging
+import org.springframework.cloud.contract.spec.messaging.ContractVerifierMessaging
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.ImportResource
@@ -87,7 +87,7 @@ class IntegrationStubRunnerSpec extends Specification {
 	def 'should trigger a label for the existing groupId:artifactId'() {
 		when:
 		// tag::trigger_group_artifact[]
-			stubFinder.trigger('org.springframework.cloud.contract.verifier.stubs:integrationService', 'return_book_1')
+			stubFinder.trigger('org.springframework.cloud.contract.spec.stubs:integrationService', 'return_book_1')
 		// end::trigger_group_artifact[]
 		then:
 			ContractVerifierMessage receivedMessage = messaging.receiveMessage('outputTest')

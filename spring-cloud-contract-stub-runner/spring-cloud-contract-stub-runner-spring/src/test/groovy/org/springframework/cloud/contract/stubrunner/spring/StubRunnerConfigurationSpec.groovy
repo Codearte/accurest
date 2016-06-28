@@ -36,14 +36,14 @@ class StubRunnerConfigurationSpec extends Specification {
 
 	def 'should start WireMock servers'() {
 		expect: 'WireMocks are running'
-			stubFinder.findStubUrl('org.springframework.cloud.contract.verifier.stubs', 'loanIssuance') != null
+			stubFinder.findStubUrl('org.springframework.cloud.contract.spec.stubs', 'loanIssuance') != null
 			stubFinder.findStubUrl('loanIssuance') != null
-			stubFinder.findStubUrl('loanIssuance') == stubFinder.findStubUrl('org.springframework.cloud.contract.verifier.stubs', 'loanIssuance')
-			stubFinder.findStubUrl('org.springframework.cloud.contract.verifier.stubs:fraudDetectionServer') != null
+			stubFinder.findStubUrl('loanIssuance') == stubFinder.findStubUrl('org.springframework.cloud.contract.spec.stubs', 'loanIssuance')
+			stubFinder.findStubUrl('org.springframework.cloud.contract.spec.stubs:fraudDetectionServer') != null
 		and:
 			stubFinder.findAllRunningStubs().isPresent('loanIssuance')
-			stubFinder.findAllRunningStubs().isPresent('org.springframework.cloud.contract.verifier.stubs', 'fraudDetectionServer')
-			stubFinder.findAllRunningStubs().isPresent('org.springframework.cloud.contract.verifier.stubs:fraudDetectionServer')
+			stubFinder.findAllRunningStubs().isPresent('org.springframework.cloud.contract.spec.stubs', 'fraudDetectionServer')
+			stubFinder.findAllRunningStubs().isPresent('org.springframework.cloud.contract.spec.stubs:fraudDetectionServer')
 		and: 'Stubs were registered'
 			"${stubFinder.findStubUrl('loanIssuance').toString()}/name".toURL().text == 'loanIssuance'
 			"${stubFinder.findStubUrl('fraudDetectionServer').toString()}/name".toURL().text == 'fraudDetectionServer'

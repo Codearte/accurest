@@ -17,8 +17,8 @@
 package org.springframework.cloud.contract.stubrunner
 
 import groovy.transform.CompileStatic
-import org.springframework.cloud.contract.verifier.messaging.ContractVerifierMessaging
-import org.springframework.cloud.contract.verifier.messaging.noop.NoOpContractVerifierMessaging
+import org.springframework.cloud.contract.spec.messaging.ContractVerifierMessaging
+import org.springframework.cloud.contract.spec.messaging.noop.NoOpContractVerifierMessaging
 
 /**
  * Manages lifecycle of multiple {@link StubRunner} instances.

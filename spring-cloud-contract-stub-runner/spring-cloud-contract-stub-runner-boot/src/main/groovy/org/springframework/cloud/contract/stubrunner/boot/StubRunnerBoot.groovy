@@ -21,10 +21,10 @@ import org.springframework.boot.autoconfigure.AutoConfigureAfter
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.cloud.contract.stubrunner.spring.StubRunnerConfiguration
-import org.springframework.cloud.contract.verifier.messaging.ContractVerifierMessageBuilder
-import org.springframework.cloud.contract.verifier.messaging.ContractVerifierMessaging
-import org.springframework.cloud.contract.verifier.messaging.noop.NoOpContractVerifierMessageBuilder
-import org.springframework.cloud.contract.verifier.messaging.noop.NoOpContractVerifierMessaging
+import org.springframework.cloud.contract.spec.messaging.ContractVerifierMessageBuilder
+import org.springframework.cloud.contract.spec.messaging.ContractVerifierMessaging
+import org.springframework.cloud.contract.spec.messaging.noop.NoOpContractVerifierMessageBuilder
+import org.springframework.cloud.contract.spec.messaging.noop.NoOpContractVerifierMessaging
 import org.springframework.context.annotation.Bean
 
 /**

@@ -18,8 +18,8 @@ package org.springframework.cloud.contract.stubrunner
 
 import groovy.json.JsonOutput
 import org.springframework.cloud.contract.stubrunner.util.StubsParser
-import org.springframework.cloud.contract.verifier.messaging.ContractVerifierMessage
-import org.springframework.cloud.contract.verifier.messaging.ContractVerifierMessaging
+import org.springframework.cloud.contract.spec.messaging.ContractVerifierMessage
+import org.springframework.cloud.contract.spec.messaging.ContractVerifierMessaging
 import spock.lang.Specification
 
 import java.util.concurrent.TimeUnit

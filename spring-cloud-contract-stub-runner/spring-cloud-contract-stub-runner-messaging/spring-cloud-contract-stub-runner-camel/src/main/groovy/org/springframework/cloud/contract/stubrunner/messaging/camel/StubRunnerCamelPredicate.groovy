@@ -21,12 +21,12 @@ import com.jayway.jsonpath.JsonPath
 import com.toomuchcoding.jsonassert.JsonAssertion
 import com.toomuchcoding.jsonassert.JsonVerifiable
 import groovy.transform.PackageScope
-import org.springframework.cloud.contract.verifier.dsl.Contract
+import org.springframework.cloud.contract.spec.Contract
 import org.apache.camel.Exchange
 import org.apache.camel.Predicate
-import org.springframework.cloud.contract.verifier.messaging.ContractVerifierObjectMapper
-import org.springframework.cloud.contract.verifier.util.JsonPaths
-import org.springframework.cloud.contract.verifier.util.JsonToJsonPathsConverter
+import org.springframework.cloud.contract.spec.messaging.ContractVerifierObjectMapper
+import org.springframework.cloud.contract.spec.util.JsonPaths
+import org.springframework.cloud.contract.spec.util.JsonToJsonPathsConverter
 
 import java.util.regex.Pattern
 

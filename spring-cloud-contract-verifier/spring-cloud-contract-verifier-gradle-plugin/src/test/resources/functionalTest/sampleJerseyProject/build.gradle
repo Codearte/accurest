@@ -52,7 +52,7 @@ subprojects {
 
 configure([project(':fraudDetectionService'), project(':loanApplicationService')]) {
 	apply plugin: 'spring-boot'
-	apply plugin: 'contract-verifier'
+	apply plugin: 'contract-spec'
 	apply plugin: 'maven-publish'
 
 	ext {

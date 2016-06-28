@@ -6,7 +6,7 @@ buildscript {
 }
 
 apply plugin: 'groovy'
-apply plugin: 'contract-verifier'
+apply plugin: 'contract-spec'
 apply plugin: 'maven-publish'
 
 group = 'org.springframework.cloud.testprojects'

@@ -18,13 +18,13 @@ package org.springframework.cloud.contract.stubrunner.messaging.stream
 
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
-import org.springframework.cloud.contract.verifier.dsl.Contract
-import org.springframework.cloud.contract.verifier.messaging.ContractVerifierMessage
+import org.springframework.cloud.contract.spec.Contract
+import org.springframework.cloud.contract.spec.messaging.ContractVerifierMessage
 import org.springframework.cloud.contract.stubrunner.StubFinder
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.test.SpringApplicationContextLoader
-import org.springframework.cloud.contract.verifier.messaging.ContractVerifierMessaging
+import org.springframework.cloud.contract.spec.messaging.ContractVerifierMessaging
 import org.springframework.cloud.stream.annotation.EnableBinding
 import org.springframework.cloud.stream.messaging.Sink
 import org.springframework.cloud.stream.messaging.Source
@@ -89,7 +89,7 @@ class StreamStubRunnerSpec extends Specification {
 	def 'should trigger a label for the existing groupId:artifactId'() {
 		when:
 		// tag::trigger_group_artifact[]
-			stubFinder.trigger('org.springframework.cloud.contract.verifier.stubs:streamService', 'return_book_1')
+			stubFinder.trigger('org.springframework.cloud.contract.spec.stubs:streamService', 'return_book_1')
 		// end::trigger_group_artifact[]
 		then:
 			ContractVerifierMessage receivedMessage = messaging.receiveMessage('returnBook')

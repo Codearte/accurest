@@ -19,7 +19,7 @@ description = 'Runs stubs for service collaborators'
 apply plugin: 'application'
 mainClassName = 'org.springframework.cloud.stubrunner.StubRunnerMain'
 
-String verifier = "spring-cloud-contract-verifier"
+String verifier = "spring-cloud-contract-spec"
 
 dependencies {
 	compile project(":$verifier-root:$verifier-core")

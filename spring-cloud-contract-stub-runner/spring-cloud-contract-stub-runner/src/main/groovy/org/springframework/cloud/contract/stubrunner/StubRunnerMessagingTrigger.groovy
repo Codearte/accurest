@@ -17,7 +17,7 @@
 package org.springframework.cloud.contract.stubrunner
 
 import groovy.transform.PackageScope
-import org.springframework.cloud.contract.verifier.messaging.ContractVerifierMessaging
+import org.springframework.cloud.contract.spec.messaging.ContractVerifierMessaging
 
 /**
  * @author Marcin Grzejszczak

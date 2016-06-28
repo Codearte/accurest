@@ -14,9 +14,9 @@
  *  limitations under the License.
  */
 
-package org.springframework.cloud.contract.verifier.twitter.places
+package org.springframework.cloud.contract.spec.twitter.places
 
-import org.springframework.cloud.contract.verifier.twitter.place.PairIdController
+import org.springframework.cloud.contract.spec.twitter.place.PairIdController
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.setup.MockMvcBuilders

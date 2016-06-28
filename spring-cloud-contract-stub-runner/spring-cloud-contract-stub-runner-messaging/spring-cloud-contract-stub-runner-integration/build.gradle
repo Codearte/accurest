@@ -24,7 +24,7 @@ repositories {
 		url "http://repo.spring.io/milestone"
 	}
 }
-String verifier = "spring-cloud-contract-verifier"
+String verifier = "spring-cloud-contract-spec"
 String stubRunner = "spring-cloud-contract-stub-runner"
 
 dependencies {

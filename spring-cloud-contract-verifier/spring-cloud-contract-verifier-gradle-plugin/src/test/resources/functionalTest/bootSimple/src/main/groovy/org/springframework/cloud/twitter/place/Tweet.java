@@ -1,4 +1,4 @@
-package org.springframework.cloud.contract.verifier.twitter.place;
+package org.springframework.cloud.contract.spec.twitter.place;
 
 public class Tweet {
 	private String text;

@@ -1,9 +1,11 @@
-String verifier = "spring-cloud-contract-verifier"
+String verifier = "spring-cloud-contract-spec"
 String stubRunner = "spring-cloud-contract-stub-runner"
 
 rootProject.name = "$verifier-parent"
 
 include "docs"
+
+include ":spring-cloud-contract-spec"
 
 include ":$verifier:$verifier-core",
 		":$verifier:$verifier-gradle-plugin",

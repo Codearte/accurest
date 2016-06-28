@@ -37,19 +37,19 @@ class StubRunnerRuleSpec extends Specification {
 	// tag::classrule[]
 	@ClassRule @Shared StubRunnerRule rule = new StubRunnerRule()
 			.repoRoot(StubRunnerRuleSpec.getResource("/m2repo/repository").toURI().toString())
-			.downloadStub("org.springframework.cloud.contract.verifier.stubs", "loanIssuance")
-			.downloadStub("org.springframework.cloud.contract.verifier.stubs:fraudDetectionServer")
+			.downloadStub("org.springframework.cloud.contract.spec.stubs", "loanIssuance")
+			.downloadStub("org.springframework.cloud.contract.spec.stubs:fraudDetectionServer")
 
 	def 'should start WireMock servers'() {
 		expect: 'WireMocks are running'
-			rule.findStubUrl('org.springframework.cloud.contract.verifier.stubs', 'loanIssuance') != null
+			rule.findStubUrl('org.springframework.cloud.contract.spec.stubs', 'loanIssuance') != null
 			rule.findStubUrl('loanIssuance') != null
-			rule.findStubUrl('loanIssuance') == rule.findStubUrl('org.springframework.cloud.contract.verifier.stubs', 'loanIssuance')
-			rule.findStubUrl('org.springframework.cloud.contract.verifier.stubs:fraudDetectionServer') != null
+			rule.findStubUrl('loanIssuance') == rule.findStubUrl('org.springframework.cloud.contract.spec.stubs', 'loanIssuance')
+			rule.findStubUrl('org.springframework.cloud.contract.spec.stubs:fraudDetectionServer') != null
 		and:
 			rule.findAllRunningStubs().isPresent('loanIssuance')
-			rule.findAllRunningStubs().isPresent('org.springframework.cloud.contract.verifier.stubs', 'fraudDetectionServer')
-			rule.findAllRunningStubs().isPresent('org.springframework.cloud.contract.verifier.stubs:fraudDetectionServer')
+			rule.findAllRunningStubs().isPresent('org.springframework.cloud.contract.spec.stubs', 'fraudDetectionServer')
+			rule.findAllRunningStubs().isPresent('org.springframework.cloud.contract.spec.stubs:fraudDetectionServer')
 		and: 'Stubs were registered'
 			"${rule.findStubUrl('loanIssuance').toString()}/name".toURL().text == 'loanIssuance'
 			"${rule.findStubUrl('fraudDetectionServer').toString()}/name".toURL().text == 'fraudDetectionServer'

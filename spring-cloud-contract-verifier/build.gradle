@@ -14,11 +14,12 @@
  *  limitations under the License.
  */
 
-String verifier = "spring-cloud-contract-verifier"
+String verifier = "spring-cloud-contract-spec"
 
 project(":$verifier-root:$verifier-core") {
 
 	dependencies {
+		compile project(":spring-cloud-contract-spec")
 		compile 'org.slf4j:slf4j-api:1.6.0'
 		compile 'commons-io:commons-io:2.0'
 		compile 'org.apache.commons:commons-lang3:3.3'
@@ -57,7 +58,7 @@ project(":$verifier-root:$verifier-gradle-plugin") {
 	ext.contractVerifierGradlePluginLibsDir ="$buildDir/contractVerifier-gradle-plugin-libs"
 
 	ext.testSystemProperties = [
-			'contract-verifier-gradle-plugin-libs-dir': contractVerifierGradlePluginLibsDir,
+			'contract-spec-gradle-plugin-libs-dir': contractVerifierGradlePluginLibsDir,
 			'messaging-libs-dir': messagingLibsDir
 	]
 

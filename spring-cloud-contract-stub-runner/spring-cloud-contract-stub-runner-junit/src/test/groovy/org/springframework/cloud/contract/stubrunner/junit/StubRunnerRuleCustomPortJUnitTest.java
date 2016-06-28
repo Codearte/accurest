@@ -43,22 +43,22 @@ public class StubRunnerRuleCustomPortJUnitTest {
 	// tag::classrule_with_port[]
 	@ClassRule public static StubRunnerRule rule = new StubRunnerRule()
 			.repoRoot(repoRoot())
-			.downloadStub("org.springframework.cloud.contract.verifier.stubs", "loanIssuance")
+			.downloadStub("org.springframework.cloud.contract.spec.stubs", "loanIssuance")
 			.withPort(12345)
-			.downloadStub("org.springframework.cloud.contract.verifier.stubs:fraudDetectionServer:12346");
+			.downloadStub("org.springframework.cloud.contract.spec.stubs:fraudDetectionServer:12346");
 	// end::classrule_with_port[]
 
 	@Test
 	public void should_start_wiremock_servers() throws Exception {
 		// expect: 'WireMocks are running'
-			then(rule.findStubUrl("org.springframework.cloud.contract.verifier.stubs", "loanIssuance")).isNotNull();
+			then(rule.findStubUrl("org.springframework.cloud.contract.spec.stubs", "loanIssuance")).isNotNull();
 			then(rule.findStubUrl("loanIssuance")).isNotNull();
-			then(rule.findStubUrl("loanIssuance")).isEqualTo(rule.findStubUrl("org.springframework.cloud.contract.verifier.stubs", "loanIssuance"));
-			then(rule.findStubUrl("org.springframework.cloud.contract.verifier.stubs:fraudDetectionServer")).isNotNull();
+			then(rule.findStubUrl("loanIssuance")).isEqualTo(rule.findStubUrl("org.springframework.cloud.contract.spec.stubs", "loanIssuance"));
+			then(rule.findStubUrl("org.springframework.cloud.contract.spec.stubs:fraudDetectionServer")).isNotNull();
 		// and:
 			BDDAssertions.then(rule.findAllRunningStubs().isPresent("loanIssuance")).isTrue();
-			BDDAssertions.then(rule.findAllRunningStubs().isPresent("org.springframework.cloud.contract.verifier.stubs", "fraudDetectionServer")).isTrue();
-			BDDAssertions.then(rule.findAllRunningStubs().isPresent("org.springframework.cloud.contract.verifier.stubs:fraudDetectionServer")).isTrue();
+			BDDAssertions.then(rule.findAllRunningStubs().isPresent("org.springframework.cloud.contract.spec.stubs", "fraudDetectionServer")).isTrue();
+			BDDAssertions.then(rule.findAllRunningStubs().isPresent("org.springframework.cloud.contract.spec.stubs:fraudDetectionServer")).isTrue();
 		// and: 'Stubs were registered'
 			then(httpGet(rule.findStubUrl("loanIssuance").toString() + "/name")).isEqualTo("loanIssuance");
 			then(httpGet(rule.findStubUrl("fraudDetectionServer").toString() + "/name")).isEqualTo("fraudDetectionServer");

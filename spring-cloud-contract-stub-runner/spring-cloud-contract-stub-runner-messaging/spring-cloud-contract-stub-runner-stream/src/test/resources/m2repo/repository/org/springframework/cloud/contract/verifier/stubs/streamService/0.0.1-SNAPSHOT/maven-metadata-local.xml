@@ -16,7 +16,7 @@
   -->
 
 <metadata>
-  <groupId>org.springframework.cloud.contract.verifier.stubs</groupId>
+  <groupId>org.springframework.cloud.contract.spec.stubs</groupId>
   <artifactId>streamService</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <versioning>

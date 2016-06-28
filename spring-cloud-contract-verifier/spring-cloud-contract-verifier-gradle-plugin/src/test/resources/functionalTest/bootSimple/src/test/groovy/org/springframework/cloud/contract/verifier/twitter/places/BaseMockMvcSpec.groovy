@@ -14,10 +14,10 @@
  *  limitations under the License.
  */
 
-package org.springframework.cloud.contract.verifier.twitter.places
+package org.springframework.cloud.contract.spec.twitter.places
 
 import com.jayway.restassured.module.mockmvc.RestAssuredMockMvc
-import org.springframework.cloud.contract.verifier.twitter.place.PairIdController
+import org.springframework.cloud.contract.spec.twitter.place.PairIdController
 import spock.lang.Specification
 
 // tag::base_class[]

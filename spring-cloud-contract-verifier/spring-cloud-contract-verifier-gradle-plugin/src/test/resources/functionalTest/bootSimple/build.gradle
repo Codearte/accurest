@@ -5,7 +5,7 @@ buildscript {
 }
 
 apply plugin: 'groovy'
-apply plugin: 'contract-verifier'
+apply plugin: 'contract-spec'
 apply plugin: 'maven-publish'
 
 group = 'org.springframework.cloud.testprojects'
@@ -50,7 +50,7 @@ dependencies {
 }
 
 contractVerifier {
-	baseClassForTests = 'org.springframework.cloud.contract.verifier.twitter.places.BaseMockMvcSpec'
+	baseClassForTests = 'org.springframework.cloud.contract.spec.twitter.places.BaseMockMvcSpec'
 	basePackageForTests = 'contracts'
 	contractsDslDir = contractsDir
 //	generatedTestSourcesDir = file("${project.rootDir}/src/test/groovy/")

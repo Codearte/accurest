@@ -17,7 +17,7 @@
 package org.springframework.cloud.contract.stubrunner
 
 import groovy.transform.CompileStatic
-import org.springframework.cloud.contract.verifier.dsl.Contract
+import org.springframework.cloud.contract.spec.Contract
 /**
  * Manages lifecycle of multiple {@link StubRunner} instances.
  *

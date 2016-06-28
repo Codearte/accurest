@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-String verifier = "spring-cloud-contract-verifier"
+String verifier = "spring-cloud-contract-spec"
 
 dependencies {
 	compile project(":$verifier-root:$verifier-messaging-root:$verifier-messaging-core")

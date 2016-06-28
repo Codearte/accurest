@@ -19,8 +19,8 @@ package org.springframework.cloud.contract.stubrunner
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import groovy.util.logging.Slf4j
-import org.springframework.cloud.contract.verifier.dsl.Contract
-import org.springframework.cloud.contract.verifier.util.ContractVerifierDslConverter
+import org.springframework.cloud.contract.spec.Contract
+import org.springframework.cloud.contract.spec.util.ContractVerifierDslConverter
 
 /**
  * Wraps the folder with WireMock mappings.
