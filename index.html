@@ -557,6 +557,7 @@ table.CodeRay td.code>pre{padding:0}
 </li>
 <li><a href="#spring-cloud-contract-stub-runner">Spring Cloud Contract Stub Runner</a>
 <ul class="sectlevel2">
+<li><a href="#snapshot-versions-2">Snapshot versions</a></li>
 <li><a href="#publishing-stubs-as-jars">Publishing stubs as JARs</a></li>
 <li><a href="#modules">Modules</a></li>
 <li><a href="#stub-runner-core">Stub Runner Core</a></li>
@@ -575,6 +576,7 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#stub-runner-stream">Stub Runner Stream</a></li>
 </ul>
 </li>
+<li><a href="#links">Links</a></li>
 </ul>
 </div>
 </div>
@@ -910,8 +912,8 @@ Spring Cloud Contract Verifier stand out on the "market" of Consumer Driven Cont
 </td>
 <td class="content">
 Remember that inside the contract file you have to provide the fully qualified name to
-the <code>Contract</code> class and the <code>make</code> static import i.e. <code>org.springframework.cloud.contract.verifier.dsl.Contract.make { &#8230;&#8203; }</code>.
-You can also provide an import to the <code>Contract</code> class <code>import org.springframework.cloud.contract.verifier.dsl.Contract</code> and then call
+the <code>Contract</code> class and the <code>make</code> static import i.e. <code>org.springframework.cloud.contract.spec.Contract.make { &#8230;&#8203; }</code>.
+You can also provide an import to the <code>Contract</code> class <code>import org.springframework.cloud.contract.spec.Contract</code> and then call
   <code>Contract.make { &#8230;&#8203; }</code>
 </td>
 </tr>
@@ -923,11 +925,14 @@ a tiny subset of it (namely literals, method calls and closures). What&#8217;s m
  it&#8217;s statically typed.</p>
 </div>
 <div class="paragraph">
+<p>The Contract is present in the <code>spring-cloud-contract-spec</code> module of the Spring Cloud Contract Verifier repository.</p>
+</div>
+<div class="paragraph">
 <p>Let&#8217;s look at full example of a contract definition.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">org.springframework.cloud.contract.verifier.dsl.Contract.make {
+<pre class="CodeRay highlight"><code data-lang="groovy">org.springframework.cloud.contract.spec.Contract.make {
         request {
                 method <span class="string"><span class="delimiter">'</span><span class="content">PUT</span><span class="delimiter">'</span></span>
                 url <span class="string"><span class="delimiter">'</span><span class="content">/api/12</span><span class="delimiter">'</span></span>
@@ -1015,7 +1020,7 @@ Spring Cloud Contract Verifier supports equality check on text response. Regular
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">org.springframework.cloud.contract.verifier.dsl.Contract.make {
+<pre class="CodeRay highlight"><code data-lang="groovy">org.springframework.cloud.contract.spec.Contract.make {
         <span class="comment">// Definition of HTTP request part of the contract</span>
         <span class="comment">// (this can be a valid request or invalid depending</span>
         <span class="comment">// on type of contract being specified).</span>
@@ -1045,7 +1050,7 @@ Spring Cloud Contract Verifier supports equality check on text response. Regular
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">org.springframework.cloud.contract.verifier.dsl.Contract.make {
+<pre class="CodeRay highlight"><code data-lang="groovy">org.springframework.cloud.contract.spec.Contract.make {
         request {
                 <span class="comment">// HTTP request method (GET/POST/PUT/DELETE).</span>
                 method <span class="string"><span class="delimiter">'</span><span class="content">GET</span><span class="delimiter">'</span></span>
@@ -1065,7 +1070,7 @@ Spring Cloud Contract Verifier supports equality check on text response. Regular
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">org.springframework.cloud.contract.verifier.dsl.Contract.make {
+<pre class="CodeRay highlight"><code data-lang="groovy">org.springframework.cloud.contract.spec.Contract.make {
         request {
                 method <span class="string"><span class="delimiter">'</span><span class="content">GET</span><span class="delimiter">'</span></span>
 
@@ -1084,7 +1089,7 @@ Spring Cloud Contract Verifier supports equality check on text response. Regular
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">org.springframework.cloud.contract.verifier.dsl.Contract.make {
+<pre class="CodeRay highlight"><code data-lang="groovy">org.springframework.cloud.contract.spec.Contract.make {
         request {
                 <span class="comment">//...</span>
 
@@ -1132,7 +1137,7 @@ Spring Cloud Contract Verifier supports equality check on text response. Regular
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">org.springframework.cloud.contract.verifier.dsl.Contract.make {
+<pre class="CodeRay highlight"><code data-lang="groovy">org.springframework.cloud.contract.spec.Contract.make {
         request {
                 <span class="comment">//...</span>
 
@@ -1155,7 +1160,7 @@ Spring Cloud Contract Verifier supports equality check on text response. Regular
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">org.springframework.cloud.contract.verifier.dsl.Contract.make {
+<pre class="CodeRay highlight"><code data-lang="groovy">org.springframework.cloud.contract.spec.Contract.make {
         request {
                 <span class="comment">//...</span>
 
@@ -1175,7 +1180,7 @@ Spring Cloud Contract Verifier supports equality check on text response. Regular
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">org.springframework.cloud.contract.verifier.dsl.Contract.make {
+<pre class="CodeRay highlight"><code data-lang="groovy">org.springframework.cloud.contract.spec.Contract.make {
         request {
                 <span class="comment">//...</span>
 
@@ -1199,7 +1204,7 @@ Spring Cloud Contract Verifier supports equality check on text response. Regular
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">org.springframework.cloud.contract.verifier.dsl.Contract.make {
+<pre class="CodeRay highlight"><code data-lang="groovy">org.springframework.cloud.contract.spec.Contract.make {
         request {
                 <span class="comment">//...</span>
         }
@@ -1227,7 +1232,7 @@ for your test and your server side tests.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">org.springframework.cloud.contract.verifier.dsl.Contract.make {
+<pre class="CodeRay highlight"><code data-lang="groovy">org.springframework.cloud.contract.spec.Contract.make {
         request {
                 method(<span class="string"><span class="delimiter">'</span><span class="content">GET</span><span class="delimiter">'</span></span>)
                 url <span class="error">$</span>(client(~<span class="regexp"><span class="delimiter">/</span><span class="char">\/</span><span class="content">[0-9]{2}</span><span class="delimiter">/</span></span>), server(<span class="string"><span class="delimiter">'</span><span class="content">/12</span><span class="delimiter">'</span></span>))
@@ -1277,7 +1282,7 @@ for your test and your server side tests.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">org.springframework.cloud.contract.verifier.dsl.Contract.make {
+<pre class="CodeRay highlight"><code data-lang="groovy">org.springframework.cloud.contract.spec.Contract.make {
         priority <span class="integer">1</span>
         request {
                 method <span class="string"><span class="delimiter">'</span><span class="content">POST</span><span class="delimiter">'</span></span>
@@ -1373,7 +1378,7 @@ in the configuration. Please see the examples below:</p>
 <h4 id="contract-dsl-2">Contract DSL</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">org.springframework.cloud.contract.verifier.dsl.Contract.make {
+<pre class="CodeRay highlight"><code data-lang="groovy">org.springframework.cloud.contract.spec.Contract.make {
         request {
                 method <span class="string"><span class="delimiter">'</span><span class="content">PUT</span><span class="delimiter">'</span></span>
                 url <span class="error">$</span>(client(regex(<span class="string"><span class="delimiter">'</span><span class="content">^/api/[0-9]{2}$</span><span class="delimiter">'</span></span>)), server(<span class="string"><span class="delimiter">'</span><span class="content">/api/12</span><span class="delimiter">'</span></span>))
@@ -1624,7 +1629,7 @@ dependencies {
 <pre class="CodeRay highlight"><code data-lang="groovy">repositories {
     (...)
     <span class="comment">//Required only for SNAPSHOT versions</span>
-    maven { url <span class="string"><span class="delimiter">&quot;</span><span class="content">https://oss.sonatype.org/content/repositories/snapshots</span><span class="delimiter">&quot;</span></span> }
+    maven { url <span class="string"><span class="delimiter">&quot;</span><span class="content">https://repo.spring.io/plugins-snapshot-local</span><span class="delimiter">&quot;</span></span> }
 }</code></pre>
 </div>
 </div>
@@ -1688,6 +1693,50 @@ src/test/resources/contracts/myservice/shouldReturnUser.groovy</code></pre>
 <h4 id="run-plugin">Run plugin</h4>
 <div class="paragraph">
 <p>Plugin registers itself to be invoked before <code>check</code> task. You have nothing to do as long as you want it to be part of your build process. If you just want to generate tests please invoke <code>generateContractTests</code> task.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="default-setup">Default setup</h4>
+<div class="paragraph">
+<p>Default Gradle Plugin setup creates the following Gradle part of the build (it&#8217;s a pseudocode)</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">contractVerifier {
+    targetFramework = <span class="string"><span class="delimiter">'</span><span class="content">JUNIT</span><span class="delimiter">'</span></span>
+    testMode = <span class="string"><span class="delimiter">'</span><span class="content">MockMvc</span><span class="delimiter">'</span></span>
+    generatedTestSourcesDir = project.file(<span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>project.buildDir<span class="inline-delimiter">}</span></span><span class="content">/generated-test-sources/contracts</span><span class="delimiter">&quot;</span></span>)
+    contractsDslDir = <span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>project.rootDir<span class="inline-delimiter">}</span></span><span class="content">/src/test/resources/contracts</span><span class="delimiter">&quot;</span></span>
+    basePackageForTests = <span class="string"><span class="delimiter">'</span><span class="content">org.springframework.cloud.contract.verifier.tests</span><span class="delimiter">'</span></span>
+    stubsOutputDir = project.file(<span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>project.buildDir<span class="inline-delimiter">}</span></span><span class="content">/stubs</span><span class="delimiter">&quot;</span></span>)
+}
+
+tasks.create(<span class="key">type</span>: Jar, <span class="key">name</span>: <span class="string"><span class="delimiter">'</span><span class="content">verifierStubsJar</span><span class="delimiter">'</span></span>, <span class="key">dependsOn</span>: <span class="string"><span class="delimiter">'</span><span class="content">generateWireMockClientStubs</span><span class="delimiter">'</span></span>) {
+    baseName = project.name
+    classifier = contractVerifier.stubsSuffix
+    from contractVerifier.stubsOutputDir
+}
+
+project.artifacts {
+    archives task
+}
+
+tasks.create(<span class="key">type</span>: Copy, <span class="key">name</span>: <span class="string"><span class="delimiter">'</span><span class="content">copyContracts</span><span class="delimiter">'</span></span>) {
+    from contractVerifier.contractsDslDir
+    into contractVerifier.stubsOutputDir
+}
+
+verifierStubsJar.dependsOn <span class="string"><span class="delimiter">'</span><span class="content">copyContracts</span><span class="delimiter">'</span></span>
+
+publishing {
+    publications {
+        stubs(MavenPublication) {
+            artifactId project.name
+            artifact verifierStubsJar
+        }
+    }
+}</code></pre>
+</div>
 </div>
 </div>
 <div class="sect3">
@@ -2419,31 +2468,18 @@ and proper stubbed routes are created.</p>
 <pre class="CodeRay highlight"><code data-lang="groovy">ext {
         contractsDir = file(<span class="string"><span class="delimiter">&quot;</span><span class="content">mappings</span><span class="delimiter">&quot;</span></span>)
         stubsOutputDirRoot = file(<span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>project.buildDir<span class="inline-delimiter">}</span></span><span class="content">/production/</span><span class="inline"><span class="inline-delimiter">${</span>project.name<span class="inline-delimiter">}</span></span><span class="content">-stubs/</span><span class="delimiter">&quot;</span></span>)
-        wireMockStubsOutputDir = file(<span class="keyword">new</span> <span class="predefined-type">File</span>(stubsOutputDirRoot, <span class="string"><span class="delimiter">'</span><span class="content">repository/mappings/</span><span class="delimiter">'</span></span>))
-        contractsOutputDir = file(<span class="keyword">new</span> <span class="predefined-type">File</span>(stubsOutputDirRoot, <span class="string"><span class="delimiter">'</span><span class="content">repository/contracts/</span><span class="delimiter">'</span></span>))
 }
 
-task copyContracts(<span class="key">type</span>: Copy) {
-        from contractsDir
-        include <span class="string"><span class="delimiter">'</span><span class="content">**/*.groovy</span><span class="delimiter">'</span></span>
-        into contractsOutputDir
-}
-
-task stubsJar(<span class="key">type</span>: Jar, <span class="key">dependsOn</span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">generateWireMockClientStubs</span><span class="delimiter">&quot;</span></span>, copyContracts]) {
-        baseName = <span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>project.name<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span>
-        classifier = <span class="string"><span class="delimiter">&quot;</span><span class="content">stubs</span><span class="delimiter">&quot;</span></span>
-        from stubsOutputDirRoot
-}
-
-artifacts {
-        archives stubsJar
-}
+<span class="comment">// Automatically added by plugin:</span>
+<span class="comment">// copyContracts - copies contracts to the output folder from which JAR will be created</span>
+<span class="comment">// verifierStubsJar - JAR with a provided stub suffix</span>
+<span class="comment">// the presented publication is also added by the plugin but you can modify it as you wish</span>
 
 publishing {
         publications {
                 stubs(MavenPublication) {
                         artifactId <span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>project.name<span class="inline-delimiter">}</span></span><span class="content">-stubs</span><span class="delimiter">&quot;</span></span>
-                        artifact stubsJar
+                        artifact verifierStubsJar
                 }
         }
 }</code></pre>
@@ -2470,6 +2506,21 @@ publishing {
 <p>Copying the JSON files / setting the client side for messaging manually is out of the question.</p>
 </div>
 <div class="sect2">
+<h3 id="snapshot-versions-2">Snapshot versions</h3>
+<div class="paragraph">
+<p>Add the additional snapshot repository to your build.gradle to use snapshot versions which are automatically uploaded after every successful build:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">repositories {
+    (...)
+    <span class="comment">//Required only for SNAPSHOT versions</span>
+    maven { url <span class="string"><span class="delimiter">&quot;</span><span class="content">https://repo.spring.io/libs-snapshot-local</span><span class="delimiter">&quot;</span></span> }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
 <h3 id="publishing-stubs-as-jars">Publishing stubs as JARs</h3>
 <div class="paragraph">
 <p>The easiest approach would be to centralize the way stubs are kept. For example you can keep them as JARs in a Maven repository.</p>
@@ -2484,31 +2535,18 @@ publishing {
 <pre class="CodeRay highlight"><code data-lang="groovy">ext {
         contractsDir = file(<span class="string"><span class="delimiter">&quot;</span><span class="content">mappings</span><span class="delimiter">&quot;</span></span>)
         stubsOutputDirRoot = file(<span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>project.buildDir<span class="inline-delimiter">}</span></span><span class="content">/production/</span><span class="inline"><span class="inline-delimiter">${</span>project.name<span class="inline-delimiter">}</span></span><span class="content">-stubs/</span><span class="delimiter">&quot;</span></span>)
-        wireMockStubsOutputDir = file(<span class="keyword">new</span> <span class="predefined-type">File</span>(stubsOutputDirRoot, <span class="string"><span class="delimiter">'</span><span class="content">repository/mappings/</span><span class="delimiter">'</span></span>))
-        contractsOutputDir = file(<span class="keyword">new</span> <span class="predefined-type">File</span>(stubsOutputDirRoot, <span class="string"><span class="delimiter">'</span><span class="content">repository/contracts/</span><span class="delimiter">'</span></span>))
 }
 
-task copyContracts(<span class="key">type</span>: Copy) {
-        from contractsDir
-        include <span class="string"><span class="delimiter">'</span><span class="content">**/*.groovy</span><span class="delimiter">'</span></span>
-        into contractsOutputDir
-}
-
-task stubsJar(<span class="key">type</span>: Jar, <span class="key">dependsOn</span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">generateWireMockClientStubs</span><span class="delimiter">&quot;</span></span>, copyContracts]) {
-        baseName = <span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>project.name<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span>
-        classifier = <span class="string"><span class="delimiter">&quot;</span><span class="content">stubs</span><span class="delimiter">&quot;</span></span>
-        from stubsOutputDirRoot
-}
-
-artifacts {
-        archives stubsJar
-}
+<span class="comment">// Automatically added by plugin:</span>
+<span class="comment">// copyContracts - copies contracts to the output folder from which JAR will be created</span>
+<span class="comment">// verifierStubsJar - JAR with a provided stub suffix</span>
+<span class="comment">// the presented publication is also added by the plugin but you can modify it as you wish</span>
 
 publishing {
         publications {
                 stubs(MavenPublication) {
                         artifactId <span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>project.name<span class="inline-delimiter">}</span></span><span class="content">-stubs</span><span class="delimiter">&quot;</span></span>
-                        artifact stubsJar
+                        artifact verifierStubsJar
                 }
         }
 }</code></pre>
@@ -2886,7 +2924,7 @@ Check their <a href="https://wiki.eclipse.org/Aether">docs</a> for more informat
 
 <span class="keyword">package</span> org.springframework.cloud.contract.stubrunner
 
-<span class="keyword">import</span> <span class="include">org.springframework.cloud.contract.verifier.dsl.Contract</span>
+<span class="keyword">import</span> <span class="include">org.springframework.cloud.contract.spec.Contract</span>
 
 <span class="type">interface</span> StubFinder <span class="directive">extends</span> StubTrigger {
         <span class="comment">/**
@@ -3912,10 +3950,43 @@ receivedMessage.headers.get(<span class="string"><span class="delimiter">'</span
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="links">Links</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Here you can find interesting links related to Spring Cloud Contract Verifier:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/Codearte/accurest">Spring Cloud Contract Verifier Github Repository</a></p>
+</li>
+<li>
+<p><a href="http://codearte.github.io/accurest">Spring Cloud Contract Verifier Documentation</a></p>
+</li>
+<li>
+<p><a href="http://codearte.github.io/accurest/deprecated">Accurest Legacy Documentation</a></p>
+</li>
+<li>
+<p><a href="https://codearte.github.io/accurest/#spring-cloud-contract-stub-runner">Spring Cloud Contract Stub Runner Documentation</a></p>
+</li>
+<li>
+<p><a href="http://codearte.github.io/accurest/#stub-runner-for-messaging">Spring Cloud Contract Stub Runner Messaging Documentation</a></p>
+</li>
+<li>
+<p><a href="https://gitter.im/Codearte/accurest">Spring Cloud Contract Verifier Gitter</a></p>
+</li>
+<li>
+<p><a href="https://github.com/Codearte/accurest-maven-plugin">Spring Cloud Contract Verifier Maven Plugin</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-06-21 09:12:25 +02:00
+Last updated 2016-06-29 23:27:29 +02:00
 </div>
 </div>
 </body>

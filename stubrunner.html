@@ -516,6 +516,7 @@ table.CodeRay td.code>pre{padding:0}
 <ul class="sectlevel1">
 <li><a href="#spring-cloud-contract-stub-runner">Spring Cloud Contract Stub Runner</a>
 <ul class="sectlevel2">
+<li><a href="#snapshot-versions">Snapshot versions</a></li>
 <li><a href="#publishing-stubs-as-jars">Publishing stubs as JARs</a></li>
 <li><a href="#modules">Modules</a></li>
 <li><a href="#stub-runner-core">Stub Runner Core</a></li>
@@ -541,6 +542,21 @@ table.CodeRay td.code>pre{padding:0}
 <p>Copying the JSON files / setting the client side for messaging manually is out of the question.</p>
 </div>
 <div class="sect2">
+<h3 id="snapshot-versions">Snapshot versions</h3>
+<div class="paragraph">
+<p>Add the additional snapshot repository to your build.gradle to use snapshot versions which are automatically uploaded after every successful build:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy">repositories {
+    (...)
+    <span class="comment">//Required only for SNAPSHOT versions</span>
+    maven { url <span class="string"><span class="delimiter">&quot;</span><span class="content">https://repo.spring.io/libs-snapshot-local</span><span class="delimiter">&quot;</span></span> }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
 <h3 id="publishing-stubs-as-jars">Publishing stubs as JARs</h3>
 <div class="paragraph">
 <p>The easiest approach would be to centralize the way stubs are kept. For example you can keep them as JARs in a Maven repository.</p>
@@ -555,31 +571,18 @@ table.CodeRay td.code>pre{padding:0}
 <pre class="CodeRay highlight"><code data-lang="groovy">ext {
         contractsDir = file(<span class="string"><span class="delimiter">&quot;</span><span class="content">mappings</span><span class="delimiter">&quot;</span></span>)
         stubsOutputDirRoot = file(<span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>project.buildDir<span class="inline-delimiter">}</span></span><span class="content">/production/</span><span class="inline"><span class="inline-delimiter">${</span>project.name<span class="inline-delimiter">}</span></span><span class="content">-stubs/</span><span class="delimiter">&quot;</span></span>)
-        wireMockStubsOutputDir = file(<span class="keyword">new</span> <span class="predefined-type">File</span>(stubsOutputDirRoot, <span class="string"><span class="delimiter">'</span><span class="content">repository/mappings/</span><span class="delimiter">'</span></span>))
-        contractsOutputDir = file(<span class="keyword">new</span> <span class="predefined-type">File</span>(stubsOutputDirRoot, <span class="string"><span class="delimiter">'</span><span class="content">repository/contracts/</span><span class="delimiter">'</span></span>))
 }
 
-task copyContracts(<span class="key">type</span>: Copy) {
-        from contractsDir
-        include <span class="string"><span class="delimiter">'</span><span class="content">**/*.groovy</span><span class="delimiter">'</span></span>
-        into contractsOutputDir
-}
-
-task stubsJar(<span class="key">type</span>: Jar, <span class="key">dependsOn</span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">generateWireMockClientStubs</span><span class="delimiter">&quot;</span></span>, copyContracts]) {
-        baseName = <span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>project.name<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span>
-        classifier = <span class="string"><span class="delimiter">&quot;</span><span class="content">stubs</span><span class="delimiter">&quot;</span></span>
-        from stubsOutputDirRoot
-}
-
-artifacts {
-        archives stubsJar
-}
+<span class="comment">// Automatically added by plugin:</span>
+<span class="comment">// copyContracts - copies contracts to the output folder from which JAR will be created</span>
+<span class="comment">// verifierStubsJar - JAR with a provided stub suffix</span>
+<span class="comment">// the presented publication is also added by the plugin but you can modify it as you wish</span>
 
 publishing {
         publications {
                 stubs(MavenPublication) {
                         artifactId <span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>project.name<span class="inline-delimiter">}</span></span><span class="content">-stubs</span><span class="delimiter">&quot;</span></span>
-                        artifact stubsJar
+                        artifact verifierStubsJar
                 }
         }
 }</code></pre>
@@ -957,7 +960,7 @@ Check their <a href="https://wiki.eclipse.org/Aether">docs</a> for more informat
 
 <span class="keyword">package</span> org.springframework.cloud.contract.stubrunner
 
-<span class="keyword">import</span> <span class="include">org.springframework.cloud.contract.verifier.dsl.Contract</span>
+<span class="keyword">import</span> <span class="include">org.springframework.cloud.contract.spec.Contract</span>
 
 <span class="type">interface</span> StubFinder <span class="directive">extends</span> StubTrigger {
         <span class="comment">/**
@@ -1255,7 +1258,7 @@ You can disable Stub Runner support by providing: <code>stubrunner.cloud.enabled
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-06-20 13:02:17 +02:00
+Last updated 2016-06-30 00:35:09 +02:00
 </div>
 </div>
 </body>
