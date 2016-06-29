@@ -19,8 +19,9 @@ package org.springframework.cloud.contract.verifier.plugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.tasks.Copy
+import org.gradle.jvm.tasks.Jar
 import org.springframework.cloud.contract.verifier.config.ContractVerifierConfigProperties
-
 /**
  * Gradle plugin for Spring Cloud Contract Verifier that from the DSL contract can
  * <ul>
@@ -44,6 +45,8 @@ class SpringCloudContractVerifierGradlePlugin implements Plugin<Project> {
 
 	private static final String GENERATE_SERVER_TESTS_TASK_NAME = 'generateContractTests'
 	private static final String DSL_TO_WIREMOCK_CLIENT_TASK_NAME = 'generateWireMockClientStubs'
+	private static final String COPY_CONTRACTS_TASK_NAME = 'copyContracts'
+	private static final String VERIFIER_STUBS_JAR_TASK_NAME = 'verifierStubsJar'
 
 	private static final Class IDEA_PLUGIN_CLASS = org.gradle.plugins.ide.idea.IdeaPlugin
 	private static final String GROUP_NAME = "Verification"
@@ -61,6 +64,8 @@ class SpringCloudContractVerifierGradlePlugin implements Plugin<Project> {
 		setConfigurationDefaults(extension)
 		createGenerateTestsTask(extension)
 		createAndConfigureGenerateWireMockClientStubsFromDslTask(extension)
+		createAndConfigureCopyContractsTask(extension)
+		createAndConfigureStubsJarTasks(extension)
 		project.dependencies.add("testCompile", "com.github.tomakehurst:wiremock:2.0.10-beta")
 		project.dependencies.add("testCompile", "com.toomuchcoding.jsonassert:jsonassert:0.4.7")
 		project.dependencies.add("testCompile", "org.assertj:assertj-core:2.3.0")
@@ -110,5 +115,26 @@ class SpringCloudContractVerifierGradlePlugin implements Plugin<Project> {
 			stubsOutputDir = { extension.stubsOutputDir ?: project.file("${project.buildDir}/stubs") }
 			configProperties = { extension }
 		}
+	}
+
+	private void createAndConfigureCopyContractsTask(ContractVerifierConfigProperties extension) {
+		Task task = project.tasks.create(type: Copy, name: COPY_CONTRACTS_TASK_NAME) {
+			from { extension.contractsDslDir }
+			into { extension.stubsOutputDir ?: project.file("${project.buildDir}/stubs") }
+		}
+		task.description = "Copies contracts to the output folder"
+		task.group = GROUP_NAME
+		project.jar.dependsOn task
+	}
+
+	private void createAndConfigureStubsJarTasks(ContractVerifierConfigProperties extension) {
+		Task task = project.tasks.create(type: Jar, name: VERIFIER_STUBS_JAR_TASK_NAME,
+				dependsOn: DSL_TO_WIREMOCK_CLIENT_TASK_NAME) {
+			baseName = { "${project.name}" }
+			classifier = { extension.stubsSuffix }
+			from { extension.stubsOutputDir }
+		}
+		task.description = "Creates the stubs JAR task"
+		task.group = GROUP_NAME
 	}
 }

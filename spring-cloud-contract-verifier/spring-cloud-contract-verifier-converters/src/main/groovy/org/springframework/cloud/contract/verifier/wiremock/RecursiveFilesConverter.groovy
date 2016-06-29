@@ -28,7 +28,6 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
-import java.nio.file.StandardCopyOption
 /**
  * Recursively converts contracts into their stub representations
  *
@@ -38,7 +37,6 @@ import java.nio.file.StandardCopyOption
 @CompileStatic
 class RecursiveFilesConverter {
 
-	private static final String DEFAULT_CONTRACTS_FOLDER = "contracts"
 	private static final String DEFAULT_MAPPINGS_FOLDER = "mappings"
 	private final SingleFileConverter singleFileConverter
 	private final ContractVerifierConfigProperties properties
@@ -52,7 +50,6 @@ class RecursiveFilesConverter {
 		ContractFileScanner scanner = new ContractFileScanner(properties.contractsDslDir, properties.excludedFiles as Set, [] as Set)
 		ListMultimap<Path, ContractMetadata> contracts = scanner.findContracts()
 		log.debug("Found the following contracts $contracts")
-		createContractDirInOutputStubsFolder()
 		contracts.asMap().entrySet().each { entry ->
 			entry.value.each { ContractMetadata contract ->
 				File sourceFile = contract.path.toFile()
@@ -60,8 +57,6 @@ class RecursiveFilesConverter {
 					if (!singleFileConverter.canHandleFileName(sourceFile.name)) {
 						return
 					}
-					Path targetContractDir = createAndReturnTargetDirectory(sourceFile, DEFAULT_CONTRACTS_FOLDER)
-					Files.copy(sourceFile.toPath(), new File(targetContractDir.toFile(), sourceFile.name).toPath(), StandardCopyOption.REPLACE_EXISTING)
 					String convertedContent = singleFileConverter.convertContent(entry.key.last().toString(), contract)
 					if (!convertedContent) {
 						return
@@ -74,14 +69,6 @@ class RecursiveFilesConverter {
 				}
 			}
 		}
-	}
-
-	private boolean createContractDirInOutputStubsFolder() {
-		return contractDir().mkdirs()
-	}
-
-	private File contractDir() {
-		return new File(properties.stubsOutputDir, DEFAULT_CONTRACTS_FOLDER)
 	}
 
 	private Path createAndReturnTargetDirectory(File sourceFile, String defaultFolder) {

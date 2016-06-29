@@ -62,21 +62,15 @@ wrapper {
 	gradleVersion '2.2.1'
 }
 
-task stubsJar(type: Jar, dependsOn: ["generateWireMockClientStubs"]) {
-	baseName = "${project.name}"
-	classifier = "stubs"
-	from stubsOutputDirRoot
-}
-
 artifacts {
-	archives stubsJar
+	archives verifierStubsJar
 }
 
 publishing {
 	publications {
 		stubs(MavenPublication) {
 			artifactId "${project.name}-stubs"
-			artifact stubsJar
+			artifact verifierStubsJar
 		}
 	}
 }
