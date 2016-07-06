@@ -1012,6 +1012,20 @@ Spring Cloud Contract Verifier supports equality check on text response. Regular
 </tr>
 </table>
 </div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+The support for the verification of size of JSON arrays is experimental. If you want to turn it on please provide
+the value of a system property <code>spring.cloud.contract.verifier.assert.size</code> equal to <code>turn</code>. By default this feature is
+<code>off</code>. You can also provide the <code>assertJsonSize</code> property in the DSL configuration.
+</td>
+</tr>
+</table>
+</div>
 </div>
 <div class="sect2">
 <h3 id="http-top-level-elements">HTTP Top-Level Elements</h3>
@@ -3986,7 +4000,7 @@ receivedMessage.headers.get(<span class="string"><span class="delimiter">'</span
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-06-29 23:27:29 +02:00
+Last updated 2016-07-04 09:52:31 +02:00
 </div>
 </div>
 </body>
