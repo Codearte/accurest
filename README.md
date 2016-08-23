@@ -1,3 +1,7 @@
+ARCHIVED: NOT IN DEVELOPMENT
+
+This project has moved to https://github.com/spring-cloud/spring-cloud-contract
+
 Accurest
 ========
 
