@@ -104,7 +104,7 @@ class StubRunnerExecutor implements StubFinder {
 	Map<String, Collection<String>> labels() {
 		return getAccurestContracts().collectEntries {
 			[(it.key.toColonSeparatedDependencyNotation()) : it.value.collect { it.label }]
-		} as Map<String, List<String>>
+		} as Map<String, Collection<String>>
 	}
 
 	private void sendMessageIfApplicable(GroovyDsl groovyDsl) {

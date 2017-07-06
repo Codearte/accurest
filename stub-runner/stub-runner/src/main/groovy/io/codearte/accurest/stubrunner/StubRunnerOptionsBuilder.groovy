@@ -90,7 +90,7 @@ class StubRunnerOptionsBuilder {
 	}
 
 	private static List<String> stubsToList(String stubIdsToPortMapping) {
-		return stubIdsToPortMapping.split(',').collect { it }
+		return stubIdsToPortMapping.split(',').toList()
 	}
 
 	private void addStub(List<String> notations) {

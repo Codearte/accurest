@@ -45,7 +45,7 @@ class StubRepository {
 	}
 
 	private List<WiremockMappingDescriptor> contextDescriptors() {
-		return path.exists() ? collectMappingDescriptors(path) : []
+		return path.exists() ? collectMappingDescriptors(path) : [] as List<WiremockMappingDescriptor>
 	}
 
 	private List<WiremockMappingDescriptor> collectMappingDescriptors(File descriptorsDirectory) {
@@ -59,7 +59,7 @@ class StubRepository {
 	}
 
 	private Collection<GroovyDsl> accurestDescriptors() {
-		return path.exists() ? collectAccurestDescriptors(path) : []
+		return path.exists() ? collectAccurestDescriptors(path) : [] as Collection<GroovyDsl>
 	}
 
 	private Collection<GroovyDsl> collectAccurestDescriptors(File descriptorsDirectory) {
