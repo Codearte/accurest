@@ -21,7 +21,7 @@ io.codearte.accurest.dsl.GroovyDsl.make {
 						rejectionReason: $(client(null), server(execute('assertThatRejectionReasonIsNull($it)')))
 				)
 				headers {
-					 header('Content-Type': 'application/vnd.fraud.v1+json')
+					 header('Content-Type': 'application/vnd.fraud.v1+json;charset=UTF-8')
 				}
 			}
 

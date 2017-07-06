@@ -145,9 +145,12 @@ class CamelStubRunnerSpec extends Specification {
 		return json.bookName == 'foo'
 	}
 
-	@Bean
-	ActiveMQComponent activeMQComponent(@Value('${activemq.url:vm://localhost?broker.persistent=false}') String url) {
-		return new ActiveMQComponent(brokerURL: url)
+	@Configuration
+	private static class AvtiveMQConfiguration {
+		@Bean
+		ActiveMQComponent activeMQComponent(@Value('${activemq.url:vm://localhost?broker.persistent=false}') String url) {
+			return new ActiveMQComponent(brokerURL: url)
+		}
 	}
 
 	GroovyDsl dsl =

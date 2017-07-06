@@ -20,8 +20,8 @@ io.codearte.accurest.dsl.GroovyDsl.make {
 	"rejectionReason": "Amount too high"
 }""")
 				headers {
-					 header('Content-Type': 'application/vnd.fraud.v1+json')
-					}
+					header('Content-Type': 'application/vnd.fraud.v1+json;charset=UTF-8')
+				}
 			}
 
 }

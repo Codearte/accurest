@@ -150,7 +150,7 @@ project(':accurest-gradle-plugin') {
 		messagingLibs project(':accurest-messaging-root:accurest-messaging-integration')
 		messagingLibs project(':accurest-messaging-root:accurest-messaging-core')
 		messagingLibs project(':accurest-testing-utils')
-		messagingLibs 'org.codehaus.groovy:groovy-all:2.4.5'
+		messagingLibs 'org.codehaus.groovy:groovy-all:2.4.10'
 
 		accurestGradlePluginLibs project(':accurest-gradle-plugin')
 	}

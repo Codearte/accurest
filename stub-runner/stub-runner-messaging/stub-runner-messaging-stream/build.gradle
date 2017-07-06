@@ -16,6 +16,7 @@ dependencies {
 
 	testCompile "org.springframework:spring-context:${springVersion}"
 	testCompile "org.springframework:spring-beans:${springVersion}"
+	testCompile "org.springframework:spring-web:${springVersion}"
 	testCompile "org.springframework.cloud:spring-cloud-stream-test-support:${springStreamVersion}"
 	testCompile "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
 	testCompile('org.spockframework:spock-spring:1.0-groovy-2.4') {

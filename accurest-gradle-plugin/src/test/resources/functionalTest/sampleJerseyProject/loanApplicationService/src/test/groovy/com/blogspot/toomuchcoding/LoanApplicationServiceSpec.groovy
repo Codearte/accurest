@@ -9,12 +9,12 @@ import com.blogspot.toomuchcoding.frauddetection.model.LoanApplicationStatus
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule
 import org.junit.ClassRule
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.SpringApplicationContextLoader
+import org.springframework.boot.test.context.SpringBootContextLoader
 import org.springframework.test.context.ContextConfiguration
 import spock.lang.Shared
 import spock.lang.Specification
 
-@ContextConfiguration(loader = SpringApplicationContextLoader, classes = Application)
+@ContextConfiguration(loader = SpringBootContextLoader, classes = Application)
 class LoanApplicationServiceSpec extends Specification {
 
 	public static int port = org.springframework.util.SocketUtils.findAvailableTcpPort()

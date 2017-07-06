@@ -4,17 +4,18 @@ buildscript {
 		mavenLocal()
 	}
 	dependencies {
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.6.RELEASE")
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:1.4.0.RELEASE")
 	}
 }
 
 ext {
 	restAssuredVersion = '2.5.0'
 	spockVersion = '1.0-groovy-2.4'
-	wiremockVersion = '2.0.10-beta'
+	wiremockVersion = '2.1.7'
 
 	accurestStubsBaseDirectory = 'src/test/resources/stubs'
 }
+ext['jetty.version'] = '9.2.17.v20160517'
 
 group = 'io.codearte.accurest.testprojects'
 
@@ -27,10 +28,13 @@ subprojects {
 	}
 
 	dependencies {
-		testCompile "org.codehaus.groovy:groovy-all:2.4.5"
+		testCompile "org.codehaus.groovy:groovy-all:2.4.10"
 		testCompile "org.spockframework:spock-core:$spockVersion"
 		testCompile("junit:junit:4.12")
-		testCompile "com.github.tomakehurst:wiremock:$wiremockVersion"
+		testCompile("com.github.tomakehurst:wiremock:$wiremockVersion") {
+			exclude group: 'org.eclipse.jetty'
+		}
+
 	}
 }
 
@@ -67,7 +71,9 @@ configure([project(':fraudDetectionService'), project(':loanApplicationService')
 		compile("org.springframework.boot:spring-boot-starter-actuator")
 
 		testRuntime "org.spockframework:spock-spring:$spockVersion"
+		testCompile "org.mockito:mockito-core"
 		testCompile "org.springframework:spring-test"
+		testCompile "org.springframework.boot:spring-boot-test"
 		testCompile "com.jayway.restassured:rest-assured:$restAssuredVersion"
 		testCompile "com.jayway.restassured:spring-mock-mvc:$restAssuredVersion"
 	}

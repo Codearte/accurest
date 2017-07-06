@@ -45,7 +45,7 @@ repositories {
 }
 
 dependencies {
-	compile "org.codehaus.groovy:groovy-all:2.4.5"
+	compile "org.codehaus.groovy:groovy-all:2.4.10"
 	compile "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
 	compile "org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}"
 	compile "org.springframework.boot:spring-boot-starter-integration:${springBootVersion}"
@@ -54,6 +54,7 @@ dependencies {
 
 	testCompile "org.spockframework:spock-spring:1.0-groovy-2.4"
 	testCompile "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
+//	testCompile "org.springframework.boot:spring-boot-test"
 	testCompile "ch.qos.logback:logback-classic:1.1.2"
 	testCompile 'com.jayway.restassured:spring-mock-mvc:2.9.0' // needed if you're going to use Spring MockMvc
 }
