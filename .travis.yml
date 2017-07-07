@@ -9,14 +9,12 @@ before_install:
  - "mkdir $HOME/.m2/repository/io/codearte/accurest/ --parents"
  - "cp -r stub-runner/stub-runner-spring/src/test/resources/m2repo/repository/io/codearte/accurest/stubs $HOME/.m2/repository/io/codearte/accurest/"
 
-jdk:
- - oraclejdk8
-
 install: ./gradlew assemble -s
 script: ./gradlew check funcTest install -s --continue && jdk_switcher use oraclejdk8 && ./scripts/runTests.sh && jdk_switcher use $TRAVIS_JDK_VERSION && ./gradlew uploadSnapshotArchives -x check -s
 
 matrix:
   include:
+    - jdk: oraclejdk8
     # Automatic snapshot release only in Java 7 build
     - jdk: oraclejdk7
       env:
