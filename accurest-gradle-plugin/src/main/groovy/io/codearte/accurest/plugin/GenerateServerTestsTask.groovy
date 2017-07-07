@@ -2,22 +2,18 @@ package io.codearte.accurest.plugin
 
 import io.codearte.accurest.AccurestException
 import io.codearte.accurest.TestGenerator
-import io.codearte.accurest.config.AccurestConfigProperties
+import io.codearte.accurest.plugin.config.AccurestGradleConfigProperties
 import org.gradle.api.GradleException
 import org.gradle.api.internal.ConventionTask
-import org.gradle.api.tasks.InputDirectory
-import org.gradle.api.tasks.OutputDirectory
+import org.gradle.api.tasks.CacheableTask
+import org.gradle.api.tasks.Nested
 import org.gradle.api.tasks.TaskAction
 
+@CacheableTask
 class GenerateServerTestsTask extends ConventionTask {
 
-	@InputDirectory
-	File contractsDslDir
-	@OutputDirectory
-	File generatedTestSourcesDir
-
-	//TODO: How to deal with @Input*, @Output* and that domain object?
-	AccurestConfigProperties configProperties
+	@Nested
+	AccurestGradleConfigProperties configProperties
 
 	@TaskAction
 	void generate() {
