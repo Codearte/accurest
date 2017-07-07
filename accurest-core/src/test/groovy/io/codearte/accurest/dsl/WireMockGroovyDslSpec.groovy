@@ -183,6 +183,7 @@ class WireMockGroovyDslSpec extends Specification implements WireMockStubVerifie
 		when:
 			String wireMockStub = new WireMockStubStrategy("Test", new Contract(null, false, 0, null), groovyDsl).toWireMockClientStub()
 		then:
+			//TODO: That assertion fails on some environments due to 2 ways how body array is created - with 'created' at the beginning or 'id'
 		AssertionUtil.assertThatJsonsAreEqual(('''
 {
   "request" : {
@@ -191,7 +192,7 @@ class WireMockGroovyDslSpec extends Specification implements WireMockStubVerifie
   },
   "response" : {
 	"status" : 200,
-	"body" : "{\\"id\\":\\"123\\",\\"surname\\":\\"Kowalsky\\",\\"name\\":\\"Jan\\",\\"created\\":\\"2014-02-02 12:23:43\\"}",
+	"body" : "{\\"created\\":\\"2014-02-02 12:23:43\\",\\"id\\":\\"123\\",\\"name\\":\\"Jan\\",\\"surname\\":\\"Kowalsky\\"}",
 	"headers" : {
 	  "Content-Type" : "text/plain"
 	}
