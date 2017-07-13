@@ -1,6 +1,6 @@
 package io.codearte.accurest.plugin
 
-import io.codearte.accurest.plugin.config.AccurestGradleConfigProperties
+import io.codearte.accurest.plugin.config.AccurestClientStubsTaskConfigProperties
 import io.codearte.accurest.wiremock.DslToWireMockClientConverter
 import io.codearte.accurest.wiremock.RecursiveFilesConverter
 import org.gradle.api.internal.ConventionTask
@@ -13,7 +13,7 @@ import org.gradle.api.tasks.TaskAction
 class GenerateWireMockClientStubsFromDslTask extends ConventionTask {
 
 	@Nested
-	AccurestGradleConfigProperties configProperties
+	AccurestClientStubsTaskConfigProperties configProperties
 
 	@TaskAction
 	void generate() {

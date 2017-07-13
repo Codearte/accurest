@@ -1,7 +1,6 @@
 package io.codearte.accurest.plugin.config
 
 import groovy.transform.CompileStatic
-import io.codearte.accurest.config.AccurestConfigProperties
 import io.codearte.accurest.config.TestFramework
 import io.codearte.accurest.config.TestMode
 import org.gradle.api.tasks.Input
@@ -10,7 +9,7 @@ import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
 
 @CompileStatic
-class AccurestGradleConfigProperties extends AccurestConfigProperties {
+class AccurestServerTestsTaskConfigProperties extends AccurestGenericGradleConfigProperties {
 
 	@Override
 	@Input
@@ -93,9 +92,10 @@ class AccurestGradleConfigProperties extends AccurestConfigProperties {
 		return super.getGeneratedTestSourcesDir()
 	}
 
-	@Override
-	@OutputDirectory
-	File getStubsOutputDir() {
-		return super.getStubsOutputDir()
+	static AccurestServerTestsTaskConfigProperties fromGenericConfig(AccurestGenericGradleConfigProperties configToCloneFrom) {
+		return new AccurestServerTestsTaskConfigProperties().with {
+			it.clonePropertiesFrom(configToCloneFrom)
+			return it
+		}
 	}
 }

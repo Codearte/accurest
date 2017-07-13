@@ -1,6 +1,8 @@
 package io.codearte.accurest.plugin
 
-import io.codearte.accurest.plugin.config.AccurestGradleConfigProperties
+import io.codearte.accurest.plugin.config.AccurestClientStubsTaskConfigProperties
+import io.codearte.accurest.plugin.config.AccurestGenericGradleConfigProperties
+import io.codearte.accurest.plugin.config.AccurestServerTestsTaskConfigProperties
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -20,7 +22,7 @@ class AccurestGradlePlugin implements Plugin<Project> {
 	@Override
 	void apply(Project project) {
 		this.project = project
-		AccurestGradleConfigProperties extension = project.extensions.create('accurest', AccurestGradleConfigProperties)
+		AccurestGenericGradleConfigProperties extension = project.extensions.create('accurest', AccurestGenericGradleConfigProperties)
 
 		project.check.dependsOn(GENERATE_SERVER_TESTS_TASK_NAME)
 
@@ -45,7 +47,7 @@ class AccurestGradlePlugin implements Plugin<Project> {
 		}
 	}
 
-	void setConfigurationDefaults(AccurestGradleConfigProperties extension) {
+	void setConfigurationDefaults(AccurestGenericGradleConfigProperties extension) {
 		extension.with {
 			generatedTestSourcesDir = project.file("${project.buildDir}/generated-test-sources/accurest")
 			contractsDslDir = defaultAccurestContractsDir() //TODO: Use sourceset
@@ -57,21 +59,21 @@ class AccurestGradlePlugin implements Plugin<Project> {
 		project.file("${project.rootDir}/src/test/resources/accurest")
 	}
 
-	private void createGenerateTestsTask(AccurestGradleConfigProperties extension) {
+	private void createGenerateTestsTask(AccurestGenericGradleConfigProperties extension) {
 		Task task = project.tasks.create(GENERATE_SERVER_TESTS_TASK_NAME, GenerateServerTestsTask)
 		task.description = "Generate server tests from GroovyDSL"
 		task.group = GROUP_NAME
 		task.conventionMapping.with {
-			configProperties = { extension }
+			configProperties = { AccurestServerTestsTaskConfigProperties.fromGenericConfig(extension) }
 		}
 	}
 
-	private void createAndConfigureGenerateWireMockClientStubsFromDslTask(AccurestGradleConfigProperties extension) {
+	private void createAndConfigureGenerateWireMockClientStubsFromDslTask(AccurestGenericGradleConfigProperties extension) {
 		Task task = project.tasks.create(DSL_TO_WIREMOCK_CLIENT_TASK_NAME, GenerateWireMockClientStubsFromDslTask)
 		task.description = "Generate WireMock client stubs from GroovyDSL"
 		task.group = GROUP_NAME
 		task.conventionMapping.with {
-			configProperties = { extension }
+			configProperties = { AccurestClientStubsTaskConfigProperties.fromGenericConfig(extension) }
 		}
 	}
 

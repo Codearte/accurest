@@ -2,7 +2,7 @@ package io.codearte.accurest.plugin
 
 import io.codearte.accurest.AccurestException
 import io.codearte.accurest.TestGenerator
-import io.codearte.accurest.plugin.config.AccurestGradleConfigProperties
+import io.codearte.accurest.plugin.config.AccurestServerTestsTaskConfigProperties
 import org.gradle.api.GradleException
 import org.gradle.api.internal.ConventionTask
 import org.gradle.api.tasks.CacheableTask
@@ -13,7 +13,7 @@ import org.gradle.api.tasks.TaskAction
 class GenerateServerTestsTask extends ConventionTask {
 
 	@Nested
-	AccurestGradleConfigProperties configProperties
+	AccurestServerTestsTaskConfigProperties configProperties
 
 	@TaskAction
 	void generate() {
